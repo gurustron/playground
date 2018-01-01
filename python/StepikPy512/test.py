@@ -25,6 +25,7 @@ a = []
 
 
 def foo(arg1, arg2):
+    print("args", arg1, arg2)
     a.append("foo")
 
 
