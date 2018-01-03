@@ -21,15 +21,33 @@
 # print((1 == True))
 
 
-a = []
+#
+# a = []
+#
+#
+# def foo(arg1, arg2):
+#     print("args", arg1, arg2)
+#     a.append("foo")
+#
+#
+# foo(a.append("arg1"), a.append("arg2"))
+#
+# print(a)
+# print(a.append("arg2"), a.append("arg2"))
 
 
-def foo(arg1, arg2):
-    print("args", arg1, arg2)
-    a.append("foo")
+class My:
+    a = 10
+
+    def f(self):
+        print("hi")
 
 
-foo(a.append("arg1"), a.append("arg2"))
-
-print(a)
-print(a.append("arg2"), a.append("arg2"))
+x = My()
+print(type(x))
+print(My)
+print(My.f)
+print(x.f)
+x.f = lambda: print("5")
+print(x.f)
+x.f()
