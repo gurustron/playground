@@ -35,19 +35,33 @@
 # print(a)
 # print(a.append("arg2"), a.append("arg2"))
 
+#
+# class My:
+#     a = 10
+#
+#     def f(self):
+#         print("hi")
+#
+#
+# x = My()
+# print(type(x))
+# print(My)
+# print(My.f)
+# print(x.f)
+# x.f = lambda: print("5")
+# print(x.f)
+# x.f()
+#
 
-class My:
-    a = 10
+# print(str.find.__doc__)
+from random import random
 
-    def f(self):
-        print("hi")
+import requests
 
-
-x = My()
-print(type(x))
-print(My)
-print(My.f)
-print(x.f)
-x.f = lambda: print("5")
-print(x.f)
-x.f()
+print("{cap} haha {bar}".format(cap=1, bar="asdasd"))
+f = "r fr {0.url} is {0.status_code}"
+res = requests.get("http://google.com/myurl")
+print(f.format(res))
+x = random()
+print(x)
+print("{:.4}".format(x))
