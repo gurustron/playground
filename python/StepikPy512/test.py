@@ -54,14 +54,20 @@
 #
 
 # print(str.find.__doc__)
-from random import random
 
-import requests
+# from random import random
+#
+# import requests
+#
+# print("{cap} haha {bar}".format(cap=1, bar="asdasd"))
+# f = "r fr {0.url} is {0.status_code}"
+# res = requests.get("http://google.com/myurl")
+# print(f.format(res))
+# x = random()
+# print(x)
+# print("{:.4}".format(x))
 
-print("{cap} haha {bar}".format(cap=1, bar="asdasd"))
-f = "r fr {0.url} is {0.status_code}"
-res = requests.get("http://google.com/myurl")
-print(f.format(res))
-x = random()
-print(x)
-print("{:.4}".format(x))
+
+# сырая строка
+print("\"a")
+print(r"\"a")
