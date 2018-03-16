@@ -72,20 +72,35 @@
 # print("\"a")
 # print(r"\"a")
 
-import re
+# import re
+#
+# print(re.match)
+# print(re.search)
+# print(re.findall)
+# print(re.sub)
+# pattern = r"a[bd]{,4}c"
+# s = "absacc abbbc abdbdc abccc abbbbbbbc"
+# print(re.findall(pattern, s))
+# s = "abc"
+# if re.match(pattern, s):
+#     print("hehe")
+# print(re.search(pattern, s))
+#
+# line = "!cat?"
+# if re.search(r"\bcat\b", line):
+#     print(line)
 
-print(re.match)
-print(re.search)
-print(re.findall)
-print(re.sub)
-pattern = r"a[bd]{,4}c"
-s = "absacc abbbc abdbdc abccc abbbbbbbc"
-print(re.findall(pattern, s))
-s = "abc"
-if re.match(pattern, s):
-    print("hehe")
-print(re.search(pattern, s))
 
-line = "!cat?"
-if re.search(r"\bcat\b", line):
-    print(line)
+import requests
+
+get = requests.get("https://google.com")
+# get = requests.get("https://docs.python.org/3/_static/py.png")
+print(get.status_code)
+print(get.headers['Content-Type'])
+print(get.content)
+print(get.text)
+#
+# with open("py.png", "wb") as f:
+#     f.write(get.content)
+get = requests.get("https://yandex.ru/search", params={"text": "strong"})
+print(get.url)
