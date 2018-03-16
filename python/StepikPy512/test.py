@@ -68,6 +68,24 @@
 # print("{:.4}".format(x))
 
 
-# сырая строка
-print("\"a")
-print(r"\"a")
+# # сырая строка
+# print("\"a")
+# print(r"\"a")
+
+import re
+
+print(re.match)
+print(re.search)
+print(re.findall)
+print(re.sub)
+pattern = r"a[bd]{,4}c"
+s = "absacc abbbc abdbdc abccc abbbbbbbc"
+print(re.findall(pattern, s))
+s = "abc"
+if re.match(pattern, s):
+    print("hehe")
+print(re.search(pattern, s))
+
+line = "!cat?"
+if re.search(r"\bcat\b", line):
+    print(line)
