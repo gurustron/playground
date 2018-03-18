@@ -2,7 +2,7 @@ from xml.etree import ElementTree
 
 root = ElementTree.fromstring('<cube color="blue"><cube color="red"><cube color="green"></cube></cube><cube color="red"></cube></cube>')
 
-print(root.attrib)
+# print(root.attrib)
 res = {}
 queue = [(root, 1)]
 
