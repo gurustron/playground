@@ -68,6 +68,11 @@ class FunSetSuite {
       assert(contains(s, 1), "Union 1")
       assert(contains(s, 2), "Union 2")
       assert(!contains(s, 3), "Union 3")
+//      printSet(s)
+//      printSet(map(s, f = i => i-1))
+      val  x = union(s, singletonSet(100))
+      printSet(x)
+      print(forall(x, i => i < 5))
     }
   }
 

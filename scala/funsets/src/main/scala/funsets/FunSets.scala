@@ -18,31 +18,31 @@ trait FunSets extends FunSetsInterface {
   /**
    * Returns the set of the one given element.
    */
-  def singletonSet(elem: Int): FunSet = ???
+  def singletonSet(elem: Int): FunSet = i => i == elem
 
 
   /**
    * Returns the union of the two given sets,
    * the sets of all elements that are in either `s` or `t`.
    */
-  def union(s: FunSet, t: FunSet): FunSet = ???
+  def union(s: FunSet, t: FunSet): FunSet = i => s(i) || t (i)
 
   /**
    * Returns the intersection of the two given sets,
    * the set of all elements that are both in `s` and `t`.
    */
-  def intersect(s: FunSet, t: FunSet): FunSet = ???
+  def intersect(s: FunSet, t: FunSet): FunSet = i => s(i) && t (i)
 
   /**
    * Returns the difference of the two given sets,
    * the set of all elements of `s` that are not in `t`.
    */
-  def diff(s: FunSet, t: FunSet): FunSet = ???
+  def diff(s: FunSet, t: FunSet): FunSet = i => s(i) && !t(i)
 
   /**
    * Returns the subset of `s` for which `p` holds.
    */
-  def filter(s: FunSet, p: Int => Boolean): FunSet = ???
+  def filter(s: FunSet, p: Int => Boolean): FunSet = i => s(i) && p(i)
 
 
   /**
@@ -55,23 +55,23 @@ trait FunSets extends FunSetsInterface {
    */
   def forall(s: FunSet, p: Int => Boolean): Boolean = {
     def iter(a: Int): Boolean = {
-      if (???) ???
-      else if (???) ???
-      else iter(???)
+      if (a > bound) true
+      else if (s(a) && !p(a)) false
+      else iter(a + 1)
     }
-    iter(???)
+    iter(-bound)
   }
 
   /**
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
    */
-  def exists(s: FunSet, p: Int => Boolean): Boolean = ???
+  def exists(s: FunSet, p: Int => Boolean): Boolean = !forall(s, i => !p(i))
 
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-  def map(s: FunSet, f: Int => Int): FunSet = ???
+  def map(s: FunSet, f: Int => Int): FunSet = i => exists(s, j => f(j) == i)
 
   /**
    * Displays the contents of a set
