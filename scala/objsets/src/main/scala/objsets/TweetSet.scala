@@ -38,23 +38,23 @@ abstract class TweetSet extends TweetSetInterface {
    * This method takes a predicate and returns a subset of all the elements
    * in the original set for which the predicate is true.
    *
-   * Question: Can we implment this method here, or should it remain abstract
+   * Question: Can we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
   def filter(p: Tweet => Boolean): TweetSet
-
-  /**
-   * This is a helper method for `filter` that propagetes the accumulated tweets.
-   */
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet
+//
+//  /**
+//   * This is a helper method for `filter` that propagates the accumulated tweets.
+//   */
+//  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet
 
   /**
    * Returns a new `TweetSet` that is the union of `TweetSet`s `this` and `that`.
    *
-   * Question: Should we implment this method here, or should it remain abstract
+   * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def union(that: TweetSet): TweetSet = ???
+  def union(that: TweetSet): TweetSet
 
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -65,7 +65,7 @@ abstract class TweetSet extends TweetSetInterface {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -107,7 +107,7 @@ abstract class TweetSet extends TweetSetInterface {
 }
 
 class Empty extends TweetSet {
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+//  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = this
 
   /**
    * The following methods are already implemented
@@ -120,12 +120,34 @@ class Empty extends TweetSet {
   def remove(tweet: Tweet): TweetSet = this
 
   def foreach(f: Tweet => Unit): Unit = ()
+
+  override def filter(p: Tweet => Boolean): TweetSet = this
+
+  /**
+   * Returns a new `TweetSet` that is the union of `TweetSet`s `this` and `that`.
+   *
+   * Question: Should we implement this method here, or should it remain abstract
+   * and be implemented in the subclasses?
+   */
+  override def union(that: TweetSet): TweetSet = that
+
+  /**
+   * Returns the tweet from this set which has the greatest retweet count.
+   *
+   * Calling `mostRetweeted` on an empty set should throw an exception of
+   * type `java.util.NoSuchElementException`.
+   *
+   * Question: Should we implment this method here, or should it remain abstract
+   * and be implemented in the subclasses?
+   */
+  override def mostRetweeted: Tweet = throw new NoSuchElementException
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
-  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
-
+//  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
+//
+//  }
 
   /**
    * The following methods are already implemented
@@ -151,6 +173,53 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     f(elem)
     left.foreach(f)
     right.foreach(f)
+  }
+
+  /**
+   * This method takes a predicate and returns a subset of all the elements
+   * in the original set for which the predicate is true.
+   *
+   * Question: Can we implment this method here, or should it remain abstract
+   * and be implemented in the subclasses?
+   */
+  override def filter(p: Tweet => Boolean): TweetSet = {
+    var acc: TweetSet = new Empty
+    this.foreach(t => {
+      if (p(t)) {
+        acc = acc.incl(t)
+      }
+    })
+    acc
+  }
+
+  /**
+   * Returns a new `TweetSet` that is the union of `TweetSet`s `this` and `that`.
+   *
+   * Question: Should we implement this method here, or should it remain abstract
+   * and be implemented in the subclasses?
+   */
+  override def union(that: TweetSet): TweetSet = {
+    ???
+  }
+
+  /**
+   * Returns the tweet from this set which has the greatest retweet count.
+   *
+   * Calling `mostRetweeted` on an empty set should throw an exception of
+   * type `java.util.NoSuchElementException`.
+   *
+   * Question: Should we implment this method here, or should it remain abstract
+   * and be implemented in the subclasses?
+   */
+  override def mostRetweeted: Tweet = {
+    var acc = this.elem
+    this.foreach(t => {
+      if(t.retweets > acc.retweets){
+        acc = t
+      }
+    })
+
+    return acc
   }
 }
 
