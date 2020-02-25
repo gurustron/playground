@@ -156,9 +156,9 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
-//  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
-//
-//  }
+  //  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
+  //
+  //  }
 
   /**
    * The following methods are already implemented
@@ -223,7 +223,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
   override def mostRetweeted: Tweet = {
     var acc = this.elem
     this.foreach(t => {
-      if(t.retweets > acc.retweets){
+      if (t.retweets > acc.retweets) {
         acc = t
       }
     })
@@ -240,7 +240,19 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  override def descendingByRetweet: TweetList = ???
+  override def descendingByRetweet: TweetList = {
+    def inner(i: TweetSet): TweetList = {
+      if (i.isInstanceOf[Empty]) {
+        Nil
+      }
+      else {
+        val x = i.mostRetweeted
+        new Cons(x, inner(i.remove(x)))
+      }
+    }
+
+    inner(this)
+  }
 }
 
 trait TweetList {
