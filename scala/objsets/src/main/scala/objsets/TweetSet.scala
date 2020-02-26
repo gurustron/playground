@@ -154,7 +154,7 @@ class Empty extends TweetSet {
   override def descendingByRetweet: TweetList = Nil
 }
 
-class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
+class NonEmpty(val elem: Tweet, val left: TweetSet, val right: TweetSet) extends TweetSet {
 
   //  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
   //
@@ -194,13 +194,17 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
    * and be implemented in the subclasses?
    */
   override def filter(p: Tweet => Boolean): TweetSet = {
-    var acc: TweetSet = new Empty
-    this.foreach(t => {
-      if (p(t)) {
-        acc = acc.incl(t)
+    def inner(i : TweetSet, acc: TweetSet):TweetSet ={
+      i match {
+        case _: Empty => acc
+        case n: NonEmpty => {
+          val newAcc = if(p(n.elem)) acc.incl(n.elem) else acc
+          inner(n.right, inner(n.left, newAcc))
+        }
       }
-    })
-    acc
+    }
+
+    inner(this, new Empty)
   }
 
   /**
@@ -221,14 +225,19 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
    * and be implemented in the subclasses?
    */
   override def mostRetweeted: Tweet = {
-    var acc = this.elem
-    this.foreach(t => {
-      if (t.retweets > acc.retweets) {
-        acc = t
+    def inner(i: TweetSet, acc: Tweet): Tweet = {
+      i match {
+        case _: Empty => acc
+        case n: NonEmpty => {
+          val newAcc = if (n.elem.retweets > acc.retweets) n.elem else acc
+          val l = inner(n.left, newAcc)
+          val r = inner(n.right, newAcc)
+          if (r.retweets > l.retweets) r else l
+        }
       }
-    })
+    }
 
-    acc
+    inner(this, elem)
   }
 
   /**
@@ -242,12 +251,12 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
    */
   override def descendingByRetweet: TweetList = {
     def inner(i: TweetSet): TweetList = {
-      if (i.isInstanceOf[Empty]) {
-        Nil
-      }
-      else {
-        val x = i.mostRetweeted
-        new Cons(x, inner(i.remove(x)))
+      i match {
+        case _: Empty => Nil
+        case _ => {
+          val x = i.mostRetweeted
+          new Cons(x, inner(i.remove(x)))
+        }
       }
     }
 
