@@ -64,7 +64,9 @@ trait Huffman extends HuffmanInterface {
    *       println("integer is  : "+ theInt)
    *   }
    */
-  def times(chars: List[Char]): List[(Char, Int)] = ???
+  def times(chars: List[Char]): List[(Char, Int)] = chars.groupBy(chars => chars)
+      .map(t => (t._1, t._2.size))
+      .toList
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -73,7 +75,9 @@ trait Huffman extends HuffmanInterface {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] =
+    freqs.sortBy(t => t._2)
+      .map(t => Leaf(t._1, t._2))
 
   /**
    * Checks whether the list `trees` contains only one single code tree.

@@ -11,6 +11,12 @@ class HuffmanSuite {
     val t2 = Fork(Fork(Leaf('a',2), Leaf('b',3), List('a','b'), 5), Leaf('d',4), List('a','b','d'), 9)
   }
 
+  @Test def `count chars`: Unit =
+    new TestTrees {
+      val x = times("qweee".toCharArray.toList)
+      val y = x.toMap
+      assertEquals(Some(3), y.get('e'))
+    }
 
   @Test def `weight of a larger tree (10pts)`: Unit =
     new TestTrees {
