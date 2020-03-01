@@ -1,5 +1,7 @@
 package patmat
 
+import scala.annotation.tailrec
+
 /**
  * A huffman code is represented by a binary tree.
  *
@@ -21,9 +23,17 @@ case class Leaf(char: Char, weight: Int) extends CodeTree
 trait Huffman extends HuffmanInterface {
 
   // Part 1: Basics
-  def weight(tree: CodeTree): Int = ??? // tree match ...
+  def weight(tree: CodeTree): Int = tree match {
+    case Fork(_, _, _, weight) => weight
+    case Leaf(_, weight) => weight
+    case _ => throw new MatchError("Unknown tree type")
+  }
 
-  def chars(tree: CodeTree): List[Char] = ??? // tree match ...
+  def chars(tree: CodeTree): List[Char] = tree match {
+    case Fork(_, _, chars, _) => chars
+    case Leaf(char, _) => List(char)
+    case _ => throw new MatchError("Unknown tree type")
+  }
 
   def makeCodeTree(left: CodeTree, right: CodeTree) =
     Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
@@ -82,7 +92,17 @@ trait Huffman extends HuffmanInterface {
   /**
    * Checks whether the list `trees` contains only one single code tree.
    */
-  def singleton(trees: List[CodeTree]): Boolean = ???
+  def singleton(trees: List[CodeTree]): Boolean = trees.size == 1
+
+  def insertOrdered(codeTree: CodeTree, xs: List[CodeTree]): scala.List[CodeTree] = {
+    xs match {
+      case Nil => List(codeTree)
+      case head :: next => if (weight(codeTree) <= weight(head))
+        codeTree :: xs
+      else
+        head :: insertOrdered(codeTree, next)
+    }
+  }
 
   /**
    * The parameter `trees` of this function is a list of code trees ordered
@@ -96,7 +116,11 @@ trait Huffman extends HuffmanInterface {
    * If `trees` is a list of less than two elements, that list should be returned
    * unchanged.
    */
-  def combine(trees: List[CodeTree]): List[CodeTree] = ???
+  def combine(trees: List[CodeTree]): List[CodeTree] = trees match {
+    case Nil => trees
+    case List(_) => trees
+    case x :: y :: xs => insertOrdered(makeCodeTree(x, y), xs)
+  }
 
   /**
    * This function will be called in the following way:
@@ -109,7 +133,12 @@ trait Huffman extends HuffmanInterface {
    * In such an invocation, `until` should call the two functions until the list of
    * code trees contains only one single tree, and then return that singleton list.
    */
-  def until(done: List[CodeTree] => Boolean, merge: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] = ???
+  @tailrec
+  final def until(done: List[CodeTree] => Boolean, merge: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] =
+       if (!done(trees))
+        until(done, merge)(merge(trees))
+       else
+        trees
 
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
