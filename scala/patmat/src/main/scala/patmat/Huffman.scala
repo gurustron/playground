@@ -148,7 +148,9 @@ trait Huffman extends HuffmanInterface {
   /**
    * Write a function that returns the decoded secret
    */
-  def decodedSecret: List[Char] = ???
+  def decodedSecret: List[Char] = {
+    ???
+  }
 
 
   // Part 4a: Encoding using Huffman tree
