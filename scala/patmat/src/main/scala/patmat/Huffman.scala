@@ -201,7 +201,16 @@ trait Huffman extends HuffmanInterface {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+    def encChar(innerTree: CodeTree, c:Char, acc: List[Bit]): List[Bit] = innerTree match {
+      case Fork(left, right, chars, _) => if (chars.contains(c)) encChar(left, c, 0 :: acc) ::: encChar(right, c, 1 :: acc)
+      else Nil
+      case Leaf(char, _) => if (char == c) acc.reverse else Nil
+      case _ => throw new MatchError("unexp encChar")
+    }
+
+    text.iterator.map(c => encChar(tree, c, Nil)).flatten.toList
+  }
 
   // Part 4b: Encoding using code table
 
