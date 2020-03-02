@@ -227,7 +227,7 @@ class NonEmpty(val elem: Tweet, val left: TweetSet, val right: TweetSet) extends
   override def mostRetweeted: Tweet = {
     def inner(i: TweetSet, acc: Tweet): Tweet = {
       i match {
-        case _: Empty => acs
+        case _: Empty => acc
         case n: NonEmpty => {
           val newAcc = if (n.elem.retweets > acc.retweets) n.elem else acc
           val l = inner(n.left, newAcc)
