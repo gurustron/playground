@@ -146,7 +146,12 @@ trait Huffman extends HuffmanInterface {
    * The parameter `chars` is an arbitrary text. This function extracts the character
    * frequencies from that text and creates a code tree based on them.
    */
-  def createCodeTree(chars: List[Char]): CodeTree = ???
+  def createCodeTree(chars: List[Char]): CodeTree = until(singleton, combine)(makeOrderedLeafList(times(chars))) match {
+
+    case List(x) => x
+    case Nil => throw new MatchError("unexpected Nil")
+    case _ => throw new MatchError("unexpected")
+  }
 
 
   // Part 3: Decoding
@@ -158,7 +163,15 @@ trait Huffman extends HuffmanInterface {
    * the resulting list of characters.
    */
   def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
-    ???
+    @tailrec
+    def inner(innerTree: CodeTree, innerBits: List[Bit]): List[Char] = (innerTree, innerBits) match {
+      case (l: Leaf, Nil) => List(l.char)
+      case (_, Nil) => Nil
+      case (l: Leaf, _) => l.char :: decode(tree, innerBits)
+      case (f: Fork, x :: xs) => if(x == 0) inner(f.left, xs) else inner(f.right, xs)
+    }
+
+    inner(tree, bits)
   }
 
   /**
@@ -178,7 +191,7 @@ trait Huffman extends HuffmanInterface {
    * Write a function that returns the decoded secret
    */
   def decodedSecret: List[Char] = {
-    ???
+    decode(frenchCode, secret)
   }
 
 

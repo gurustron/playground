@@ -42,10 +42,15 @@ class HuffmanSuite {
     assertEquals(List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)), combine(leaflist))
   }
 
-
   @Test def `decode and encode a very short text should be identity (10pts)`: Unit =
     new TestTrees {
       assertEquals("ab".toList, decode(t1, encode(t1)("ab".toList)))
+    }
+
+  @Test def `french code`: Unit =
+    new TestTrees {
+      print(decode(frenchCode, secret))
+
     }
 
 
