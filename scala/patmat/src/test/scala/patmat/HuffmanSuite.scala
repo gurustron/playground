@@ -53,6 +53,10 @@ class HuffmanSuite {
 
     }
 
+  @Test def `decode and factEncode a very short text should be identity (10pts)`: Unit =
+    new TestTrees {
+      assertEquals("ab".toList, decode(t1, quickEncode(t1)("ab".toList)))
+    }
 
   @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
 }

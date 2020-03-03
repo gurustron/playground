@@ -169,6 +169,7 @@ trait Huffman extends HuffmanInterface {
       case (_, Nil) => Nil
       case (l: Leaf, _) => l.char :: decode(tree, innerBits)
       case (f: Fork, x :: xs) => if(x == 0) inner(f.left, xs) else inner(f.right, xs)
+      case _ => throw new MatchError("unexp input decode")
     }
 
     inner(tree, bits)
@@ -220,7 +221,10 @@ trait Huffman extends HuffmanInterface {
    * This function returns the bit sequence that represents the character `char` in
    * the code table `table`.
    */
-  def codeBits(table: CodeTable)(char: Char): List[Bit] = ???
+  def codeBits(table: CodeTable)(char: Char): List[Bit] = table.find(y => y._1 == char) match {
+    case Some((_, bits)) => bits
+    case None => throw new MatchError("not found")
+  }
 
   /**
    * Given a code tree, create a code table which contains, for every character in the
@@ -230,14 +234,22 @@ trait Huffman extends HuffmanInterface {
    * a valid code tree that can be represented as a code table. Using the code tables of the
    * sub-trees, think of how to build the code table for the entire tree.
    */
-  def convert(tree: CodeTree): CodeTable = ???
+  def convert(tree: CodeTree): CodeTable = {
+    def inner(innerTree: CodeTree, acc1: List[Bit]): CodeTable = innerTree match {
+      case Fork(left, right, _, _) => inner(left, 0 :: acc1) ::: inner(right, 1 :: acc1)
+      case Leaf(char, _) => List((char, acc1.reverse))
+      case _ => throw new MatchError("unexp convert inner")
+    }
+
+    inner(tree, Nil)
+  }
 
   /**
    * This function takes two code tables and merges them into one. Depending on how you
    * use it in the `convert` method above, this merge method might also do some transformations
    * on the two parameter code tables.
    */
-  def mergeCodeTables(a: CodeTable, b: CodeTable): CodeTable = ???
+  def mergeCodeTables(a: CodeTable, b: CodeTable): CodeTable = a ::: b
 
   /**
    * This function encodes `text` according to the code tree `tree`.
@@ -245,7 +257,10 @@ trait Huffman extends HuffmanInterface {
    * To speed up the encoding process, it first converts the code tree to a code table
    * and then uses it to perform the actual encoding.
    */
-  def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = text.iterator
+    .map(codeBits(convert(tree)))
+    .flatten
+    .toList
 }
 
 object Huffman extends Huffman
