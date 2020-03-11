@@ -93,7 +93,7 @@ object Anagrams extends AnagramsInterface {
 //        case x :: xs => {
 //          val currOcc = inner(List(x), Nil)
 //          val comb = inner(xs, Nil)
-//          val value = currOcc.flatMap(occ => occ :: comb)
+//          val value = currOcc.map(occ => occ :: comb).flatten
 //          val t = currOcc ++ comb ++ acc ++ value
 //
 //          t
@@ -103,13 +103,13 @@ object Anagrams extends AnagramsInterface {
 //
 //    }
 //    inner(occurrences, List(List.empty))
-//
+
 //    occurrences match {
 //      case Nil => List(List.empty)
-//      case List(x) if x._2 == 1 => occurrences
+//      case List(x) if x._2 == 1 => List(occurrences)
 //      case List(x) => occurrences :: combinations(List((x._1, x._2 - 1)))
-//      case _ => for{
-//        n <- 1 to occurrences.length
+//      case _ => for {
+//
 //
 //      }
 //    }
