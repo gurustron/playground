@@ -85,34 +85,20 @@ object Anagrams extends AnagramsInterface {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = {
-//    def inner(curr: Occurrences, acc: List[Occurrences]): List[Occurrences] ={
-//      curr match {
-//        case List(x) if x._2 == 1 => curr :: acc
-//        case List(x) => inner(List((x._1, x._2 - 1)), curr :: acc)
-//        case x :: xs => {
-//          val currOcc = inner(List(x), Nil)
-//          val comb = inner(xs, Nil)
-//          val value = currOcc.map(occ => occ :: comb).flatten
-//          val t = currOcc ++ comb ++ acc ++ value
-//
-//          t
-//        }
-//        case Nil => acc
-//      }
-//
-//    }
-//    inner(occurrences, List(List.empty))
+  def combinations(occurrences: Occurrences): List[Occurrences] = occurrences match {
+    case Nil => List(List.empty)
+    case (c, n) :: xs => {
+      val variations: List[Occurrences] = (1 to n)
+        .map(x => List((c, x)))
+        .toList
+      val childCombinations = combinations(xs)
+      val crossProduct = for {
+        variant <- variations
+        combination <- childCombinations
+      } yield variant ++ combination
 
-//    occurrences match {
-//      case Nil => List(List.empty)
-//      case List(x) if x._2 == 1 => List(occurrences)
-//      case List(x) => occurrences :: combinations(List((x._1, x._2 - 1)))
-//      case _ => for {
-//
-//
-//      }
-//    }
+      variations ++ crossProduct ++ childCombinations
+    }
   }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
