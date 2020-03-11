@@ -61,7 +61,7 @@ object Anagrams extends AnagramsInterface {
   lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = Dictionary.loadDictionary groupBy wordOccurrences
 
   /** Returns all the anagrams of a given word. */
-  def wordAnagrams(word: Word): List[Word] = ???
+  def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences.getOrElse(wordOccurrences(word), List.empty)
 
   /** Returns the list of all subsets of the occurrence list.
    *  This includes the occurrence itself, i.e. `List(('k', 1), ('o', 1))`
@@ -85,7 +85,35 @@ object Anagrams extends AnagramsInterface {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+//    def inner(curr: Occurrences, acc: List[Occurrences]): List[Occurrences] ={
+//      curr match {
+//        case List(x) if x._2 == 1 => curr :: acc
+//        case List(x) => inner(List((x._1, x._2 - 1)), curr :: acc)
+//        case x :: xs => {
+//          val currOcc = inner(List(x), Nil)
+//          val comb = inner(xs, Nil)
+//          val value = currOcc.flatMap(occ => occ :: comb)
+//          val t = currOcc ++ comb ++ acc ++ value
+//
+//          t
+//        }
+//        case Nil => acc
+//      }
+//
+//    }
+//    inner(occurrences, List(List.empty))
+//
+//    occurrences match {
+//      case Nil => List(List.empty)
+//      case List(x) if x._2 == 1 => occurrences
+//      case List(x) => occurrences :: combinations(List((x._1, x._2 - 1)))
+//      case _ => for{
+//        n <- 1 to occurrences.length
+//
+//      }
+//    }
+  }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
    *
