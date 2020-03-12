@@ -58,7 +58,7 @@ object Anagrams extends AnagramsInterface {
    *    List(('a', 1), ('e', 1), ('t', 1)) -> Seq("ate", "eat", "tea")
    *
    */
-  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = Dictionary.loadDictionary groupBy wordOccurrences
+  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] = Dictionary.loadDictionary groupBy wordOccurrences  withDefaultValue (List())
 
   /** Returns all the anagrams of a given word. */
   def wordAnagrams(word: Word): List[Word] = dictionaryByOccurrences.getOrElse(wordOccurrences(word), List.empty)
@@ -164,46 +164,18 @@ object Anagrams extends AnagramsInterface {
    *  Note: There is only one anagram of an empty sentence.
    */
   def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
-    def inner(occurrences: Occurrences): Option[List[Sentence]] = {
-      if( occurrences == Nil )
-        {Some(List(List.empty))}
-      else {
-        val res = for {
-          comb <- combinations(occurrences) if dictionaryByOccurrences.contains(comb)
-          reminder = subtract(occurrences, comb)
-          word <- dictionaryByOccurrences(comb)
-        }
-          yield inner(reminder)
-            .getOrElse(Nil)
-            .map(x => word :: x)
-
-        res.flatten match {
-          case Nil => None
-          case list => Some(list)
-        }
-
-        //        if(res == Nil) None
-        //        else {
-        //          res map {
-        //            case (reminder, words) =>
-        //          }
-        //        }
-      }
-//      inner(subtract(occurrences, comb))
-//          .getOrElse(Nil)
-//          .map(s => word :: s)
-
-//      res.flatten match {
-//        case Nil if occurrences == Nil => Some(List(List.empty))
-//        case Nil => None
-//        case x => Some(x)
-//      }
+    def inner(occ: Occurrences): List[Sentence] = {
+      if (occ.isEmpty) List(List())
+      else
+        for {
+          x <- combinations(occ)
+          reminder = subtract(occ, x)
+          y <- dictionaryByOccurrences(x)
+          z <- inner(reminder)
+        } yield y :: z
     }
 
-    sentence match {
-      case Nil => List(sentence)
-      case _ => inner(sentenceOccurrences(sentence)).getOrElse(List.empty)
-    }
+    inner(sentenceOccurrences(sentence))
   }
 }
 

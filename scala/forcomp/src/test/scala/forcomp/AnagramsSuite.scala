@@ -63,7 +63,6 @@ class AnagramsSuite {
     assertEquals(abbacomb.toSet, combinations(abba).toSet)
   }
 
-
   @Test def `sentence anagrams: [] (10pts)`: Unit = {
     val sentence = List()
     assertEquals(List(Nil), sentenceAnagrams(sentence))
@@ -97,5 +96,5 @@ class AnagramsSuite {
   }
 
 
-  @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 100000)
+  @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
 }
