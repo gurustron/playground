@@ -96,6 +96,7 @@ object Anagrams extends AnagramsInterface {
         variant <- variations
         combination <- childCombinations
       } yield variant ++ combination
+          .sortBy{case (c, _) => c}
 
       variations ++ crossProduct ++ childCombinations
     }
@@ -111,7 +112,16 @@ object Anagrams extends AnagramsInterface {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = ???
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    val yMap = y.toMap
+    (x.iterator flatMap { case (c, i) => yMap.get(c) match {
+      case Some(i1) if i1 >= i => None
+      case Some(i1) => Some((c, i - i1))
+      case None => Some((c, i))
+    }
+    })
+      .toList
+  }
 
   /** Returns a list of all anagram sentences of the given sentence.
    *
@@ -153,7 +163,48 @@ object Anagrams extends AnagramsInterface {
    *
    *  Note: There is only one anagram of an empty sentence.
    */
-  def sentenceAnagrams(sentence: Sentence): List[Sentence] = ???
+  def sentenceAnagrams(sentence: Sentence): List[Sentence] = {
+    def inner(occurrences: Occurrences): Option[List[Sentence]] = {
+      if( occurrences == Nil )
+        {Some(List(List.empty))}
+      else {
+        val res = for {
+          comb <- combinations(occurrences) if dictionaryByOccurrences.contains(comb)
+          reminder = subtract(occurrences, comb)
+          word <- dictionaryByOccurrences(comb)
+        }
+          yield inner(reminder)
+            .getOrElse(Nil)
+            .map(x => word :: x)
+
+        res.flatten match {
+          case Nil => None
+          case list => Some(list)
+        }
+
+        //        if(res == Nil) None
+        //        else {
+        //          res map {
+        //            case (reminder, words) =>
+        //          }
+        //        }
+      }
+//      inner(subtract(occurrences, comb))
+//          .getOrElse(Nil)
+//          .map(s => word :: s)
+
+//      res.flatten match {
+//        case Nil if occurrences == Nil => Some(List(List.empty))
+//        case Nil => None
+//        case x => Some(x)
+//      }
+    }
+
+    sentence match {
+      case Nil => List(sentence)
+      case _ => inner(sentenceOccurrences(sentence)).getOrElse(List.empty)
+    }
+  }
 }
 
 object Dictionary {
