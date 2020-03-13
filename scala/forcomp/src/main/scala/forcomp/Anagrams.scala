@@ -85,21 +85,9 @@ object Anagrams extends AnagramsInterface {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = occurrences match {
-    case Nil => List(List.empty)
-    case (c, n) :: xs => {
-      val variations: List[Occurrences] = (1 to n)
-        .map(x => List((c, x)))
-        .toList
-      val childCombinations = combinations(xs)
-      val crossProduct = for {
-        variant <- variations
-        combination <- childCombinations
-      } yield variant ++ combination
-          .sortBy{case (c, _) => c}
-
-      variations ++ crossProduct ++ childCombinations
-    }
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+    val ocs = occurrences.map { case (c, num) => (for (i <- 1 to num) yield (c, i)).toList }
+    ocs.foldRight(List[Occurrences](Nil))((x, y) => y ++ (for (i <- x; j <- y) yield i :: j))
   }
 
   /** Subtracts occurrence list `y` from occurrence list `x`.
