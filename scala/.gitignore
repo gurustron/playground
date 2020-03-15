@@ -28,10 +28,12 @@ project/plugins/project/
 
 #Custom
 
-/recfun-practice/null/
-/scala/recfun-practice/null/
-/funsets/null/
-/scala/funsets/null/
-/objsets/null/
-/patmat/null/
-/forcomp/null/
+#coursera course
+
+/coursera-course/*/*/null/
+#/funsets/null/
+#/objsets/null/
+#/recfun-practice/null/
+#/patmat/null/
+#/forcomp/null/
+
