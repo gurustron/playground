@@ -4,13 +4,12 @@ import org.scalacheck._
 import Arbitrary._
 import Gen._
 import Prop._
+import scala.math.min
 
 abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   lazy val genHeap: Gen[H] = oneOf(
     const(empty),
-//    const(insert(1,empty)),
-//    const(insert(0,insert(2,insert(1,empty)))),
     for {
       a <- arbitrary[Int]
       h <- oneOf(const(empty), genHeap)
@@ -19,41 +18,14 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
 
   implicit lazy val arbHeap: Arbitrary[H] = Arbitrary(genHeap)
 
+  def traverse(heap: H): List[Int] = heap match {
+    case _ if isEmpty(heap) => List.empty
+    case _ => findMin(heap) :: traverse(deleteMin(heap))
+  }
+
   property("gen1") = forAll { (h: H) =>
     val m = if (isEmpty(h)) 0 else findMin(h)
     findMin(insert(m, h)) == m
-  }
-
-  property("meldNil") = forAll { (h: H) =>
-    meld(h, empty) == h
-  }
-
-  property("Nilmeld") = forAll { (h: H) =>
-    meld(empty, h) == h
-  }
-
-  property("NewMin") = forAll { (h: H) =>
-    if(isEmpty(h))
-      true
-    else {
-      val min = findMin(h)
-      val newMin = if (min == Int.MinValue) Int.MinValue else  min - 1
-      val x = insert(newMin, h)
-      findMin(x) == newMin
-    }
-  }
-
-  property("addDelete") = forAll{ h: H =>
-    deleteMin(insert(Int.MinValue, h)) == h
-  }
-
-  property("addDelete2") = forAll{ h: H =>
-    if(isEmpty(h))
-      true
-    else if(findMin(h) == Int.MaxValue)
-      true
-    else
-      deleteMin(insert(Int.MaxValue, h)) != h
   }
 
   property("min1") = forAll { a: Int =>
@@ -61,22 +33,44 @@ abstract class QuickCheckHeap extends Properties("Heap") with IntHeap {
     findMin(h) == a
   }
 
-  property("min2") = forAll { a: Int =>
-    val h = insert(a,insert(Int.MaxValue,insert(Int.MinValue, empty)))
-    findMin(h) == Int.MinValue
+  property("min2") = forAll { (a: Int, b: Int) =>
+    val h = insert(b, insert(a, empty))
+    findMin(h) == min(a, b)
   }
 
-  property("findMin") = forAll{ h: H =>
-    findMin(insert(Int.MinValue, h)) == Int.MinValue
+  property("addDeleteEmpty") = forAll { a: Int =>
+    deleteMin(insert(a, empty)) == empty
   }
 
-  property("deleteMin2") = forAll { (h: H) =>
-    if(isEmpty(h))
+  property("minMeld") = forAll { (l: H, r: H) =>
+    if (isEmpty(l) && isEmpty(r))
       true
     else {
-      val min = findMin(h)
-      val y = deleteMin(h)
-      findMin(insert(min, y)) == min
+      val meldedMin = findMin(meld(l, r))
+      (l, r) match {
+        case (h, h1) if isEmpty(h1) => meldedMin == findMin(h)
+        case (h1, h) if isEmpty(h1) => meldedMin == findMin(h)
+        case _ => meldedMin == min(findMin(l), findMin(r))
+      }
     }
+  }
+
+  property("genSorted") = forAll { (h: H) =>
+    if (isEmpty(h))
+      true
+    else {
+      val traversed = traverse(h)
+      traversed == traversed.sorted
+    }
+  }
+
+  property("addDelete") = forAll { h: H =>
+    deleteMin(insert(Int.MinValue, h)) == h
+  }
+
+  property("associativeMeld") = forAll { (h: H, i: H, j: H) =>
+    val a = meld(meld(h, i), j)
+    val b = meld(h, meld(i, j))
+    traverse(a) == traverse(b)
   }
 }
