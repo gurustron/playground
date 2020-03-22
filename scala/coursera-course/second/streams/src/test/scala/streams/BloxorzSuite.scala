@@ -79,6 +79,22 @@ class BloxorzSuite {
       x)
   }
 
+  @Test def new_neighbors: Unit = new Level1 {
+    val x = newNeighborsOnly(
+      Set(
+        (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+      ).to(LazyList),
+
+      Set(Block(Pos(1, 2), Pos(1, 3)), Block(Pos(1, 1), Pos(1, 1)))
+    )
+
+    assertEquals(
+      Set(
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+      ).to(LazyList),
+      x)
+  }
 
   @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
 }
