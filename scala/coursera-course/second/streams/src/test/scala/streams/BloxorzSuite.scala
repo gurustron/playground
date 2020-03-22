@@ -70,6 +70,15 @@ class BloxorzSuite {
       assertEquals(optsolution.length, solution.length)
     }
 
+  @Test def neighbors_with_history: Unit = new Level1 {
+    val x = neighborsWithHistory(Block(Pos(1, 1), Pos(1, 1)), List(Left, Up)).toSet
+    assertEquals(
+      Set(
+        (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))),
+      x)
+  }
+
 
   @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
 }
