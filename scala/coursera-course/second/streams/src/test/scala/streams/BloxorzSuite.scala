@@ -15,6 +15,7 @@ class BloxorzSuite {
     def solve(ls: List[Move]): Block =
       ls.foldLeft(startBlock) { case (block, move) =>
         require(block.isLegal) // The solution must always lead to legal blocks
+        print(block + " - " + move)
         move match {
           case Left => block.left
           case Right => block.right
@@ -61,7 +62,8 @@ class BloxorzSuite {
 
   @Test def `optimal solution for level 1 (5pts)`: Unit =
     new Level1 {
-      assertEquals(Block(goal, goal), solve(solution))
+      private val block: Block = solve(solution)
+      assertEquals(Block(goal, goal), block)
     }
 
 
@@ -96,5 +98,5 @@ class BloxorzSuite {
       x)
   }
 
-  @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000)
+  @Rule def individualTestTimeout = new org.junit.rules.Timeout(10 * 1000000)
 }
