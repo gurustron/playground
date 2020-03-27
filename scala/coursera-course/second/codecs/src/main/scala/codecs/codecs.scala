@@ -212,7 +212,10 @@ trait DecoderInstances {
     */
   implicit def listDecoder[A](implicit decoder: Decoder[A]): Decoder[List[A]] =
     Decoder.fromFunction {
-      ???
+      case Json.Arr(items) =>
+        val decoded = items map decoder.decode
+        if(decoded.forall(o => o != None)) Some(decoded.flatten) else None
+      case _ => None
     }
 
   /**
@@ -220,7 +223,10 @@ trait DecoderInstances {
     * the supplied `name` using the given `decoder`.
     */
   def field[A](name: String)(implicit decoder: Decoder[A]): Decoder[A] =
-    ???
+    Decoder.fromFunction{
+      case Json.Obj(fields) => fields.get(name).flatMap(decoder.decode)
+      case _  => None
+    }
 
 }
 
@@ -237,8 +243,9 @@ trait PersonCodecs {
       .transform[Person](user => (user.name, user.age))
 
   /** The corresponding decoder for `Person` */
-  implicit val personDecoder: Decoder[Person] =
-    ???
+  implicit val personDecoder: Decoder[Person] =  Decoder.field[String]("name")
+    .zip[Int](Decoder.field("age"))
+    .transform{ case (str, i) => Person(str, i)}
 
 }
 
@@ -269,11 +276,11 @@ object Main {
     val maybeJsonObj    = parseJson(""" { "name": "Alice", "age": 42 } """)
     val maybeJsonObj2   = parseJson(""" { "name": "Alice", "age": "42" } """)
     // Uncomment the following lines as you progress in the assignment
-    // println(maybeJsonString.flatMap(_.decodeAs[Int]))
-    // println(maybeJsonString.flatMap(_.decodeAs[String]))
-    // println(maybeJsonObj.flatMap(_.decodeAs[Person]))
-    // println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
-    // println(renderJson(Person("Bob", 66)))
+     println(maybeJsonString.flatMap(_.decodeAs[Int]))
+     println(maybeJsonString.flatMap(_.decodeAs[String]))
+     println(maybeJsonObj.flatMap(_.decodeAs[Person]))
+     println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
+     println(renderJson(Person("Bob", 66)))
   }
 
 }
