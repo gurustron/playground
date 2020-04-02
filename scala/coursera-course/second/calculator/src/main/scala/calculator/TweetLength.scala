@@ -9,9 +9,9 @@ object TweetLength extends TweetLengthInterface {
 
   def colorForRemainingCharsCount(remainingCharsCount: Signal[Int]): Signal[String] = {
     Var(remainingCharsCount() match {
-      case x if x > 15 => "green"
+      case x if x >= 15 => "green"
       case x if x < 0 => "red"
-      case _ => "yellow"
+      case _ => "orange"
     })
   }
 
