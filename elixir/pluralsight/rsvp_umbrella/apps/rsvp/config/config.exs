@@ -1,3 +1,5 @@
+import Config
+
 config :rsvp, Rsvp.Repo,
     adapter: Ecto.Adapters.Postgres,
     database: "rsvp",

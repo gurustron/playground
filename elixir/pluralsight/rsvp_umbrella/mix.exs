@@ -17,7 +17,10 @@ defmodule RsvpUmbrella.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      # {:ecto, "~> 3.4"},
+      # {:ecto_sql, "~> 3.4"},
+      # {:postgrex, "~> 0.15.3"}
     ]
   end
 end
