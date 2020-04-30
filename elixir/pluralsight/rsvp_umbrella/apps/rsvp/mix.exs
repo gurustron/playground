@@ -11,7 +11,8 @@ defmodule Rsvp.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -32,6 +33,12 @@ defmodule Rsvp.MixProject do
       {:ecto, "~> 3.4"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, "~> 0.15.3"}
+    ]
+  end
+
+  defp aliases do
+    [
+      init: ["ecto.create", "ecto.migrate", "run priv/repo/seed.exs"]
     ]
   end
 end
