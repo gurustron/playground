@@ -3,6 +3,6 @@ defmodule RsvpTest do
   doctest Rsvp
 
   test "greets the world" do
-    assert Rsvp.hello() == :worlds
+    assert Rsvp.hello() == :world
   end
 end
