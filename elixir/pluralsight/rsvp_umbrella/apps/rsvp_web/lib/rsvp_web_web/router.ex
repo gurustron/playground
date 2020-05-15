@@ -17,6 +17,7 @@ defmodule RsvpWebWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/events", EventController, :list
     get "/event/:id", EventController, :show
   end
 

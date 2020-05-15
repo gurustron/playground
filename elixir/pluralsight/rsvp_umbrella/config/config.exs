@@ -19,7 +19,7 @@ import Config
 
 # Configures the endpoint
 config :rsvp_web, RsvpWebWeb.Endpoint,
-  url: [host: "localhost", port: 4004],
+  url: [host: "localhost", port: 4444],
   secret_key_base: "t8INzjOwAwm+3tg3xcVTtXhNXZs9Ok+5EH/CkUadT3T7BZmwzQyfSbA0BgthDvbk",
   render_errors: [view: RsvpWebWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: RsvpWeb.PubSub,

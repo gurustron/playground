@@ -1,0 +1,7 @@
+<h1>All Events</h1>
+<%= render RsvpWebWeb.SharedView, "count.html", list: @events%>
+<div class="list-group">
+    <%= for e <- @events do %>
+        <%= render "summary.html", event: e%>
+    <% end %>
+</div>

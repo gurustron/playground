@@ -1,0 +1,11 @@
+<a href="event/<%= @event.id %>">
+    <div class="list-group-item">
+        <h4 class="list-group-item-heading"><%= @event.title %></h4>
+        <span>
+            <span class="text-muted"><%= @event.location %></span>
+            <span class="pull-right">
+                <strong><%= format_date(@event.eventOn) %></strong>
+            </span>
+        </span>
+    </div>
+</a>
