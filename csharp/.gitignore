@@ -367,6 +367,7 @@ FodyWeavers.xsd
 **/.idea/shelf/*
 **/.idea/dictionaries
 **/.idea/httpRequests/
+**/.idea/.idea.SourceGen
 
 # Sensitive or high-churn files
 **/.idea/**/dataSources/
