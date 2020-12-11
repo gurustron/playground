@@ -12,6 +12,12 @@ namespace HelloWorldSourceGen
     [Generator]
     public class CustomGenerator : ISourceGenerator
     {
+        private static readonly DiagnosticDescriptor CustomGeneratorWarning = new DiagnosticDescriptor(id: "MYCUSTOMGEN001",
+            title: "CustomGeneratorWarning",
+            messageFormat: "Foo '{0}'.",
+            category: "CustomGenerator",
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true);
         public void Initialize(GeneratorInitializationContext context)
         {
             context.RegisterForSyntaxNotifications(() => new CustomSyntaxReceiver());
@@ -20,7 +26,7 @@ namespace HelloWorldSourceGen
         public void Execute(GeneratorExecutionContext context)
         {
             Console.WriteLine("HelloWorld");
-
+            // context.ReportDiagnostic(Diagnostic.Create(CustomGeneratorWarning, Location.None, "Bar"));
             var msgs = new List<string>();
             if (context.SyntaxReceiver is not CustomSyntaxReceiver receiver)
             {
@@ -34,9 +40,33 @@ namespace HelloWorldSourceGen
                 foreach (var classDeclarationSyntax in receiver.PartialClasses)
                 {
                     msgs.Add(classDeclarationSyntax.Identifier.Text);
+                    // context.ReportDiagnostic(Diagnostic.Create(CustomGeneratorWarning, Location.None, ((NamespaceDeclarationSyntax) classDeclarationSyntax.Parent).Name));
+
+                    var props = classDeclarationSyntax
+                        .Members
+                        .OfType<PropertyDeclarationSyntax>()
+                        .Select(p => $"{p.Identifier.Text}: {{{p.Identifier.Text}}}");
+                    var text = $@"
+namespace {((NamespaceDeclarationSyntax) classDeclarationSyntax.Parent).Name}
+{{
+    using System;
+    public partial class {classDeclarationSyntax.Identifier.Text}
+    {{
+
+
+        public override string ToString()
+        {{
+                    return $""{string.Join(" ", props)}"";
+                        }}
+    }}
+}}";
+
+                    context.AddSource($"{classDeclarationSyntax.Identifier.Text}.ToString.cs", SourceText.From(
+                        text, Encoding.UTF8));
+
                 }
             }
-            
+
             var res = string.Join(Environment.NewLine, msgs.Select(m => $"Console.WriteLine(\"{m}\");"));
 
             context.AddSource("myGeneratedFile.cs", SourceText.From(
