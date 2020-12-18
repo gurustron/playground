@@ -9,4 +9,8 @@
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SourceGen.Traits.Core\SourceGen.Traits.Core.csproj" />
+    </ItemGroup>
+
 </Project>

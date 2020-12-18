@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace HelloWorldSourceGen
+namespace SourceGen
 {
     [Generator]
     public class CustomGenerator : ISourceGenerator
@@ -90,7 +90,7 @@ namespace GeneratedNamespace
         private class CustomSyntaxReceiver : ISyntaxReceiver
         {
             public List<ClassDeclarationSyntax> PartialClasses { get; } = new();
-            public List<string> Debug { get; set; } = new();
+            public List<string> Debug { get; } = new();
 
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {
