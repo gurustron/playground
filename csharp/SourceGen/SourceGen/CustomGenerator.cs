@@ -73,7 +73,6 @@ namespace {((NamespaceDeclarationSyntax) classDeclarationSyntax.Parent).Name}
                 $@"
 namespace GeneratedNamespace
 {{
-    using System;
     public class GeneratedClass
     {{
         public static void GeneratedMethod()

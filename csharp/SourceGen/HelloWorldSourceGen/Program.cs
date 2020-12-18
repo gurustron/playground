@@ -16,19 +16,19 @@ namespace HelloWorldSourceGen
             Console.WriteLine(new NonPartial());
         }
 
-        public class MyTrait
-        {
-            public void Do()
-            {
-                Console.WriteLine("Trait!");
-            }
-        }
-
-        [Trait(typeof(MyTrait))]
-        public partial class MyClass
-        {
-            
-        }
+        // public class MyTrait
+        // {
+        //     public void Do()
+        //     {
+        //         Console.WriteLine("Trait!");
+        //     }
+        // }
+        //
+        // [Trait(typeof(MyTrait))]
+        // public partial class MyClass
+        // {
+        //     
+        // }
         
     }
 }

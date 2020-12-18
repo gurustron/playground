@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGen", "SourceGen\Sour
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGen.Traits.Core", "SourceGen.Traits.Core\SourceGen.Traits.Core.csproj", "{8D3A0533-ADCA-4157-9D2A-D148EC901474}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGenTest", "SourceGenTest\SourceGenTest.csproj", "{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{8D3A0533-ADCA-4157-9D2A-D148EC901474}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D3A0533-ADCA-4157-9D2A-D148EC901474}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D3A0533-ADCA-4157-9D2A-D148EC901474}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
