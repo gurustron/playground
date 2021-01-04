@@ -77,7 +77,7 @@ namespace GeneratedNamespace
         }}
     }}
 }}";
-            // context.AddSource("myGeneratedFile.cs", SourceText.From(helloWorldGen, Encoding.UTF8));
+            context.AddSource("myGeneratedFile.cs", SourceText.From(helloWorldGen, Encoding.UTF8));
         }
         
         private class CustomSyntaxReceiver : ISyntaxReceiver
