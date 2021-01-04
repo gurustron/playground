@@ -1,5 +1,4 @@
 ﻿using System;
-using SourceGen.Traits.Core;
 
 namespace HelloWorldSourceGen
 {
@@ -29,6 +28,5 @@ namespace HelloWorldSourceGen
         // {
         //     
         // }
-        
     }
 }
