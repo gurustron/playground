@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGen.Traits.Core", "So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGenTest", "SourceGenTest\SourceGenTest.csproj", "{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGen.RecordDefaultCtor", "SourceGen.RecordDefaultCtor\SourceGen.RecordDefaultCtor.csproj", "{BA42AF74-F521-41FA-9102-714CA2405E50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0DF3C8B-54F7-4A74-81D1-DED0F56B30BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA42AF74-F521-41FA-9102-714CA2405E50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA42AF74-F521-41FA-9102-714CA2405E50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA42AF74-F521-41FA-9102-714CA2405E50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA42AF74-F521-41FA-9102-714CA2405E50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

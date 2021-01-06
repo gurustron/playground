@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SourceGen.RecordDefaultCtor\SourceGen.RecordDefaultCtor.csproj" />
       <ProjectReference Include="..\SourceGen\SourceGen.csproj" />
     </ItemGroup>
 
