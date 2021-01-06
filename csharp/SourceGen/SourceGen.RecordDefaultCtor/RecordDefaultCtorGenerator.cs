@@ -1,5 +1,8 @@
 using System;
+using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SourceGen.RecordDefaultCtor
 {
@@ -18,7 +21,24 @@ namespace SourceGen.RecordDefaultCtor
                 throw new Exception();
             }
 
-            Console.WriteLine(receiver.Records.Count);
+            foreach (var recordDeclaration in receiver.RecordDeclarations)
+            {
+                var semanticModel = context.Compilation.GetSemanticModel(recordDeclaration.SyntaxTree);
+                var namespaceDeclaration = recordDeclaration.Parent as NamespaceDeclarationSyntax;
+                var recordName = recordDeclaration.Identifier.ToString();
+                var @namespace = namespaceDeclaration?.Name.ToString() ?? "global";
+                var code = @$"
+namespace {@namespace}
+{{
+    {recordDeclaration.Modifiers.ToString()} record {recordName}
+    {{
+        public {recordName}() : this(default(string))
+        {{
+        }}
+    }}
+}}
+";
+            }
         }
     }
 }

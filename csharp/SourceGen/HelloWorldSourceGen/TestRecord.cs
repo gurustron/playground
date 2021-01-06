@@ -8,14 +8,22 @@ namespace HelloWorldSourceGen
     {
 
     }
-
+    //
+    // public partial record TestRecord
+    // {
+    // }
     public record NotPartialRecord(string Foo);
 
-    // public record MyRecord(string S)
-    // {
-    //     public MyRecord() : this(default(string))
-    //     {
-    //
-    //     }
-    // }
+    public record NoCtor
+    {
+        public string S { get; init; }
+    }
+
+    public record MyRecord(string S)
+    {
+        public MyRecord() : this(default(string))
+        {
+    
+        }
+    }
 }

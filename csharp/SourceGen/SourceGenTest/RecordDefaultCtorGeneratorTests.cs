@@ -20,7 +20,7 @@ namespace SourceGenTest
         public void SimpleGeneratorTest()
         {
             var userSource = @"
-namespace MyCode
+namespace MyCode.Top.Child
 {
     using System;
     public class Program
@@ -50,6 +50,12 @@ namespace MyCode
             var immutableArray = newComp.GetDiagnostics();
             Assert.IsEmpty(immutableArray);
         }
+        
+        // - multiples files
+        // - global namespace
+        // - nested partials 
+        // - namespace collision
+        // - custom ctor with same number of parameters but  
 
         private static Compilation CreateCompilation(string source)
         {

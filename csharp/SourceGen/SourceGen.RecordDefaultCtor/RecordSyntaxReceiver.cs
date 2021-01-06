@@ -8,7 +8,7 @@ namespace SourceGen.RecordDefaultCtor
 {
     internal class RecordSyntaxReceiver : ISyntaxReceiver
     {
-        public List<RecordDeclarationSyntax> Records { get; } = new();
+        public List<RecordDeclarationSyntax> RecordDeclarations { get; } = new();
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
@@ -24,7 +24,7 @@ namespace SourceGen.RecordDefaultCtor
                     return;
                 }
 
-                Records.Add(record);
+                RecordDeclarations.Add(record);
             }
         }
     }
