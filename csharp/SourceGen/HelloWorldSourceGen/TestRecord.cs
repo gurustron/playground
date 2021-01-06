@@ -1,6 +1,6 @@
 namespace HelloWorldSourceGen
 {
-    public partial record TestRecord(string Foo);
+    public partial record TestRecord(NotPartialRecord Foo);
 
     public partial record TestRecord1(string Foo, int Bar);
 

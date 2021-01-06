@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -23,10 +24,27 @@ namespace SourceGen.RecordDefaultCtor
 
             foreach (var recordDeclaration in receiver.RecordDeclarations)
             {
+                if (recordDeclaration.ParameterList is null)
+                {
+                    continue;
+                }
+
                 var semanticModel = context.Compilation.GetSemanticModel(recordDeclaration.SyntaxTree);
                 var namespaceDeclaration = recordDeclaration.Parent as NamespaceDeclarationSyntax;
                 var recordName = recordDeclaration.Identifier.ToString();
                 var @namespace = namespaceDeclaration?.Name.ToString() ?? "global";
+                
+                // process parameters
+                List<string> @params = new();
+                var syntaxNodes = recordDeclaration.ParameterList.ChildNodes().ToList();
+                var x =
+                    semanticModel.GetTypeInfo((syntaxNodes.First() as ParameterSyntax).Type).Type as INamedTypeSymbol;
+                var y = x.ContainingNamespace.ToString();
+                foreach (var VARIABLE in syntaxNodes)
+                {
+                    
+                }
+                
                 var code = @$"
 namespace {@namespace}
 {{

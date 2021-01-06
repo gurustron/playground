@@ -31,7 +31,7 @@ namespace MyCode.Top.Child
         }
     }
 
-    public partial record TestRecord(string Foo);
+    public partial record TestRecord(TestRecord1 Foo);
 
     public partial record TestRecord1(string Foo, int Bar);
 
@@ -56,6 +56,7 @@ namespace MyCode.Top.Child
         // - nested partials 
         // - namespace collision
         // - custom ctor with same number of parameters but  
+        // - handle generics 
 
         private static Compilation CreateCompilation(string source)
         {

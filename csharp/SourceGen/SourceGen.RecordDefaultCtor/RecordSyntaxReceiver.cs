@@ -24,6 +24,11 @@ namespace SourceGen.RecordDefaultCtor
                     return;
                 }
 
+                if (record.ParameterList is null)
+                {
+                    return;
+                }
+
                 RecordDeclarations.Add(record);
             }
         }
