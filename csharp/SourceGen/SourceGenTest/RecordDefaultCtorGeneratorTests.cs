@@ -53,7 +53,8 @@ namespace MyCode.Top.Child
     using System;
     public class Program { public static void Main(string[] args) => Console.WriteLine(); }
 
-    public partial record Record<T>(string Foo);
+    //public partial record Record<T>(string Foo);
+    public partial record Record1<T>(int I, T Foo);
 }";
             var comp = CreateCompilation(userSource);
             var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());

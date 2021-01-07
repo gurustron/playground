@@ -40,11 +40,23 @@ namespace SourceGen.RecordDefaultCtor
                 // var x =
                 //     semanticModel.GetTypeInfo((syntaxNodes.First() as ParameterSyntax).Type).Type as INamedTypeSymbol;
                 // var y = x.ContainingNamespace.ToString();
+                var array = syntaxNodes.OfType<ParameterSyntax>().ToArray();
+                // var i = array[0];
+                // var gen = array[1];
                 foreach (var parameter in syntaxNodes.OfType<ParameterSyntax>())
                 {
                     // TODO: handle generics 
-                    var namedTypeSymbol = semanticModel.GetTypeInfo(parameter.Type).Type as INamedTypeSymbol;
-                    @params.Add($"default({namedTypeSymbol.ContainingNamespace}.{namedTypeSymbol.Name})");
+                    var typeSymbol = semanticModel.GetTypeInfo(parameter.Type).Type;
+                    switch (typeSymbol)
+                    {
+                        case ITypeParameterSymbol _:
+                            @params.Add($"default({parameter.Type})");
+                            break;
+                        case INamedTypeSymbol nts: 
+                            @params.Add($"default({nts.ContainingNamespace}.{nts.Name})");
+                            break;
+                        default: throw new Exception($"Unsupported type {typeSymbol?.GetType()}.");
+                    }
                 }
 
                 var code =
