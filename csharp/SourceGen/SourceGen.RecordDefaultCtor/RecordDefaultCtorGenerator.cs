@@ -33,29 +33,33 @@ namespace SourceGen.RecordDefaultCtor
                 var namespaceDeclaration = recordDeclaration.Parent as NamespaceDeclarationSyntax;
                 var recordName = recordDeclaration.Identifier.ToString();
                 var @namespace = namespaceDeclaration?.Name.ToString() ?? "global";
-                
+
                 // process parameters
                 List<string> @params = new();
                 var syntaxNodes = recordDeclaration.ParameterList.ChildNodes().ToList();
-                var x =
-                    semanticModel.GetTypeInfo((syntaxNodes.First() as ParameterSyntax).Type).Type as INamedTypeSymbol;
-                var y = x.ContainingNamespace.ToString();
-                foreach (var VARIABLE in syntaxNodes)
+                // var x =
+                //     semanticModel.GetTypeInfo((syntaxNodes.First() as ParameterSyntax).Type).Type as INamedTypeSymbol;
+                // var y = x.ContainingNamespace.ToString();
+                foreach (var parameter in syntaxNodes.OfType<ParameterSyntax>())
                 {
-                    
+                    // TODO: handle generics 
+                    var namedTypeSymbol = semanticModel.GetTypeInfo(parameter.Type).Type as INamedTypeSymbol;
+                    @params.Add($"default({namedTypeSymbol.ContainingNamespace}.{namedTypeSymbol.Name})");
                 }
-                
-                var code = @$"
-namespace {@namespace}
+
+                var code =
+// @formatter:off
+@$"namespace {@namespace}
 {{
     {recordDeclaration.Modifiers.ToString()} record {recordName}
     {{
-        public {recordName}() : this(default(string))
+        public {recordName}() : this({string.Join(",", @params)})
         {{
         }}
     }}
-}}
-";
+}}";
+// @formatter:on
+                context.AddSource($"{@namespace}.{recordName}.Ctor.{Guid.NewGuid():N}.cs", code);
             }
         }
     }

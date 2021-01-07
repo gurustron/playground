@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace HelloWorldSourceGen
 {
     public partial record TestRecord(NotPartialRecord Foo);
@@ -8,11 +10,14 @@ namespace HelloWorldSourceGen
     {
 
     }
-    //
-    // public partial record TestRecord
-    // {
-    // }
+    
+    public partial record TestRecord
+    {
+    }
     public record NotPartialRecord(string Foo);
+    public record NotPartialRecord1(string Foo, List<int> Ints);
+    public record NotPartialRecord2<T>(string Foo, List<T> Ints);
+    public record NotPartialRecord3<T>(string Foo, T Ints);
 
     public record NoCtor
     {

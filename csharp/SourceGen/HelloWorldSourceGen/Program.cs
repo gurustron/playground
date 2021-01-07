@@ -14,6 +14,11 @@ namespace HelloWorldSourceGen
             // Console.WriteLine(new AlreadyHasToString{Name = nameof(AlreadyHasToString)});
             //
             //
+            var testRecord = new TestRecord
+            {
+                Foo = new NotPartialRecord("a")
+            };
+            Console.WriteLine(testRecord);
         }
 
         // public class MyTrait
