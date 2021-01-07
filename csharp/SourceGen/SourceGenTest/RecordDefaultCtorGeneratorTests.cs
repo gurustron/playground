@@ -23,13 +23,7 @@ namespace SourceGenTest
 namespace MyCode.Top.Child
 {
     using System;
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            Console.WriteLine();
-        }
-    }
+    public class Program { public static void Main(string[] args) => Console.WriteLine(); }
 
     public partial record TestRecord(TestRecord1 Foo);
 
@@ -37,18 +31,37 @@ namespace MyCode.Top.Child
 
     public partial record TestRecord2(string Foo, int Bar)
     {
-
     }
 
     public record NotPartialRecord(string Foo);
-}
-";
+}";
             var comp = CreateCompilation(userSource);
             var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
 
             Assert.IsEmpty(generatorDiags);
             var immutableArray = newComp.GetDiagnostics();
             Assert.IsEmpty(immutableArray);
+            Assert.AreEqual(4, newComp.SyntaxTrees.Count());
+        }
+        
+        [Test]
+        public void RecordWithTypeParamsGeneratorTest()
+        {
+            var userSource = @"
+namespace MyCode.Top.Child
+{
+    using System;
+    public class Program { public static void Main(string[] args) => Console.WriteLine(); }
+
+    public partial record Record<T>(string Foo);
+}";
+            var comp = CreateCompilation(userSource);
+            var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
+
+            Assert.IsEmpty(generatorDiags);
+            var immutableArray = newComp.GetDiagnostics();
+            Assert.IsEmpty(immutableArray);
+            Assert.AreEqual(2, newComp.SyntaxTrees.Count());
         }
         
         // - multiples files

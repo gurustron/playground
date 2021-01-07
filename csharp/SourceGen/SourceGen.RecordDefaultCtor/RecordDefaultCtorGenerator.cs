@@ -51,7 +51,7 @@ namespace SourceGen.RecordDefaultCtor
 // @formatter:off
 @$"namespace {@namespace}
 {{
-    {recordDeclaration.Modifiers.ToString()} record {recordName}
+    {recordDeclaration.Modifiers.ToString()} record {recordName}{recordDeclaration.TypeParameterList?.ToString()}
     {{
         public {recordName}() : this({string.Join(",", @params)})
         {{

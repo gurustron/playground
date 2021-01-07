@@ -19,6 +19,11 @@ namespace HelloWorldSourceGen
                 Foo = new NotPartialRecord("a")
             };
             Console.WriteLine(testRecord);
+            var testRecord3 = new TestRecord3<int>
+            {
+                Foo = "new NotPartialRecord(\"a\")",
+            };
+            Console.WriteLine(testRecord3);
         }
 
         // public class MyTrait

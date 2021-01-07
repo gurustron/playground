@@ -10,6 +10,7 @@ namespace HelloWorldSourceGen
     {
 
     }
+    public partial record TestRecord3<T>(string Foo);
     
     public partial record TestRecord
     {
