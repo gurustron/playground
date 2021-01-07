@@ -67,7 +67,7 @@ namespace MyCode.Top.Child
         
         // - multiples files
         // - global namespace
-        // - nested partials 
+        // - nested partials (nested classes)
         // - namespace collision
         // - custom ctor with same number of parameters but  
         // - handle generics 
