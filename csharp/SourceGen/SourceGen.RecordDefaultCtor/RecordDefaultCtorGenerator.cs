@@ -45,18 +45,9 @@ namespace SourceGen.RecordDefaultCtor
                 // var gen = array[1];
                 foreach (var parameter in syntaxNodes.OfType<ParameterSyntax>())
                 {
-                    // TODO: handle generics 
+                    // TODO: handle generics
                     var typeSymbol = semanticModel.GetTypeInfo(parameter.Type).Type;
-                    switch (typeSymbol)
-                    {
-                        case ITypeParameterSymbol _:
-                            @params.Add($"default({parameter.Type})");
-                            break;
-                        case INamedTypeSymbol nts: 
-                            @params.Add($"default({nts.ContainingNamespace}.{nts.Name})");
-                            break;
-                        default: throw new Exception($"Unsupported type {typeSymbol?.GetType()}.");
-                    }
+                    @params.Add($"default({GetFullyQualifiedTypeName(typeSymbol)})");
                 }
 
                 var code =
@@ -74,5 +65,15 @@ namespace SourceGen.RecordDefaultCtor
                 context.AddSource($"{@namespace}.{recordName}.Ctor.{Guid.NewGuid():N}.cs", code);
             }
         }
+
+        private static string GetFullyQualifiedTypeName(ITypeSymbol typeSymbol) =>
+            typeSymbol switch
+            {
+                ITypeParameterSymbol => typeSymbol.Name,
+                INamedTypeSymbol {IsGenericType: true} nts =>
+                    $"{nts.ContainingNamespace}.{nts.Name}<{string.Join(",",nts.TypeArguments.Select(GetFullyQualifiedTypeName))}>",
+                INamedTypeSymbol nts => $"{nts.ContainingNamespace}.{nts.Name}",
+                _ => throw new Exception($"Unsupported type {typeSymbol?.GetType()}.")
+            };
     }
 }

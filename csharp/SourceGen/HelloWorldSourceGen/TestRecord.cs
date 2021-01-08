@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace HelloWorldSourceGen
@@ -15,11 +16,18 @@ namespace HelloWorldSourceGen
     public partial record TestRecord
     {
     }
-    public record NotPartialRecord(string Foo);
+    public record NotPartialRecord([MyAttribute] string Foo = null);
     public record NotPartialRecord1(string Foo, List<int> Ints);
     public record NotPartialRecord2<T>(string Foo, List<T> Ints);
     public record NotPartialRecord3<T>(string Foo, T Ints);
+    public record NotPartialRecord4(string Foo, List<List<int>> Ints);
+    public record NotPartialRecord5<T>(string Foo, List<List<int>> Ints,  List<List<T>> Ts);
 
+    [AttributeUsage(AttributeTargets.Parameter)]
+    class MyAttribute:Attribute
+    {
+        
+    }
     public record NoCtor
     {
         public string S { get; init; }

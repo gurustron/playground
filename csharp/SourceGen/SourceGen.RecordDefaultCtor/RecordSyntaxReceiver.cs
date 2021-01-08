@@ -14,6 +14,8 @@ namespace SourceGen.RecordDefaultCtor
         {
             if (syntaxNode is RecordDeclarationSyntax record)
             {
+                //TODO: filter out nodes with compilation errors
+
                 if (!record.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
                 {
                     return;

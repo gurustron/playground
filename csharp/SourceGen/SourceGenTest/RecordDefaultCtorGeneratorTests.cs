@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -47,22 +48,31 @@ namespace MyCode.Top.Child
         [Test]
         public void RecordWithTypeParamsGeneratorTest()
         {
-            var userSource = @"
+            List<string> cases = new()
+            {
+                // "public partial record Record<T>(string Foo);",
+                // "public partial record Record1<T>(int I, T Foo);",
+                // "public partial record Record<T>(string Foo);",
+                // "public partial record Record<T>(int I, T Foo);",
+                // "public partial record Record<T, R>(int I, T Foo, T Foo1, R Bar);",
+                "public partial record Record(List<int> Ints);",
+            };
+            var userSource = $@"
 namespace MyCode.Top.Child
-{
+{{
     using System;
-    public class Program { public static void Main(string[] args) => Console.WriteLine(); }
+    using System.Collections.Generic;
+    public class Program {{ public static void Main(string[] args) => Console.WriteLine(); }}
 
-    //public partial record Record<T>(string Foo);
-    public partial record Record1<T>(int I, T Foo);
-}";
+    {string.Join(Environment.NewLine, cases)}
+}}";
             var comp = CreateCompilation(userSource);
             var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
 
             Assert.IsEmpty(generatorDiags);
             var immutableArray = newComp.GetDiagnostics();
             Assert.IsEmpty(immutableArray);
-            Assert.AreEqual(2, newComp.SyntaxTrees.Count());
+            Assert.AreEqual(cases.Count + 1, newComp.SyntaxTrees.Count());
         }
         
         // - multiples files
