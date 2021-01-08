@@ -58,7 +58,7 @@ namespace MyCode.Top.Child
                 "public partial record Record5(List<int> Ints);",
                 "public partial record Record6<T>(List<T> Ts);",
                 "public partial record Record7<T>(Dictionary<int,T> Ts);",
-                "public partial record Record7<T,R>(Dictionary<T,R> Rs);",
+                "public partial record Record8<T,R>(Dictionary<T,R> Rs);",
             };
             var userSource = $@"
 namespace MyCode.Top.Child
