@@ -50,12 +50,15 @@ namespace MyCode.Top.Child
         {
             List<string> cases = new()
             {
-                // "public partial record Record<T>(string Foo);",
-                // "public partial record Record1<T>(int I, T Foo);",
-                // "public partial record Record<T>(string Foo);",
-                // "public partial record Record<T>(int I, T Foo);",
-                // "public partial record Record<T, R>(int I, T Foo, T Foo1, R Bar);",
-                "public partial record Record(List<int> Ints);",
+                "public partial record Record<T>(string Foo);",
+                "public partial record Record1<T>(int I, T Foo);",
+                "public partial record Record2<T>(string Foo);",
+                "public partial record Record3<T>(int I, T Foo);",
+                "public partial record Record4<T, R>(int I, T Foo, T Foo1, R Bar);",
+                "public partial record Record5(List<int> Ints);",
+                "public partial record Record6<T>(List<T> Ts);",
+                "public partial record Record7<T>(Dictionary<int,T> Ts);",
+                "public partial record Record7<T,R>(Dictionary<T,R> Rs);",
             };
             var userSource = $@"
 namespace MyCode.Top.Child
