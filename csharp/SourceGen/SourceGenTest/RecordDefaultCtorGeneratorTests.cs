@@ -80,13 +80,15 @@ namespace MyCode.Top.Child
             Assert.IsEmpty(immutableArray);
             Assert.AreEqual(cases.Count + 1, newComp.SyntaxTrees.Count());
         }
-        
+
+        // - handle default values provided by user
+        // - create analyzer for required fields
         // - multiples files
         // - global namespace
         // - nested partials (nested classes)
         // - namespace collision
         // - custom ctor with same number of parameters but  
-        // - handle generics 
+        
 
         private static Compilation CreateCompilation(string source)
         {
