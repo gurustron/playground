@@ -30,7 +30,10 @@ namespace MyCode.Top.Child
 
     public partial record TestRecord1(string Foo, int Bar);
 
-    public partial record TestRecord2(string Foo, int Bar)
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class MyAttribute:Attribute{}
+
+    public partial record TestRecord2([MyAttribute]string Foo, int Bar)
     {
     }
 
