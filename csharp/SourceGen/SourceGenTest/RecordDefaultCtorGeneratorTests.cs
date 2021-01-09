@@ -53,8 +53,9 @@ namespace MyCode.Top.Child
         {
             var cases = new[]
                 {
-                    "(int I = default)",
-                    "(int I = default(int))",
+                    // "(int I = default)",
+                    // "(int I = default(int))",
+                    "(int I = 3)",
                 }
                 .Select((s, i) => $"public partial record Record{i}{s};")
                 .ToList();

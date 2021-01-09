@@ -37,17 +37,22 @@ namespace SourceGen.RecordDefaultCtor
                 // process parameters
                 List<string> @params = new();
                 var syntaxNodes = recordDeclaration.ParameterList.ChildNodes().ToList();
-                // var x =
-                //     semanticModel.GetTypeInfo((syntaxNodes.First() as ParameterSyntax).Type).Type as INamedTypeSymbol;
-                // var y = x.ContainingNamespace.ToString();
-                var array = syntaxNodes.OfType<ParameterSyntax>().ToArray();
-                // var i = array[0];
-                // var gen = array[1];
                 foreach (var parameter in syntaxNodes.OfType<ParameterSyntax>())
                 {
-                    // TODO: handle generics
-                    var typeSymbol = semanticModel.GetTypeInfo(parameter.Type).Type;
-                    @params.Add($"default({GetFullyQualifiedTypeName(typeSymbol)})");
+                    switch (parameter.Default?.Value)
+                    {
+                        case null:
+                        case DefaultExpressionSyntax: // check if type actually matches
+                        case LiteralExpressionSyntax lexs when lexs.IsKind(SyntaxKind.DefaultLiteralExpression):
+                            var typeSymbol = semanticModel.GetTypeInfo(parameter.Type).Type;
+                            @params.Add($"default({GetFullyQualifiedTypeName(typeSymbol)})");
+                            break;
+                        case LiteralExpressionSyntax lexs:
+                            @params.Add(lexs.ToString());
+                            break;
+                        default: throw new Exception($"Expression {{{parameter.Default}}} is not supported");
+                    }
+                    
                 }
 
                 var code =
