@@ -47,22 +47,53 @@ namespace MyCode.Top.Child
             Assert.IsEmpty(immutableArray);
             Assert.AreEqual(4, newComp.SyntaxTrees.Count());
         }
-        
+
+        [Test]
+        public void RecordWithDefaultArgumentsTest()
+        {
+            var cases = new[]
+                {
+                    "(int I = default)",
+                    "(int I = default(int))",
+                }
+                .Select((s, i) => $"public partial record Record{i}{s};")
+                .ToList();
+
+            var userSource = $@"
+namespace MyCode.Top.Child
+{{
+    using System;
+    public class Program {{ public static void Main(string[] args) => Console.WriteLine(); }}
+
+    {string.Join(Environment.NewLine, cases)}
+}}";
+            var comp = CreateCompilation(userSource);
+            var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
+
+            Assert.IsEmpty(generatorDiags);
+            var immutableArray = newComp.GetDiagnostics();
+            Assert.IsEmpty(immutableArray);
+            Assert.AreEqual(cases.Count + 1, newComp.SyntaxTrees.Count());
+        }
+
         [Test]
         public void RecordWithTypeParamsGeneratorTest()
         {
-            List<string> cases = new()
-            {
-                "public partial record Record<T>(string Foo);",
-                "public partial record Record1<T>(int I, T Foo);",
-                "public partial record Record2<T>(string Foo);",
-                "public partial record Record3<T>(int I, T Foo);",
-                "public partial record Record4<T, R>(int I, T Foo, T Foo1, R Bar);",
-                "public partial record Record5(List<int> Ints);",
-                "public partial record Record6<T>(List<T> Ts);",
-                "public partial record Record7<T>(Dictionary<int,T> Ts);",
-                "public partial record Record8<T,R>(Dictionary<T,R> Rs);",
-            };
+            var cases = new[]
+                {
+                    "<T>(string Foo)",
+                    "<T>(int I, T Foo)",
+                    "<T>(string Foo)",
+                    "<T>(int I, T Foo)",
+                    "<T, R>(int I, T Foo, T Foo1, R Bar)",
+                    "(List<int> Ints)",
+                    "<T>(List<T> Ts)",
+                    "<T>(Dictionary<int,T> Ts)",
+                    "<T,R>(Dictionary<T,R> Rs)",
+                }
+                .Select((s, i) => $"public partial record Record{i}{s};")
+                .ToList();
+
             var userSource = $@"
 namespace MyCode.Top.Child
 {{

@@ -23,6 +23,15 @@ namespace HelloWorldSourceGen
     public record NotPartialRecord4(string Foo, List<List<int>> Ints);
     public record NotPartialRecord5<T>(string Foo, List<List<int>> Ints,  List<List<T>> Ts);
 
+    public struct MyStruct{}
+
+    class MyClass
+    {
+        public const string X = "";
+    }
+
+    public record NotPartialRecord6(MyStruct X = new (), string XX = MyClass.X);
+
     [AttributeUsage(AttributeTargets.Parameter)]
     class MyAttribute:Attribute
     {
