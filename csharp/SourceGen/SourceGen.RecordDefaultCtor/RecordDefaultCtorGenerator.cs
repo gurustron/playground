@@ -32,11 +32,18 @@ namespace SourceGen.RecordDefaultCtor
                 var semanticModel = context.Compilation.GetSemanticModel(recordDeclaration.SyntaxTree);
                 var namespaceDeclaration = recordDeclaration.Parent as NamespaceDeclarationSyntax;
                 var recordName = recordDeclaration.Identifier.ToString();
-                var @namespace = namespaceDeclaration?.Name.ToString() ?? "global";
+                var @namespace = namespaceDeclaration?.Name.ToString() ?? "global"; // TODO - use semantic model?
 
+                SyntaxNode root = recordDeclaration ;
+                while (root?.Parent != null)
+                {
+                    var usingDirectiveSyntaxes = root.ChildNodes().OfType<UsingDirectiveSyntax>().ToList();
+                    root = root.Parent;
+                }
                 // process parameters
                 List<string> @params = new();
                 var syntaxNodes = recordDeclaration.ParameterList.ChildNodes().ToList();
+                
                 foreach (var parameter in syntaxNodes.OfType<ParameterSyntax>())
                 {
                     switch (parameter.Default?.Value)
@@ -52,7 +59,6 @@ namespace SourceGen.RecordDefaultCtor
                             break;
                         default: throw new Exception($"Expression {{{parameter.Default}}} is not supported");
                     }
-                    
                 }
 
                 var code =

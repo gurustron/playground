@@ -64,6 +64,9 @@ namespace MyCode.Top.Child
 namespace MyCode.Top.Child
 {{
     using System;
+#pragma warning disable CS8019
+    using System.Collections.Generic;
+#pragma warning restore CS8019
     public class Program {{ public static void Main(string[] args) => Console.WriteLine(); }}
 
     {string.Join(Environment.NewLine, cases)}
