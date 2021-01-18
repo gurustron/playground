@@ -24,6 +24,8 @@ namespace SourceGen.RecordDefaultCtor
 
             foreach (var recordDeclaration in receiver.RecordDeclarations)
             {
+                context.CancellationToken.ThrowIfCancellationRequested();
+
                 if (recordDeclaration.ParameterList is null)
                 {
                     continue;
@@ -35,12 +37,21 @@ namespace SourceGen.RecordDefaultCtor
                 var @namespace = namespaceDeclaration?.Name.ToString() ?? "global"; // TODO - use semantic model?
 
                 SyntaxNode root = recordDeclaration;
+                List<UsingDirectiveSyntax> usings = new();
+                List<string> wrappers = new();
                 while (root?.Parent != null)
                 {
                     root = root.Parent;
+                    if (root is TypeDeclarationSyntax tds)
+                    {
+                        if (!tds.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
+                        {
+                            throw new Exception("TADA"); // TODO
+                        }
+                        wrappers.Add(GetTypeDeclarationHeader(tds) + "{");
+                    }
+                    usings.AddRange(root.ChildNodes().OfType<UsingDirectiveSyntax>());
                 }
-
-                var usings = root.DescendantNodes().OfType<UsingDirectiveSyntax>().ToList();
 
                 // process parameters
                 List<string> @params = new();
@@ -68,18 +79,25 @@ namespace SourceGen.RecordDefaultCtor
 #pragma warning disable CS8019
     {string.Join(Environment.NewLine + "\t", usings)}
 #pragma warning restore CS8019
-    {recordDeclaration.Modifiers.ToString()} record {recordName}{recordDeclaration.TypeParameterList?.ToString()}
+
+    {string.Join(Environment.NewLine + "\t", wrappers)}
+    {GetTypeDeclarationHeader(recordDeclaration)}
     {{
         public {recordName}() : this({string.Join(",", @params)})
         {{
         }}
     }}
+    {string.Join(Environment.NewLine + "\t", Enumerable.Repeat("}", wrappers.Count))}
 }}";
 // @formatter:on
                 context.AddSource($"{@namespace}.{recordName}.Ctor.{Guid.NewGuid():N}.cs", code);
             }
         }
 
+        private static string GetTypeDeclarationHeader(TypeDeclarationSyntax tds)
+        {
+            return $"{tds.Modifiers.ToString()} {tds.Keyword} {tds.Identifier}{tds.TypeParameterList?.ToString()}";
+        }
         private static string GetFullyQualifiedTypeName(ITypeSymbol typeSymbol) =>
             typeSymbol switch
             {

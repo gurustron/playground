@@ -165,6 +165,37 @@ namespace MyCode.Top.Child
             Assert.AreEqual(1, newComp.SyntaxTrees.Count());
         }
 
+        [Test]
+        public void RecordNested_Generates()
+        {
+            var userSource = @"
+namespace MyCode.Top.Child
+{
+    using System;
+    public class Program { public static void Main(string[] args) => Console.WriteLine(); }
+
+    public partial class Outer
+    {
+        public partial record Record(int I);
+    }
+}";
+            var comp = CreateCompilation(userSource);
+            var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
+
+            DefaultAssert(generatorDiags, newComp, 1);
+        }
+
+        private static void DefaultAssert(
+            ImmutableArray<Diagnostic> generatorDiagnostics, 
+            Compilation compilation,
+            int expectedSyntaxTreesCount)
+        {
+            Assert.IsEmpty(generatorDiagnostics);
+            var immutableArray = compilation.GetDiagnostics();
+            Assert.IsEmpty(immutableArray);
+            Assert.AreEqual(expectedSyntaxTreesCount, compilation.SyntaxTrees.Count());
+        }
+
         // - create analyzer for required fields
         // - multiples files
         // - global namespace
