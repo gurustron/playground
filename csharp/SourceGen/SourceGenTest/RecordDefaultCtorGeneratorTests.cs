@@ -121,12 +121,35 @@ namespace MyCode.Top.Child
             Assert.AreEqual(cases.Count + 1, newComp.SyntaxTrees.Count());
         }
 
+        [Test]
+        public void RecordWithDefaultCtor_Skipped()
+        {
+            var userSource = @"
+namespace MyCode.Top.Child
+{
+    using System;
+    public class Program { public static void Main(string[] args) => Console.WriteLine(); }
+
+    public record X(int i)
+    {
+        public X():this(1){}
+    }
+}";
+            var comp = CreateCompilation(userSource);
+            var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
+
+            Assert.IsEmpty(generatorDiags);
+            var immutableArray = newComp.GetDiagnostics();
+            Assert.IsEmpty(immutableArray);
+            Assert.AreEqual(1, newComp.SyntaxTrees.Count());
+        }
+
         // - create analyzer for required fields
         // - multiples files
         // - global namespace
         // - nested partials (nested classes)
         // - namespace collision ?? 
-        // - custom ctor with same number of parameters but  
+        // - custom ctor with same number of parameters but
 
         private static Compilation CreateCompilation(string source)
         {

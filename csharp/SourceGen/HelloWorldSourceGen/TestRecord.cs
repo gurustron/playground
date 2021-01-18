@@ -46,7 +46,6 @@ namespace HelloWorldSourceGen
     {
         public MyRecord() : this(default(string))
         {
-    
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SourceGen.RecordDefaultCtor
                     return;
                 }
 
-                if (record.ChildNodes().Any(node => node is ConstructorDeclarationSyntax))
+                if (record.ChildNodes().Any(HasDefaultCtor))
                 {
                     return;
                 }
@@ -32,6 +32,16 @@ namespace SourceGen.RecordDefaultCtor
                 }
 
                 RecordDeclarations.Add(record);
+            }
+
+            bool HasDefaultCtor(SyntaxNode node)
+            {
+                if (node is ConstructorDeclarationSyntax ctr && !ctr.ParameterList.ChildNodes().Any())
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
     }
