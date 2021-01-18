@@ -58,10 +58,6 @@ namespace SourceGen.RecordDefaultCtor
                             break;
                         default:  @params.Add(parameter.Default.Value.ToString());
                            break;
-                        // case LiteralExpressionSyntax lexs:
-                        //     @params.Add(lexs.ToString());
-                        //     break;
-                        // default: throw new Exception($"Expression {{{parameter.Default}}} is not supported");
                     }
                 }
 

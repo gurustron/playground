@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -56,7 +55,7 @@ namespace MyCode.Top.Child
                     "(int I = default)",
                     "(int I = default(int))",
                     "(int I = 3)",
-                    "(string I = Program.Constant)",
+                    "(string I = Program.Constant)"
                 }
                 .Select((s, i) => $"public partial record Record{i}{s};")
                 .ToList();
@@ -98,7 +97,7 @@ namespace MyCode.Top.Child
                     "(List<int> Ints)",
                     "<T>(List<T> Ts)",
                     "<T>(Dictionary<int,T> Ts)",
-                    "<T,R>(Dictionary<T,R> Rs)",
+                    "<T,R>(Dictionary<T,R> Rs)"
                 }
                 .Select((s, i) => $"public partial record Record{i}{s};")
                 .ToList();
@@ -130,9 +129,31 @@ namespace MyCode.Top.Child
     using System;
     public class Program { public static void Main(string[] args) => Console.WriteLine(); }
 
-    public record X(int i)
+    public partial record Record(int i)
     {
-        public X():this(1){}
+        public Record() : this(1){}
+    }
+}";
+            var comp = CreateCompilation(userSource);
+            var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
+
+            Assert.IsEmpty(generatorDiags);
+            var immutableArray = newComp.GetDiagnostics();
+            Assert.IsEmpty(immutableArray);
+            Assert.AreEqual(1, newComp.SyntaxTrees.Count());
+        }
+
+        [Test]
+        public void RecordNonPartial_Skipped()
+        {
+            var userSource = @"
+namespace MyCode.Top.Child
+{
+    using System;
+    public class Program { public static void Main(string[] args) => Console.WriteLine(); }
+
+    public record Record(int i)
+    {
     }
 }";
             var comp = CreateCompilation(userSource);
