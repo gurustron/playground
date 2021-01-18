@@ -34,12 +34,14 @@ namespace SourceGen.RecordDefaultCtor
                 var recordName = recordDeclaration.Identifier.ToString();
                 var @namespace = namespaceDeclaration?.Name.ToString() ?? "global"; // TODO - use semantic model?
 
-                SyntaxNode root = recordDeclaration ;
+                SyntaxNode root = recordDeclaration;
                 while (root?.Parent != null)
                 {
-                    var usingDirectiveSyntaxes = root.ChildNodes().OfType<UsingDirectiveSyntax>().ToList();
                     root = root.Parent;
                 }
+
+                var usings = root.DescendantNodes().OfType<UsingDirectiveSyntax>().ToList();
+
                 // process parameters
                 List<string> @params = new();
                 var syntaxNodes = recordDeclaration.ParameterList.ChildNodes().ToList();
@@ -52,12 +54,14 @@ namespace SourceGen.RecordDefaultCtor
                         case DefaultExpressionSyntax: // check if type actually matches
                         case LiteralExpressionSyntax lexs when lexs.IsKind(SyntaxKind.DefaultLiteralExpression):
                             var typeSymbol = semanticModel.GetTypeInfo(parameter.Type).Type;
-                            @params.Add($"default({GetFullyQualifiedTypeName(typeSymbol)})");
+                            @params.Add($"default({typeSymbol})");
                             break;
-                        case LiteralExpressionSyntax lexs:
-                            @params.Add(lexs.ToString());
-                            break;
-                        default: throw new Exception($"Expression {{{parameter.Default}}} is not supported");
+                        default:  @params.Add(parameter.Default.Value.ToString());
+                           break;
+                        // case LiteralExpressionSyntax lexs:
+                        //     @params.Add(lexs.ToString());
+                        //     break;
+                        // default: throw new Exception($"Expression {{{parameter.Default}}} is not supported");
                     }
                 }
 
@@ -65,6 +69,9 @@ namespace SourceGen.RecordDefaultCtor
 // @formatter:off
 @$"namespace {@namespace}
 {{
+#pragma warning disable CS8019
+    {string.Join(Environment.NewLine + "\t", usings)}
+#pragma warning restore CS8019
     {recordDeclaration.Modifiers.ToString()} record {recordName}{recordDeclaration.TypeParameterList?.ToString()}
     {{
         public {recordName}() : this({string.Join(",", @params)})

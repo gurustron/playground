@@ -53,21 +53,26 @@ namespace MyCode.Top.Child
         {
             var cases = new[]
                 {
-                    // "(int I = default)",
-                    // "(int I = default(int))",
+                    "(int I = default)",
+                    "(int I = default(int))",
                     "(int I = 3)",
+                    "(string I = Program.Constant)",
                 }
                 .Select((s, i) => $"public partial record Record{i}{s};")
                 .ToList();
 
             var userSource = $@"
+using System;
 namespace MyCode.Top.Child
 {{
-    using System;
 #pragma warning disable CS8019
     using System.Collections.Generic;
 #pragma warning restore CS8019
-    public class Program {{ public static void Main(string[] args) => Console.WriteLine(); }}
+    public class Program 
+    {{
+        public const string Constant = ""Test"";
+        public static void Main(string[] args) => Console.WriteLine(); 
+    }}
 
     {string.Join(Environment.NewLine, cases)}
 }}";
@@ -116,14 +121,12 @@ namespace MyCode.Top.Child
             Assert.AreEqual(cases.Count + 1, newComp.SyntaxTrees.Count());
         }
 
-        // - handle default values provided by user
         // - create analyzer for required fields
         // - multiples files
         // - global namespace
         // - nested partials (nested classes)
-        // - namespace collision
+        // - namespace collision ?? 
         // - custom ctor with same number of parameters but  
-        
 
         private static Compilation CreateCompilation(string source)
         {
