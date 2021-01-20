@@ -173,16 +173,18 @@ namespace MyCode.Top.Child
 {
     using System;
     public class Program { public static void Main(string[] args) => Console.WriteLine(); }
-
-    public partial class Outer
+    namespace InnerNamespace
     {
-        public partial record Record(int I);
+        public partial class Outer
+        {
+            public partial record Record(int I);
+        }
     }
 }";
             var comp = CreateCompilation(userSource);
             var newComp = RunGenerators(comp, out var generatorDiags, new RecordDefaultCtorGenerator());
 
-            DefaultAssert(generatorDiags, newComp, 1);
+            DefaultAssert(generatorDiags, newComp, 2);
         }
 
         private static void DefaultAssert(
@@ -199,7 +201,6 @@ namespace MyCode.Top.Child
         // - create analyzer for required fields
         // - multiples files
         // - global namespace
-        // - nested partials (nested classes)
         // - namespace collision ?? 
         // - custom ctor with same number of parameters but
 

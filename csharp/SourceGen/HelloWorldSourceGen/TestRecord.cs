@@ -42,7 +42,7 @@ namespace HelloWorldSourceGen
         public string S { get; init; }
     }
 
-    public record MyRecord(string S)
+    public partial record MyRecord(string S)
     {
         public MyRecord() : this(default(string))
         {

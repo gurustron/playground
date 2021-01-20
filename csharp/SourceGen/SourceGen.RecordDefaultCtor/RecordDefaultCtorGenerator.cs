@@ -32,10 +32,8 @@ namespace SourceGen.RecordDefaultCtor
                 }
 
                 var semanticModel = context.Compilation.GetSemanticModel(recordDeclaration.SyntaxTree);
-                var namespaceDeclaration = recordDeclaration.Parent as NamespaceDeclarationSyntax;
                 var recordName = recordDeclaration.Identifier.ToString();
-                var @namespace = namespaceDeclaration?.Name.ToString() ?? "global"; // TODO - use semantic model?
-
+                
                 SyntaxNode root = recordDeclaration;
                 List<UsingDirectiveSyntax> usings = new();
                 List<string> wrappers = new();
@@ -48,10 +46,19 @@ namespace SourceGen.RecordDefaultCtor
                         {
                             throw new Exception("TADA"); // TODO
                         }
-                        wrappers.Add(GetTypeDeclarationHeader(tds) + "{");
+                        wrappers.Add($"{GetTypeDeclarationHeader(tds)}{Environment.NewLine}{{");
                     }
+
+                    if (root is NamespaceDeclarationSyntax namespaceDeclaration)
+                    {
+                        var @namespace = namespaceDeclaration.Name.ToString();
+                        wrappers.Add($"namespace {@namespace}{Environment.NewLine}{{");
+                    }
+                    
                     usings.AddRange(root.ChildNodes().OfType<UsingDirectiveSyntax>());
                 }
+
+                wrappers.Reverse();
 
                 // process parameters
                 List<string> @params = new();
@@ -74,8 +81,7 @@ namespace SourceGen.RecordDefaultCtor
 
                 var code =
 // @formatter:off
-@$"namespace {@namespace}
-{{
+@$"
 #pragma warning disable CS8019
     {string.Join(Environment.NewLine + "\t", usings)}
 #pragma warning restore CS8019
@@ -88,9 +94,9 @@ namespace SourceGen.RecordDefaultCtor
         }}
     }}
     {string.Join(Environment.NewLine + "\t", Enumerable.Repeat("}", wrappers.Count))}
-}}";
+";
 // @formatter:on
-                context.AddSource($"{@namespace}.{recordName}.Ctor.{Guid.NewGuid():N}.cs", code);
+                context.AddSource($"{recordName}.Ctor.{Guid.NewGuid():N}.cs", code);
             }
         }
 
