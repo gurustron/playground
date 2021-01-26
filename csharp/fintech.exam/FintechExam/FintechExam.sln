@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FintechExam", "FintechExam\FintechExam.csproj", "{4CAC52FC-0C80-4AA4-BD34-25ED56A18951}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FintechExam.Tests", "FintechExam.Tests\FintechExam.Tests.csproj", "{C4BCD1EB-85F6-42DF-A90D-EF9C3C2178E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{4CAC52FC-0C80-4AA4-BD34-25ED56A18951}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CAC52FC-0C80-4AA4-BD34-25ED56A18951}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CAC52FC-0C80-4AA4-BD34-25ED56A18951}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4BCD1EB-85F6-42DF-A90D-EF9C3C2178E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4BCD1EB-85F6-42DF-A90D-EF9C3C2178E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4BCD1EB-85F6-42DF-A90D-EF9C3C2178E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4BCD1EB-85F6-42DF-A90D-EF9C3C2178E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
