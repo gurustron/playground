@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ignite-k8s", "ignite-k8s\ignite-k8s.csproj", "{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutuionItems", "SolutuionItems", "{641B64CC-C853-43B5-8986-86F01120CC4D}"
+ProjectSection(SolutionItems) = preProject
+	docker-compose-ignite.yml = docker-compose-ignite.yml
+EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

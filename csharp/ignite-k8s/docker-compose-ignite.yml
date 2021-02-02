@@ -1,0 +1,15 @@
+version: "3"
+services:
+  ignite-01:
+    image: apacheignite/ignite:2.9.1
+    environment:
+      - JVM_OPTS=-Xms512m -Xmx512m -server -XX:+AggressiveOpts -XX:+UseG1GC -XX:MaxPermSize=256m -XX:+DisableExplicitGC -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true
+    ports:
+      - "42500-42509:47500-47509"
+
+  ignite-02:
+    image: apacheignite/ignite:2.9.1
+    environment:
+      - JVM_OPTS=-Xms512m -Xmx512m -server -XX:+AggressiveOpts -XX:+UseG1GC -XX:MaxPermSize=256m -XX:+DisableExplicitGC -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true
+    ports:
+      - "44500-44509:47500-47509"
