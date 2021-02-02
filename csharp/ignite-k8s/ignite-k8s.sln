@@ -7,6 +7,8 @@ ProjectSection(SolutionItems) = preProject
 	docker-compose-ignite.yml = docker-compose-ignite.yml
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ignite-k8s-asp", "ignite-k8s-asp\ignite-k8s-asp.csproj", "{5AA8AC1C-42FC-4E27-A7F0-D9BD1E2D336D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,5 +19,9 @@ Global
 		{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BFF5A22-F9F5-4630-B7AB-FDD71BF9C620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AA8AC1C-42FC-4E27-A7F0-D9BD1E2D336D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AA8AC1C-42FC-4E27-A7F0-D9BD1E2D336D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AA8AC1C-42FC-4E27-A7F0-D9BD1E2D336D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AA8AC1C-42FC-4E27-A7F0-D9BD1E2D336D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
