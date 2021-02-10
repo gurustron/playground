@@ -18,16 +18,22 @@ namespace ignite_k8s_asp
 
         public static void Main(string[] args)
         {
-            Ignite = Ignition.Start(new IgniteConfiguration
-            {
-                DiscoverySpi = new TcpDiscoverySpi
+            Ignite = Ignition.Start(
+                new IgniteConfiguration
                 {
-                    IpFinder = new TcpDiscoveryStaticIpFinder
+                    DiscoverySpi = new TcpDiscoverySpi
                     {
-                        Endpoints = new []{"127.0.0.1:42500..42509", "127.0.0.1:44500..44509"}
+                        IpFinder = new TcpDiscoveryStaticIpFinder
+                        {
+                            Endpoints = new[]
+                            {
+                                "ignite-01:47500..47509", "ignite-02:47500..47509"
+                                // "127.0.0.1:42500..42509", "127.0.0.1:44500..44509"
+                            }
+                        }
                     }
                 }
-            });
+            );
             CreateHostBuilder(args).Build().Run();
         }
 
