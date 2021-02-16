@@ -20,6 +20,9 @@ services:
 
   tester:
     image: ignite-k8s-asp
+    environment:
+      - IgniteEndpoints:0=ignite-01:47500..47509
+      - IgniteEndpoints:1=ignite-02:47500..47509
     networks:
       - ignite
     ports:

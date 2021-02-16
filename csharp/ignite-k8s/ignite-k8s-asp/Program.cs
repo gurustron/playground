@@ -18,6 +18,13 @@ namespace ignite_k8s_asp
 
         public static void Main(string[] args)
         {
+            var configurationRoot = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .AddJsonFile("appsettings.json", optional: true)
+                .Build();
+            // Console.WriteLine(Environment.GetEnvironmentVariable("IgniteEndpoints"));
+            var endpoints = configurationRoot.GetSection("IgniteEndpoints").Get<string[]>();
+            Console.WriteLine($"SEST: {string.Join(",", endpoints)}");
             Ignite = Ignition.Start(
                 new IgniteConfiguration
                 {
@@ -25,11 +32,7 @@ namespace ignite_k8s_asp
                     {
                         IpFinder = new TcpDiscoveryStaticIpFinder
                         {
-                            Endpoints = new[]
-                            {
-                                "ignite-01:47500..47509", "ignite-02:47500..47509"
-                                // "127.0.0.1:42500..42509", "127.0.0.1:44500..44509"
-                            }
+                            Endpoints = endpoints
                         }
                     }
                 }
