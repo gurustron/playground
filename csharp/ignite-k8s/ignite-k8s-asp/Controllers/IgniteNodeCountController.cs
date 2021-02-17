@@ -17,7 +17,7 @@ namespace ignite_k8s_asp.Controllers
         [HttpGet]
         public int Get()
         {
-            return Program.Ignite.GetCluster().GetNodes().Count;
+            return Program.Ignite?.GetCluster().GetNodes().Count ?? 0;
         }
     }
 }

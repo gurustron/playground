@@ -24,9 +24,7 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "IgniteEndpoints:0": "127.0.0.1:42500..42509",
-        "IgniteEndpoints:1": "127.0.0.1:44500..44509"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

@@ -19,9 +19,9 @@ namespace ignite_k8s_asp
                 .AddEnvironmentVariables()
                 .AddJsonFile("appsettings.json", optional: true)
                 .Build();
-            var endpoints = configurationRoot.GetSection("IgniteEndpoints").Get<string[]>();
+            var endpoints = configurationRoot.GetSection("IgniteEndpoints").Get<string[]>() ?? new string[0];
             Console.WriteLine($"SEST: {string.Join(",", endpoints)}");
-
+            
             Ignite = endpoints.Any()
                 ? Ignition.Start(
                     new IgniteConfiguration
