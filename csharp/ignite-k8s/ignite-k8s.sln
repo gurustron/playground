@@ -7,6 +7,7 @@ ProjectSection(SolutionItems) = preProject
 	docker-compose-ignite.yml = docker-compose-ignite.yml
 	deployment-ignite-k8s-app.yml = deployment-ignite-k8s-app.yml
 	service-ignite-k8s-app.yml = service-ignite-k8s-app.yml
+	ingress-ignite-k8s-app.yml = ingress-ignite-k8s-app.yml
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ignite-k8s-asp", "ignite-k8s-asp\ignite-k8s-asp.csproj", "{5AA8AC1C-42FC-4E27-A7F0-D9BD1E2D336D}"

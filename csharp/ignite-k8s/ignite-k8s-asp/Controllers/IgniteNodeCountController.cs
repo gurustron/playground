@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace ignite_k8s_asp.Controllers
@@ -15,9 +16,9 @@ namespace ignite_k8s_asp.Controllers
         }
 
         [HttpGet]
-        public int Get()
+        public string Get()
         {
-            return Program.Ignite?.GetCluster().GetNodes().Count ?? 0;
+            return "Foo Bar " + (Program.Ignite?.GetCluster().GetNodes().Count ?? 0);
         }
     }
 }

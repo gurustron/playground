@@ -1,22 +1,14 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: k8s-ignite-app
+  name: k8s-ignite-service
   labels:
     app: k8s-ignite-app
 spec:
-  replicas: 1
   selector:
-    matchLabels:
-      app: k8s-ignite-app
-  template:
-    metadata:
-      labels:
-        app: k8s-ignite-app
-    spec:
-      containers:
-      - name: k8s-ignite-app
-        image: ignite-k8s-asp
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 80
+    app: k8s-ignite-app
+  type: ClusterIP
+  ports:
+    - port: 7777
+      targetPort: 80
+      protocol: TCP
