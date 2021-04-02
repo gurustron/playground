@@ -8,6 +8,9 @@ ProjectSection(SolutionItems) = preProject
 	deployment-ignite-k8s-app.yml = deployment-ignite-k8s-app.yml
 	service-ignite-k8s-app.yml = service-ignite-k8s-app.yml
 	ingress-ignite-k8s-app.yml = ingress-ignite-k8s-app.yml
+	ignite-deployment.yaml = ignite-deployment.yaml
+	ignite-configmap.yaml = ignite-configmap.yaml
+	ignite-namespace.yaml = ignite-namespace.yaml
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ignite-k8s-asp", "ignite-k8s-asp\ignite-k8s-asp.csproj", "{5AA8AC1C-42FC-4E27-A7F0-D9BD1E2D336D}"
