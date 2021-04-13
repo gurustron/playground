@@ -22,9 +22,23 @@ namespace SourceGenTest
         public void SimpleGeneratorTest()
         {
             var userSource = @"
+    using System;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+
+namespace GeneratedNamespace{
+    partial class GeneratedClass
+    {
+         [DisplayName(nameof(GeneratedPropName))]
+         [DisplayName(""name"")]
+        public string VerySpecificPropName { get; set; }
+    }
+}
+
 namespace MyCode
 {
-    using System;
+
     public class Program
     {
         public static void Main(string[] args)
