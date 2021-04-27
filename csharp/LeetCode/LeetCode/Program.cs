@@ -2,4 +2,15 @@
 using LeetCode;
 
 Console.WriteLine("Hello World!");
-Console.WriteLine(new AddTwoLinked().AddTwoNumbers(new AddTwoLinked.ListNode(1, new AddTwoLinked.ListNode(2)), new AddTwoLinked.ListNode(3)));
+
+var data = new []
+{
+    // (2, new[]{1,2,3}),
+    (2, new []{-1,-100,3,99})
+};
+
+foreach (var (k, ints) in data)
+{
+    new RotateArray().Rotate(ints, k);
+    Console.WriteLine(string.Join(',', ints));
+}
