@@ -3,11 +3,21 @@ using LeetCode;
 
 Console.WriteLine("Hello World!");
 
-var solution = new IncrementLargeDigitArray.Solution();
+var solution = new MoveZeroes.Solution();
 
-PrintResult(solution.PlusOne(new []{9}));
-PrintResult(solution.PlusOne(new []{1,2,3,6}));
-PrintResult(solution.PlusOne(new []{0}));
+var tries = new[]
+{
+    new[] { 9 },
+    new[] { 0, 9, 0, 0, 0 },
+    new[] { 0, 0, 0, 0 },
+    new[] { 0, 0, 0, 1 },
+};
+
+foreach (var nums in tries)
+{
+    solution.MoveZeroes(nums);
+    PrintResult(nums);
+}
 
 void PrintResult(int[] array) => Console.WriteLine(array.ToPrintVersion());
 
