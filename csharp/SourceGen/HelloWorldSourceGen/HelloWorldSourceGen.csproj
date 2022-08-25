@@ -18,6 +18,7 @@
       <ProjectReference Include="..\SourceGen.RecordDefaultCtor\SourceGen.RecordDefaultCtor.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
       <ProjectReference Include="..\SourceGen.Traits.Core\SourceGen.Traits.Core.csproj" />
       <ProjectReference Include="..\SourceGen\SourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+      <ProjectReference Include="..\TestAnalyzer\TestAnalyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
 <!--    <ItemGroup>-->

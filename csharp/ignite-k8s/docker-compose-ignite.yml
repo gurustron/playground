@@ -6,10 +6,31 @@ services:
       - JVM_OPTS=-Xms512m -Xmx512m -server -XX:+AggressiveOpts -XX:+UseG1GC -XX:MaxPermSize=256m -XX:+DisableExplicitGC -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true
     ports:
       - "42500-42509:47500-47509"
+    networks:
+      - ignite
 
   ignite-02:
     image: apacheignite/ignite:2.9.1
     environment:
       - JVM_OPTS=-Xms512m -Xmx512m -server -XX:+AggressiveOpts -XX:+UseG1GC -XX:MaxPermSize=256m -XX:+DisableExplicitGC -DIGNITE_PERFORMANCE_SUGGESTIONS_DISABLED=true
+    networks:
+      - ignite
     ports:
       - "44500-44509:47500-47509"
+
+  tester:
+    image: ignite-k8s-asp
+    environment:
+      - IgniteEndpoints:0=ignite-01:47500..47509
+      - IgniteEndpoints:1=ignite-02:47500..47509
+    networks:
+      - ignite
+    ports:
+      - "5000:80"
+    depends_on:
+      - ignite-01
+      - ignite-02
+
+networks:
+  ignite:
+    driver: bridge

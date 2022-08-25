@@ -35,7 +35,7 @@ namespace SourceGen
             {
                 foreach (var classDeclarationSyntax in receiver.PartialClasses)
                 {
-                    msgs.Add(classDeclarationSyntax.Identifier.Text);
+                    // msgs.Add(classDeclarationSyntax.Identifier.Text);
                     // context.ReportDiagnostic(Diagnostic.Create(CustomGeneratorWarning, Location.None, ((NamespaceDeclarationSyntax) classDeclarationSyntax.Parent).Name));
 
                     var props = classDeclarationSyntax
@@ -58,6 +58,14 @@ namespace {((NamespaceDeclarationSyntax) classDeclarationSyntax.Parent).Name}
                     context.AddSource($"{classDeclarationSyntax.Identifier.Text}.ToString.cs", SourceText.From(
                         text, Encoding.UTF8));
 
+                    var propertyDeclarationSyntax = receiver.Props.Where(syntax => syntax.Identifier.Text == "VerySpecificPropName").First();
+                    var semanticModel = context.Compilation.GetSemanticModel(propertyDeclarationSyntax.SyntaxTree);
+                    
+                    var attributeListSyntaxes = receiver.Props.Where(syntax => syntax.Identifier.Text == "VerySpecificPropName")
+                        .Select(syntax => syntax.AttributeLists.First())
+                        .First();
+                    
+                    var declaredSymbol = semanticModel.GetDeclaredSymbol(attributeListSyntaxes);
                 }
             }
 
@@ -67,8 +75,9 @@ namespace {((NamespaceDeclarationSyntax) classDeclarationSyntax.Parent).Name}
 namespace GeneratedNamespace
 {{
     using System;
-    public class GeneratedClass
+    public partial class GeneratedClass
     {{
+public string GeneratedPropName {{ get; set; }}
         public static void GeneratedMethod()
         {{
             // generated code
@@ -83,10 +92,15 @@ namespace GeneratedNamespace
         private class CustomSyntaxReceiver : ISyntaxReceiver
         {
             public List<ClassDeclarationSyntax> PartialClasses { get; } = new();
+            public List<PropertyDeclarationSyntax> Props { get; } = new();
             public List<string> Debug { get; } = new();
 
             public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
             {
+                    if (syntaxNode is PropertyDeclarationSyntax pds)
+                    {
+                        Props.Add(pds);
+                    }
                 if (syntaxNode is ClassDeclarationSyntax record)
                 {
                     if (record.Modifiers.Any(m => m.IsKind(SyntaxKind.StaticKeyword)))

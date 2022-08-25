@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Apache.Ignite.Core;
 using Apache.Ignite.Core.Discovery.Tcp;
 using Apache.Ignite.Core.Discovery.Tcp.Static;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ignite_k8s_asp
 {
@@ -19,7 +16,16 @@ namespace ignite_k8s_asp
 
         public static void Main(string[] args)
         {
-            Ignite = Ignition.Start(new IgniteConfiguration
+            var configurationRoot = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .AddJsonFile("appsettings.json", optional: true)
+                .Build();
+            var endpoints = configurationRoot.GetSection("IgniteEndpoints").Get<string[]>() ?? new string[0];
+            Console.WriteLine($"SEST: {string.Join(",", endpoints)}");
+            
+            Ignite = endpoints.Any()
+                ? Ignition.Start(
+                    new IgniteConfiguration
             {
                 // DiscoverySpi = new TcpDiscoverySpi
                 // {
@@ -28,7 +34,16 @@ namespace ignite_k8s_asp
                 //         Endpoints = new []{"127.0.0.1:42500..42509", "127.0.0.1:44500..44509"}
                 //     }
                 // }
-            });
+                        DiscoverySpi = new TcpDiscoverySpi
+                        {
+                            IpFinder = new TcpDiscoveryStaticIpFinder
+                            {
+                                Endpoints = endpoints
+                            }
+                        }
+                    }
+                )
+                : Ignition.Start();
             CreateHostBuilder(args).Build().Run();
         }
 
