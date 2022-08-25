@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ignite_k8s_asp
 {
+    
     public class Program
     {
         public static IIgnite Ignite;
@@ -20,13 +21,13 @@ namespace ignite_k8s_asp
         {
             Ignite = Ignition.Start(new IgniteConfiguration
             {
-                DiscoverySpi = new TcpDiscoverySpi
-                {
-                    IpFinder = new TcpDiscoveryStaticIpFinder
-                    {
-                        Endpoints = new []{"127.0.0.1:42500..42509", "127.0.0.1:44500..44509"}
-                    }
-                }
+                // DiscoverySpi = new TcpDiscoverySpi
+                // {
+                //     IpFinder = new TcpDiscoveryStaticIpFinder
+                //     {
+                //         Endpoints = new []{"127.0.0.1:42500..42509", "127.0.0.1:44500..44509"}
+                //     }
+                // }
             });
             CreateHostBuilder(args).Build().Run();
         }
