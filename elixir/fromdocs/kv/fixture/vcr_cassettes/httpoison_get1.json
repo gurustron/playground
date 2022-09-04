@@ -1,0 +1,32 @@
+[
+  {
+    "request": {
+      "body": "",
+      "headers": [],
+      "method": "get",
+      "options": [],
+      "request_body": "",
+      "url": "http://slowwly.robertomurray.co.uk/delay/1000/url/https://www.google.com"
+    },
+    "response": {
+      "binary": false,
+      "body": "",
+      "headers": {
+        "Server": "Cowboy",
+        "Date": "Mon, 08 Jun 2020 14:03:39 GMT",
+        "Connection": "keep-alive",
+        "Content-Type": "text/html;charset=utf-8",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS",
+        "Location": "https://www.google.com",
+        "X-Xss-Protection": "1; mode=block",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Content-Length": "0",
+        "Via": "1.1 vegur"
+      },
+      "status_code": 302,
+      "type": "ok"
+    }
+  }
+]
