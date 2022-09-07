@@ -34,33 +34,4 @@ public class WeatherForecastController : ControllerBase
             })
             .ToArray();
     }
-
-    [HttpPatch]
-    public Test Patch([FromBody] Dictionary<string, object> data, 
-        [FromServices] IMapper mapper)
-    {
-        var existing = new Test();
-
-        var map = mapper.Map(data, existing);
-
-        return map;
-    }
-    
-    
-    // [HttpPatch]
-    // public Test Patch2(
-    //     // [FromBody] ExpandoObject data,
-    //     [FromBody] JsonMergePatchDocument<Test> patch,
-    //     [FromServices] IMapper mapper)
-    // {
-    //     var test = new Test
-    //     {
-    //         Name = "original",
-    //         Description = "Description"
-    //     };
-    //
-    //     // var map = mapper.Map(data, test);
-    //     var map = patch.ApplyTo(test);
-    //     return map;
-    // }
 }
