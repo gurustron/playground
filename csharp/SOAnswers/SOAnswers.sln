@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NET6LibTest", "NET6\NET6Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOAnswers.Tests", "NET6\SOAnswers.Tests\SOAnswers.Tests.csproj", "{16FA3318-DDEB-462F-8E4F-D4F9F02D99C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNET7Test", "NET7\ASPNET7Test\ASPNET7Test.csproj", "{F837B851-0A69-4D24-8AF3-9A1E7959F142}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{16FA3318-DDEB-462F-8E4F-D4F9F02D99C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16FA3318-DDEB-462F-8E4F-D4F9F02D99C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16FA3318-DDEB-462F-8E4F-D4F9F02D99C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F837B851-0A69-4D24-8AF3-9A1E7959F142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F837B851-0A69-4D24-8AF3-9A1E7959F142}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F837B851-0A69-4D24-8AF3-9A1E7959F142}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F837B851-0A69-4D24-8AF3-9A1E7959F142}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B8D71B38-6287-46E0-9241-1DCC5884EF55} = {E3CAF09E-E185-4B24-A6E3-D840BDA6A21C}

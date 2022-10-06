@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using ASPNET6Test;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using NET6LibTest;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +52,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseMiddleware<TestMiddleware>();
 
+app.MapGet("/api/query-arr", ([FromQuery] ArrayParser sizes) => sizes.Value);
 app.MapGet("/test", () => Results.Ok("Hello World!"))
     .RequireCustomAuth("TestMeta");
 
@@ -58,6 +60,20 @@ app.MapControllers();
 
 app.Run();
 
+public class ArrayParser
+{
+    public string[] Value { get; init; }
+
+    public static bool TryParse(string? value, out ArrayParser result)
+    {
+        result = new()
+        {
+            Value = value?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()
+        };
+
+        return true;
+    }
+}
 public class Test
 {
     public string Name { get; set; }
