@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using System.Reflection;
 using ASPNET6Test;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using NET6LibTest;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,18 +13,15 @@ builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfiles(new[] { new MappingProfile() });
 });
-
-
+;
 
 // services.AddTransient<IFooService, AFooService>();
 services.AddHttpClient<AFooService>((provider, client) => {client.BaseAddress = new Uri("https://localhost:44300");});
 services.AddTransient<IFooService>(provider => provider.GetRequiredService<AFooService>());
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 app.Use(async (context, next) =>
 {
@@ -54,10 +53,34 @@ app.UseMiddleware<TestMiddleware>();
 app.MapGet("/test", () => Results.Ok("Hello World!"))
     .RequireCustomAuth("TestMeta");
 
+
+app.MapGet("/products/{id}", (GetProductByIdRequestDto request) => request);
 app.MapControllers();
 
 app.Run();
 
+public enum SubscriberKind
+{
+    UserTrades
+}
+
+public class GetProductByIdRequestDto
+{
+    public string Id { get; set; }
+
+    public static ValueTask<GetProductByIdRequestDto?> BindAsync(HttpContext context,
+        ParameterInfo parameter)
+    {
+        const string idKey = "id";
+
+        var result = new GetProductByIdRequestDto
+        {
+            Id = context.Request.RouteValues[idKey]?.ToString()
+        };
+
+        return ValueTask.FromResult<GetProductByIdRequestDto?>(result);
+    }
+}
 public class Test
 {
     public string Name { get; set; }
