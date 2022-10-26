@@ -1,9 +1,13 @@
 using System.Diagnostics;
+using System.Reflection.Metadata;
 using System.Reflection;
 using ASPNET6Test;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.OpenApi.Models;
 using NET6LibTest;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -50,7 +54,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseMiddleware<TestMiddleware>();
 
-app.MapGet("/api/query-arr", ([FromQuery] ArrayParser sizes) => sizes.Value);
+app.MapGet("/api/query-arr", (ArrayParser sizes) => sizes.Value);
 app.MapGet("/test", () => Results.Ok("Hello World!"))
     .RequireCustomAuth("TestMeta");
 
@@ -152,3 +156,5 @@ public class AFooService : IFooService
         X = httpClient.BaseAddress;
     }
 }
+
+    

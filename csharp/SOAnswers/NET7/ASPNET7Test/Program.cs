@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,4 +24,23 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/api/query-arr", (ArrayParser sizes) => sizes.Value);
+
+app.MapControllers();
+
 app.Run();
+
+public class ArrayParser
+{
+    public string[] Value { get; init; }
+
+    public static bool TryParse(string? value, out ArrayParser result)
+    {
+        result = new()
+        {
+            Value = value?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()
+        };
+
+        return true;
+    }
+}
