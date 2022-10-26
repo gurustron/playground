@@ -10,6 +10,19 @@ using System.Threading.Channels;
 using OneOf;
 using Moq;
 
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+var @do = Do();
+
+byte[] Do()
+{
+    var bytes = new byte[8];
+    var cast = MemoryMarshal.Cast<byte, uint>(bytes.AsSpan());
+    uint value = 0xFF_CC_BB_AA;
+    cast.Fill(value);
+    return bytes;
+}
 
 IEnumerator<int> e = CountTo(5);
 string json = JsonSerializer.Serialize(e, new JsonSerializerOptions
@@ -72,6 +85,29 @@ Console.WriteLine(sw.ElapsedMilliseconds);
 
 Console.WriteLine(Convert.ToUInt32("111",2));
 Console.WriteLine();
+
+
+public interface IContext
+{
+    object? MainObject { get; }
+}
+
+public interface IContext<T> : IContext
+{
+    new T? MainObject { get; set; }
+}
+
+public class Context<T> : IContext<T>
+{
+    public T? MainObject { get; set; }
+    object? IContext.MainObject => MainObject;
+
+    public Context(T? obj)
+    {
+        MainObject = obj;
+    }
+}
+
 public class BaseValidator
 {
     public BaseValidator(Context context) {}

@@ -2,7 +2,16 @@ using Autofac;
 using Autofac.Features.Indexed;
 
 namespace SOAnswers.Tests.AutofacTests;
+class Person
+{
+    private string _name;
 
+    public string Name
+    {
+        get => _name;
+        set => _name = value;
+    }
+}
 public class AutofacKeyed
 {
     [Test]

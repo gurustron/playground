@@ -46,7 +46,8 @@ using (var scope = serviceProvider.CreateScope())
 
 using (var scope = serviceProvider.CreateScope())
 {
-    var ctx = scope.ServiceProvider.GetService<SomeContext>();
+    var ctx = scope.ServiceProvider.GetRequiredService<SomeContext>();
+
     var message = ctx.Messages.First();
     var addresses = ctx.Addresses
         .Include(a => a.SecondaryPeopleAddresses)
@@ -54,6 +55,48 @@ using (var scope = serviceProvider.CreateScope())
     var listAsync = await ctx.Images
         .Where(i => !i.Messages.Any() || i.Messages.Any(m => m.MessageId == message.MessageId))
         .ToListAsync();
+}
+Console.WriteLine(Domains.GetRole(1));
+
+class Item
+{
+    
+}
+
+class Weapon: Item
+{
+    
+}
+static class Domains
+{
+    public static DomainRole GetRole(ushort? role)
+    {
+
+        IEnumerable<int> x = new Queue<int>();
+
+        Parallel.ForEachAsync(x, new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 3
+        }, async (i, token) => await Task.Delay(i * 1000, token));
+        
+
+        return role switch
+        {
+            >= 0 and <= 5 => (DomainRole)role,
+            _             => DomainRole.Unknown
+        };
+    }
+}
+
+enum DomainRole
+{
+    Unknown                 = -1,
+    StandaloneWorkstation   = 0,
+    MemberWorkstation       = 1,
+    StandaloneServer        = 2,
+    MemberServer            = 3,
+    BackupDomainController  = 4,
+    PrimaryDomainController = 5
 }
 
 public class SomeContext : DbContext
