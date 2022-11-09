@@ -12,13 +12,15 @@ namespace LeetCode
                 return Intersect(nums2, nums1);
             }
 
+            new List<int>().Contains(1);
             var dictionary = nums2
                 .GroupBy(i => i)
                 .ToDictionary(g => g.Key, g => g.Count());
             var result = new List<int>(nums1.Length);
             foreach (var n in nums1)
             {
-                if (dictionary.ContainsKey(n) && dictionary[n] > 0)
+                // if (dictionary.ContainsKey(n) && dictionary[n] > 0)
+                if(dictionary.TryGetValue(n, out var count) && count > 0)
                 {
                     result.Add(n);
                     dictionary[n] -= 1;
