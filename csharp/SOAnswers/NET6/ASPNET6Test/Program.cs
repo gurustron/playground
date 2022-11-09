@@ -3,6 +3,7 @@ using System.Reflection.Metadata;
 using System.Reflection;
 using ASPNET6Test;
 using AutoMapper;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
@@ -26,7 +27,28 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("x-correlation-id");
+    logging.ResponseHeaders.Add("x-correlation-id");
+});
+
+
 var app = builder.Build();
+
+
+
+app.Use(async (context, nextMiddleware) =>
+{
+    if (context.Response.Headers.ContainsKey("x-correlation-id"))
+        context.Response.Headers["x-correlation-id"] = "test " + context.Request.Headers["x-correlation-id"];
+    else
+        context.Response.Headers.Add("x-correlation-id", "test " + context.Request.Headers["x-correlation-id"]);
+    await nextMiddleware();
+    var responseHeader = context.Response.Headers["x-correlation-id"];
+});
+app.UseHttpLogging();
 app.Use(async (context, next) =>
 {
     Stopwatch watch = new Stopwatch();
@@ -56,7 +78,8 @@ app.UseMiddleware<TestMiddleware>();
 
 app.MapGet("/api/query-arr", (ArrayParser sizes) => sizes.Value);
 app.MapGet("/test", () => Results.Ok("Hello World!"))
-    .RequireCustomAuth("TestMeta");
+    // .RequireCustomAuth("TestMeta")
+    ;
 
 
 app.MapGet("/products/{id}", (GetProductByIdRequestDto request) => request);
