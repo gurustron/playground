@@ -17,10 +17,7 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
 
 using (var scope = serviceProvider.CreateScope())
 {
-    var ctx = scope.ServiceProvider.GetService<SomeContext>();
-    var migrator = ctx.GetInfrastructure().GetService<IMigrator>();
-
-    migrator.Migrate();
+    var ctx = scope.ServiceProvider.GetRequiredService<SomeContext>();
     ctx.Database.EnsureDeleted();
     ctx.Database.EnsureCreated();
     ctx.Persons.Add(new Person { PrimaryAddress = new Address(), SecondaryAddress = new Address()});
@@ -49,6 +46,9 @@ using (var scope = serviceProvider.CreateScope())
     var ctx = scope.ServiceProvider.GetRequiredService<SomeContext>();
 
     var message = ctx.Messages.First();
+    message.MessageText = "'asdads:";
+    var modified = ctx.Entry(message).Members.Where(m => m.IsModified)
+        .ToList();
     var addresses = ctx.Addresses
         .Include(a => a.SecondaryPeopleAddresses)
         .ToList();

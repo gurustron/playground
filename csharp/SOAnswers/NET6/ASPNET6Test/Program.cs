@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Reflection;
+using System.Text;
 using ASPNET6Test;
 using AutoMapper;
 using Microsoft.AspNetCore.HttpLogging;
@@ -75,12 +76,28 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.UseMiddleware<TestMiddleware>();
-
+app.MapPost("/query", async (HttpContext context, ILogger<Program> _) => await Fails1(context));
+static async Task<string> Fails1(HttpContext context)
+{
+    using StreamReader reader = new StreamReader(context.Request.Body, Encoding.UTF8);
+    var query = await reader.ReadToEndAsync();
+    var response = await Task.FromResult(query + " response");
+    return response;
+}
+app.Map("Hello/{*rest}", (HttpRequest request, string rest) => $"Hello, World! Request: {request.Method} -> {rest}").WithName("Hello");
+app.Map("/test1", (HttpRequest request, CancellationToken ct) => "`test1`").WithName("test1").WithDisplayName("asasdasd");
 app.MapGet("/api/query-arr", (ArrayParser sizes) => sizes.Value);
 app.MapGet("/test", () => Results.Ok("Hello World!"))
     // .RequireCustomAuth("TestMeta")
     ;
-
+var query = new[]{new {StudentEmail = ""}}.GroupBy(
+        k => k.StudentEmail,
+        (baseEmail, emails) => new
+        {
+            Key = baseEmail,
+            Count = emails.Count(),
+        })
+    .OrderByDescending(at => at.Count);
 
 app.MapGet("/products/{id}", (GetProductByIdRequestDto request) => request);
 app.MapControllers();
@@ -128,6 +145,29 @@ public class Test
     public string Name { get; set; }
     public string Description { get; set; }
     public int I { get; set; }
+
+    public static Func<TIn?, TIn?, TIn?> Drop2<TIn>(Func<TIn, TIn, TIn> f) where TIn : struct
+    {
+        return (lhs, rhs) =>
+        {
+            if (lhs == null && rhs == null)
+            {
+                return default;
+            }
+
+            if (lhs == null && rhs != null)
+            {
+                return rhs;
+            }
+
+            if (rhs == null && lhs != null)
+            {
+                return lhs;
+            }
+
+            return f(lhs.Value, rhs.Value);
+        };
+    }
 }
 
 class MappingProfile : Profile
