@@ -3,20 +3,22 @@ using LeetCode;
 using LeetCode.Study.DataStructure.DataStructureOne;
 
 Console.WriteLine("Hello World!");
+
+var searchMatrix = new Search2DMatrix().SearchMatrix(new[] { new[] { 1, 3 } }, 3);
 // new ReshapetheMatrix().MatrixReshape(new []{new[]{1,2},new[]{3,4}}, 4, 1);
 // var generate = new PascalsTriangle().Generate(5);
-var f = new ValidSudoku().IsValidSudoku(new[]
-{
-    new[] { '.', '.', '4', '.', '.', '.', '6', '3', '.' }, 
-    new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' },
-    new[] { '5', '.', '.', '.', '.', '.', '.', '9', '.' }, 
-    new[] { '.', '.', '.', '5', '6', '.', '.', '.', '.' },
-    new[] { '4', '.', '3', '.', '.', '.', '.', '.', '1' },
-    new[] { '.', '.', '.', '7', '.', '.', '.', '.', '.' },
-    new[] { '.', '.', '.', '5', '.', '.', '.', '.', '.' },
-    new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' },
-    new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' }
-});
+// var f = new ValidSudoku().IsValidSudoku(new[]
+// {
+//     new[] { '.', '.', '4', '.', '.', '.', '6', '3', '.' }, 
+//     new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' },
+//     new[] { '5', '.', '.', '.', '.', '.', '.', '9', '.' }, 
+//     new[] { '.', '.', '.', '5', '6', '.', '.', '.', '.' },
+//     new[] { '4', '.', '3', '.', '.', '.', '.', '.', '1' },
+//     new[] { '.', '.', '.', '7', '.', '.', '.', '.', '.' },
+//     new[] { '.', '.', '.', '5', '.', '.', '.', '.', '.' },
+//     new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' },
+//     new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' }
+// });
 Console.WriteLine();
 // var solution = new MaximumSubarraySolution().MaxSubArray(new []{-2,1,-3,4,-1,2,1,-5,4});
 // Console.WriteLine(solution);
