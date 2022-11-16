@@ -2,4 +2,4 @@
 
 Console.WriteLine("Hello, World!");
 
-SerializePrivateFields.Do();
+PolymorphicSerialization.Do();
