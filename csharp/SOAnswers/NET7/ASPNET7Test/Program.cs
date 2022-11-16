@@ -1,11 +1,15 @@
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks.Dataflow;
+using ASPNET7Test;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-
-var builder = WebApplication.CreateBuilder(args);
+using Prometheus;
 
 // Add services to the container.
 
+var builder = WebApplication.CreateBuilder(args);
+var eName = builder.Environment.EnvironmentName;
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -20,6 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapMetrics();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -45,4 +50,19 @@ public class ArrayParser
 
         return true;
     }
+    
+    TransformBlock<TIn, TOut> MakeTransformBlock<TIn, TOut>( Func<TIn, TOut> f )
+    {
+        return new TransformBlock<TIn, TOut>( f );
+    }
+
+    void TestIt( )
+    {
+        var d = StringToUpper;
+
+        var block2 = MakeTransformBlock<string, string>( StringToUpper );
+        var block3 = MakeTransformBlock( d );
+    }
+
+    static string StringToUpper( string input ) => input.ToUpper( );
 }
