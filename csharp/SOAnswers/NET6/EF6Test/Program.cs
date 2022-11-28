@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System.ComponentModel.DataAnnotations;
+using System.Net.Sockets;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -18,6 +19,9 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
 using (var scope = serviceProvider.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<SomeContext>();
+    var migrator = ctx.GetInfrastructure().GetRequiredService<IMigrator>();
+
+    migrator.Migrate();
     ctx.Database.EnsureDeleted();
     ctx.Database.EnsureCreated();
     ctx.Persons.Add(new Person { PrimaryAddress = new Address(), SecondaryAddress = new Address()});
@@ -44,7 +48,7 @@ using (var scope = serviceProvider.CreateScope())
 using (var scope = serviceProvider.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<SomeContext>();
-
+    
     var message = ctx.Messages.First();
     message.MessageText = "'asdads:";
     var modified = ctx.Entry(message).Members.Where(m => m.IsModified)
@@ -57,8 +61,30 @@ using (var scope = serviceProvider.CreateScope())
         .ToListAsync();
 }
 Console.WriteLine(Domains.GetRole(1));
+GetAllBySampleUniqueId(1);
+GetAllBySampleUniqueId(2);
 
-class Item
+Address? GetAllBySampleUniqueId(int uniqueId)
+{
+
+    using (SomeContext db = new(new DbContextOptions<SomeContext>()))
+    {
+        var dbSample = db.Persons.Include(x => x.PrimaryAddress)
+            .Include(x => x.SecondaryAddress)
+            .FirstOrDefault(x => x.SecondaryAddressId == uniqueId);
+
+        if (dbSample == null)
+        {
+            return null;
+        }
+
+        var dbResults = dbSample.PrimaryAddress;
+        return dbResults;
+    }
+}
+
+
+    class Item
 {
     
 }
@@ -105,11 +131,11 @@ public class SomeContext : DbContext
     {
     }
 
-    public DbSet<Message> Messages { get; set; }
-    public DbSet<Image> Images { get; set; }
+    public DbSet<Message> Messages => Set<Message>();
+    public DbSet<Image> Images => Set<Image>();
 
-    public DbSet<Person> Persons { get; set; }
-    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Person> Persons => Set<Person>();
+    public DbSet<Address> Addresses => Set<Address>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -127,7 +153,7 @@ public class Message
 {
     public int MessageId { get; set; }
     public string MessageText { get; set; }
-    public ICollection<Image> Images { get; set; }
+    public ICollection<Image> Images { get; set; } = new HashSet<Image>();
 }
 
 public class Image
@@ -136,7 +162,7 @@ public class Image
 
     [Required] [StringLength(2048)] public string Path { get; set; }
 
-    public virtual ICollection<Message> Messages { get; set; }
+    public virtual ICollection<Message> Messages { get; set; } = new HashSet<Message>();
 }
 
     public class Person
@@ -157,3 +183,4 @@ public class Image
         public List<Person> PrimaryPeopleAddresses { get; set; } = new();
         public List<Person> SecondaryPeopleAddresses { get; set; } = new();
     }
+

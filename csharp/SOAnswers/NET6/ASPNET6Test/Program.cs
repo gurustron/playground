@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Reflection;
 using System.Text;
+using System.Security.Principal;
 using ASPNET6Test;
 using AutoMapper;
 using Microsoft.AspNetCore.HttpLogging;
@@ -11,7 +12,11 @@ using Microsoft.OpenApi.Models;
 using NET6LibTest;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IPrincipal>(
+    (sp) => sp.GetService<IHttpContextAccessor>()?.HttpContext?.User
+);
 var services = builder.Services;
 // Add services to the container.
 builder.Services.AddSingleton<SomeLibraryClass>();
@@ -24,7 +29,7 @@ builder.Services.AddAutoMapper(cfg =>
 // services.AddTransient<IFooService, AFooService>();
 services.AddHttpClient<AFooService>((provider, client) => {client.BaseAddress = new Uri("https://localhost:44300");});
 services.AddTransient<IFooService>(provider => provider.GetRequiredService<AFooService>());
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -71,11 +76,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 
 app.UseAuthorization();
 app.UseMiddleware<TestMiddleware>();
+
+app.MapGet("/sensor/sensor:{sensorId}/measurement", (int sensorId) =>
+{
+    return Results.Ok(sensorId);
+});
+
 app.MapPost("/query", async (HttpContext context, ILogger<Program> _) => await Fails1(context));
 static async Task<string> Fails1(HttpContext context)
 {
@@ -98,7 +109,6 @@ var query = new[]{new {StudentEmail = ""}}.GroupBy(
             Count = emails.Count(),
         })
     .OrderByDescending(at => at.Count);
-
 app.MapGet("/products/{id}", (GetProductByIdRequestDto request) => request);
 app.MapControllers();
 
@@ -219,5 +229,22 @@ public class AFooService : IFooService
         X = httpClient.BaseAddress;
     }
 }
+
+public interface IPrincipalProvider
+{
+    IPrincipal? Principal { get; }
+}
+
+public class PrincipalProvider : IPrincipalProvider
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public PrincipalProvider(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+    public IPrincipal? Principal => _httpContextAccessor.HttpContext?.User;
+}
+
 
     

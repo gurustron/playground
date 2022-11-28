@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reactive.Linq;
@@ -12,7 +13,19 @@ using Moq;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
 
+var query = $@"
+query {{
+    projects (hubId: ""{1}"") {{
+        results {{
+            id
+            name
+        }}
+    }}
+}}";
+var isNumberNotPrefixedWith0 = Regex.IsMatch("00", @"^(0|[1-9]\d*)$");
 var @do = Do();
 
 byte[] Do()
@@ -91,6 +104,7 @@ public interface IContext
 {
     object? MainObject { get; }
 }
+
 
 public interface IContext<T> : IContext
 {
@@ -185,3 +199,40 @@ public class Part : IEquatable<Part>
     
 }
 
+interface ICommand<TArgs, TData>
+    where TArgs : ICommandArgs
+    where TData : ICommandData
+{
+    TArgs Arguments { get; }
+}
+interface ICommandArgs {}
+interface ICommandData {}
+
+class AddCommand : ICommand<AddCommand.Args, AddCommand.Data> {
+    public class Args : ICommandArgs {}
+    class Data : ICommandData {}
+
+    public Args Arguments { get; }
+}
+class ListCommand : ICommand<ListCommand.Args, ListCommand.Data> {
+    public class Args : ICommandArgs {}
+    public class Data : ICommandData {}
+    
+    public Args Arguments { get; init; }
+}
+
+class CSender
+{
+    public void doSomething()
+    {
+        SendCommand(new ListCommand{Arguments = new ListCommand.Args()});
+        Console.WriteLine("doSomething");
+    }
+    TData SendCommand<TArgs, TData>(ICommand<TArgs, TData> command)
+        where TArgs : ICommandArgs
+        where TData : ICommandData
+    {
+        var args = command.Arguments;
+        return default;
+    }
+}

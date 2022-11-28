@@ -1,7 +1,10 @@
 var builder = WebApplication.CreateBuilder(args);
-
+var s = builder.Configuration["MY:secret"];
+var environmentVariable = Environment.GetEnvironmentVariable("MY__SECRET");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
 
 var app = builder.Build();
 
