@@ -22,6 +22,15 @@ public class SerializePrivateFields
         };
         var serialize = JsonSerializer.Serialize(human, jsonSerializerOptions);
         var deserialize = JsonSerializer.Deserialize<Human>(serialize, jsonSerializerOptions);
+        var human1 = JsonSerializer.Deserialize<Human>(
+            """
+            {
+                "_age":1,
+                "_name":"name"
+            }
+            """,
+            jsonSerializerOptions
+        );
     }
     
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
@@ -97,7 +106,7 @@ public class SerializePrivateFields
 
         if (!jsonTypeInfo.Type.IsDefined(typeof(JsonIncludePrivateFieldsAttribute), inherit: false))
             return;
-
+        
         foreach (FieldInfo field in jsonTypeInfo.Type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
         {
             if (field.IsDefined(typeof(CompilerGeneratedAttribute)))
@@ -107,9 +116,13 @@ public class SerializePrivateFields
             JsonPropertyInfo jsonPropertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(field.FieldType, field.Name);
             jsonPropertyInfo.Get = field.GetValue;
             jsonPropertyInfo.Set = field.SetValue;
-
+            jsonPropertyInfo.IsRequired = true;
             jsonTypeInfo.Properties.Add(jsonPropertyInfo);
         }
+        
+        var propertyInfo = jsonTypeInfo.CreateJsonPropertyInfo(typeof(string), "$version_prop");
+        propertyInfo.Get = o => "v0";
+        jsonTypeInfo.Properties.Add(propertyInfo);
     }
 
 }

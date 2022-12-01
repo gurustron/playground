@@ -13,6 +13,18 @@ using NET6LibTest;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 
+IServiceCollection sc = new ServiceCollection();
+
+sc.AddTransient(typeof(IBase<>), typeof(BaseGeneric<>));
+sc.AddTransient(typeof(IBase<Config>), typeof(Base));
+var serviceProvider = sc.BuildServiceProvider();
+var type2 = serviceProvider.GetType();
+var services2 = serviceProvider.GetServices(typeof(IBase<Config>));
+
+foreach (var s in services2){
+    Console.WriteLine(s.GetType());
+}
+Console.WriteLine();
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IPrincipal>(
     (sp) => sp.GetService<IHttpContextAccessor>()?.HttpContext?.User
@@ -41,7 +53,19 @@ builder.Services.AddHttpLogging(logging =>
 });
 
 
+builder.Services.AddTransient(typeof(IBase<>), typeof(BaseGeneric<>));
+builder.Services.AddTransient(typeof(IBase<Config>), typeof(Base));
+
+var type = builder.Services.GetType();
+
 var app = builder.Build();
+var type1 = app.Services.GetType();
+var services1 = app.Services.GetServices(typeof(IBase<Config>));
+
+foreach (var s in services1)
+{
+    Console.WriteLine(s.GetType());
+}
 
 
 
@@ -114,11 +138,10 @@ app.MapControllers();
 
 app.Run();
 
-public enum SubscriberKind
-{
-    UserTrades
-}
-
+public class Config { }
+public interface IBase<T> { }
+public class BaseGeneric<T> : IBase<T> { }
+public class Base : IBase<Config> { }
 public class GetProductByIdRequestDto
 {
     public string Id { get; set; }

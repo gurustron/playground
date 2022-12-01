@@ -23,14 +23,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = "localhost";
-    options.InstanceName = "SampleInstance";
-});
+builder.Services.AddOutputCache();
+
 builder.Services.AddValidatorsFromAssemblyContaining<ExampleValidator>();
 var app = builder.Build();
-
+app.UseOutputCache();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -46,6 +43,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/api/test-cache", () => DateTime.UtcNow.ToString("O")).CacheOutput();
 app.MapGet("/api/query-arr", (ArrayParser sizes) => sizes.Value);
     
 app.MapPost("api/user", (Example e) =>  e )
