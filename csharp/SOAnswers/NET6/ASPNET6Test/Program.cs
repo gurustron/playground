@@ -30,6 +30,8 @@ builder.Services.AddScoped<IPrincipal>(
     (sp) => sp.GetService<IHttpContextAccessor>()?.HttpContext?.User
 );
 var services = builder.Services;
+
+
 // Add services to the container.
 builder.Services.AddSingleton<SomeLibraryClass>();
 builder.Services.AddAutoMapper(cfg =>
@@ -268,6 +270,3 @@ public class PrincipalProvider : IPrincipalProvider
     }
     public IPrincipal? Principal => _httpContextAccessor.HttpContext?.User;
 }
-
-
-    

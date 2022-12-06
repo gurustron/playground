@@ -15,18 +15,15 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.DependencyInjection;
+IServiceCollection sc = new ServiceCollection();
+sc.AddScoped<IScoped, Scoped>();
+sc.AddTransient<ITransient, Transient>();
 
-var query = $@"
-query {{
-    projects (hubId: ""{1}"") {{
-        results {{
-            id
-            name
-        }}
-    }}
-}}";
-var isNumberNotPrefixedWith0 = Regex.IsMatch("00", @"^(0|[1-9]\d*)$");
-var @do = Do();
+var serviceProvider = sc.BuildServiceProvider(validateScopes: true);
+
+// var transient = serviceProvider.GetService<ITransient>();
+
 
 byte[] Do()
 {
@@ -103,6 +100,28 @@ Console.WriteLine();
 public interface IContext
 {
     object? MainObject { get; }
+}
+
+public interface ITransient
+{
+}
+
+class Transient : ITransient
+{
+    private readonly IScoped _scoped;
+
+    public Transient(IScoped scoped)
+    {
+        _scoped = scoped;
+    }
+}
+
+interface IScoped
+{
+}
+
+class Scoped : IScoped
+{
 }
 
 

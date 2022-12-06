@@ -12,13 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.Extensions.Options;
 using Prometheus;
-PropertyInfo prop = typeof(Example).GetProperty("Value");
-var optionalCustomModifiers = prop.GetOptionalCustomModifiers();
-var requiredCustomModifiers = prop.GetRequiredCustomModifiers();
 var builder = WebApplication.CreateBuilder(args);
-
-
-var eName = builder.Environment.EnvironmentName;
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -203,4 +197,3 @@ class Fraction<T> :
     public static Fraction<T> operator /(Fraction<T> left, Fraction<T> right) =>
         new(left.Numerator * right.Denominator, left.Denominator * right.Numerator);
 }
-
