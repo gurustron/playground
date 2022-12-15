@@ -8,6 +8,7 @@ using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks.Dataflow;
 using ASPNET7Test;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.Extensions.Options;
@@ -18,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOutputCache();
-
+builder.Services.AddRequestLocalization(options => options.DefaultRequestCulture = new RequestCulture("en-GB"));
 builder.Services.AddValidatorsFromAssemblyContaining<ExampleValidator>();
 var app = builder.Build();
 app.UseOutputCache();
@@ -31,8 +32,9 @@ if (app.Environment.IsDevelopment())
 
 app.MapMetrics();
 
-app.UseHttpsRedirection();
-
+// app.UseHttpsRedirection();
+app.UseRequestLocalization();
+app.UseRequestLocalization(new RequestLocalizationOptions());
 app.UseAuthorization();
 
 app.MapControllers();
@@ -46,7 +48,7 @@ app.MapPost("api/user", (Example e) =>  e )
     ;
 
 app.MapControllers();
-
+app.UseRequestLocalization();
 app.Run();
 
 public class ArrayParser

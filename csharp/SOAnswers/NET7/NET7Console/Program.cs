@@ -1,15 +1,15 @@
 ﻿using System.Numerics;
 using NET7Console.GenericMathPlayground;
+using NET7Console.MemoryCacheStats;
 using NET7Console.SystemTextJsonTests;
 
 Console.WriteLine("Hello, World!");
 
-GenSum(1, 2);
-var res = GenSum(1, 2.0);
-var add15 = Add15(1.0);
+MemoryCacheStatsPlay.Do();
+
+StaticAbstractInterfacesStuff.Do();
 Console.WriteLine(3/4);
 Console.WriteLine(NonIntegerDivision(3,4));
-StaticAbstractInterfacesStuff.Do();
 ReadOnlySpan<Char> s1 = "true false"[0..4];
 ReadOnlySpan<Char> s2 = "true";
 Console.WriteLine(s1 == s2);
