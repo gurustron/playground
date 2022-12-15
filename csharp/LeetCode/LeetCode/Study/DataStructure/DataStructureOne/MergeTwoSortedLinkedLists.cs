@@ -47,7 +47,6 @@ public class MergeTwoSortedLinkedLists
         return head;
     }
 
-    // [DebuggerVisualizer()]
     [DebuggerDisplay("{ToString()}")]
     public class ListNode
     {
