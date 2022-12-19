@@ -4,7 +4,10 @@ using LeetCode;
 using LeetCode.Study.DataStructure.DataStructureOne;
 
 Console.WriteLine("Hello World!");
-
+var s = new Start<B>();
+s.list.Add(new B(1, 2));
+Console.WriteLine(s.list[0].b);
+Console.WriteLine("{0} {1}", s.list[0], s.list[1]);
 var isValid = new ValidParentheses().IsValid("()");
 
 // new MergeTwoSortedLinkedLists().MergeTwoLists(null, null);
@@ -52,3 +55,36 @@ Console.WriteLine();
 
 void PrintResult(int[] array) => Console.WriteLine(array.ToPrintVersion());
 
+class Start<T> where T: Base
+{
+    public List<T> list { get; set; }
+    public Start() 
+    {
+        list = new List<T>();
+    }
+}
+
+public abstract class Base
+{
+    public int a { get; set; }
+}
+
+class B : Base
+{
+    public int b;
+    public B(int a, int b) { this.a = a; this.b = b; }
+    public override string ToString()
+    {
+        return $"B(A: {a} B: {b})";
+    }
+}
+
+class C : Base
+{
+    public int c;
+    public C(int a, int c) { this.a = a; this.c = c; }
+    public override string ToString()
+    {
+        return $"C(A: {a} B: {c})";
+    }
+}
