@@ -25,7 +25,9 @@ public partial class RegexBenchs
     [GeneratedRegex("abc|def", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
     private static partial Regex AbcOrDefGeneratedRegex();
     
-    
+    [GeneratedRegex("abc|def", RegexOptions.IgnoreCase, "en-US")]
+    private static partial Regex AbcOrDefGeneratedNotCompiledRegex();
+
     [Benchmark]
     public bool CompiledStatic()
     {
@@ -57,6 +59,18 @@ public partial class RegexBenchs
         foreach (var s in _strings)
         {
             result |= AbcOrDefGeneratedRegex().IsMatch(s);
+        }
+
+        return result;
+    }
+    
+    [Benchmark]
+    public bool GeneratedNotCompiled()
+    {
+        bool result = false;
+        foreach (var s in _strings)
+        {
+            result |= AbcOrDefGeneratedNotCompiledRegex().IsMatch(s);
         }
 
         return result;

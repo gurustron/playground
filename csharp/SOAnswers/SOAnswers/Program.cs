@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -16,6 +17,42 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
+
+int couter = 0;
+var concurrentBag = new ConcurrentBag<int>();
+// int maxSimultaneousThreads = 10;
+// var throttler = new SemaphoreSlim(maxSimultaneousThreads, maxSimultaneousThreads); // maxSimultaneousThreads = 10
+var unprocessedDictionary = new ConcurrentDictionary<int, int>();
+for (int i = 0; i < 20; i++)
+{
+    unprocessedDictionary.AddOrUpdate(i, i, (i1, i2) => i);
+}
+
+var tasks = unprocessedDictionary.Select(async key =>
+{
+    try
+    {
+        if (unprocessedDictionary.TryRemove(key.Key, out var item))
+        {
+            var x = Interlocked.Increment(ref couter);
+            concurrentBag.Add(x);
+            await Task.Delay(100);
+        }
+    }
+    catch (Exception ex)
+    {
+        // handle error
+    }
+    finally
+    {
+        
+        Interlocked.Decrement(ref couter);
+    }
+});
+await Task.WhenAll(tasks);
+var max = concurrentBag.Max();
+
+
 IServiceCollection sc = new ServiceCollection();
 sc.AddScoped<IScoped, Scoped>();
 sc.AddTransient<ITransient, Transient>();
