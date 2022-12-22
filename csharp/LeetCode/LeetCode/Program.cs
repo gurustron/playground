@@ -1,12 +1,20 @@
 ﻿using System;using System.Collections.Generic;
 using System.Linq;
 using LeetCode;
+using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 
 Console.WriteLine("Hello World!");
-var isSymmetric = new BinaryTreeIsSymmetric().IsSymmetric(
-    new BinaryTreeIsSymmetric.TreeNode(1, new BinaryTreeIsSymmetric.TreeNode(2),
-        new BinaryTreeIsSymmetric.TreeNode(2)));
+
+var lowestCommonAncestor = new BSTLowestCommonAncestor()
+    .LowestCommonAncestor(
+        new TreeNode(6, new TreeNode(2, new TreeNode(0), new TreeNode(4))),
+        new TreeNode(2),
+        new TreeNode(4));
+
+// var isSymmetric = new BinaryTreeIsSymmetric().IsSymmetric(
+//     new BinaryTreeIsSymmetric.TreeNode(1, new BinaryTreeIsSymmetric.TreeNode(2),
+//         new BinaryTreeIsSymmetric.TreeNode(2)));
 
 
 var isValid = new ValidParentheses().IsValid("()");
