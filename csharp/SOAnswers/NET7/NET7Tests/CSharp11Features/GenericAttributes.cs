@@ -34,6 +34,29 @@ public class GenericAttributes
         var customSingleAttribute2 = testedType.GetCustomAttribute(typeof(GenericSingleAttribute<int>));
         Assert.IsNull(customSingleAttribute2);
     }
+
+    [Test]
+    public void TestGenericAttributesReflectionWithInheritance()
+    {
+        var testedType = typeof(MyClass2);
+        
+        Assert.IsNotNull(testedType.GetCustomAttribute<ChildClosedGenericSingleAttribute>());
+        Assert.IsNotNull(testedType.GetCustomAttribute<ChildOpenGenericSingleAttribute<MyClass2>>());
+        Assert.IsNotNull(testedType.GetCustomAttribute(typeof(ChildOpenGenericSingleAttribute<>)));
+
+        // Maybe surprising but as with non-generic ones - inherited attributes are returned when searched for base one
+        var customAttributesInherited = testedType.GetCustomAttributes(typeof(GenericSingleAttribute<>), inherit: true);
+        var customAttributes = testedType.GetCustomAttributes(typeof(GenericSingleAttribute<>), inherit: false);
+        
+        Assert.That(customAttributesInherited.Length, Is.EqualTo(2));
+        Assert.That(customAttributes.Length, Is.EqualTo(2));
+        var childClosedAttribute = testedType.GetCustomAttribute(typeof(GenericSingleAttribute<int>));
+        Assert.IsNotNull(childClosedAttribute);
+        Assert.That(childClosedAttribute.GetType(), Is.EqualTo(typeof(ChildClosedGenericSingleAttribute)));
+        var childOpenAttribute = testedType.GetCustomAttribute(typeof(GenericSingleAttribute<MyClass2>));
+        Assert.IsNotNull(childOpenAttribute);
+        Assert.That(childOpenAttribute.GetType(), Is.EqualTo(typeof(ChildOpenGenericSingleAttribute<MyClass2>)));
+    }
 }
 
 [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
@@ -46,6 +69,19 @@ file class GenericSingleAttribute<T> : Attribute { }
 [GenericMultiple<MyClass>]
 [GenericMultiple<int>]
 file class MyClass{}
+
+[ChildClosedGenericSingle]
+[ChildOpenGenericSingle<MyClass2>]
+file class MyClass2 {}
+
+file class ChildClosedGenericSingleAttribute : GenericSingleAttribute<int>
+{
+}
+
+file class ChildOpenGenericSingleAttribute<T> : GenericSingleAttribute<T>
+{
+}
+
 
 // var types = testedType.Assembly
 //     .GetTypes()
