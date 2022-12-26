@@ -78,7 +78,7 @@ file class ChildClosedGenericSingleAttribute : GenericSingleAttribute<int>
 {
 }
 
-file class ChildOpenGenericSingleAttribute<T> : GenericSingleAttribute<T>
+file class ChildOpenGenericSingleAttribute<T> : GenericSingleAttribute<T> 
 {
 }
 
