@@ -34,7 +34,6 @@ file class ItemOne : IHaveStatic
     public static string Discriminator => nameof(ItemOne);
 }
 
-
 file class ItemTwo : IHaveStatic
 {
     public static string Discriminator => nameof(ItemTwo);
