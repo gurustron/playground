@@ -1,30 +1,34 @@
+using System;
+
 namespace LeetCode.Study.DataStructure.DataStructureOne;
 
+/// <summary>
+/// https://leetcode.com/problems/maximum-subarray/description/
+/// </summary>
 public class MaximumSubarraySolution
 {
     public int MaxSubArray(int[] nums)
     {
-        var max = int.MinValue;
-        
-        for (int i = 0; i < nums.Length; i++)
+        var tmpArray = new int[nums.Length - 1]; // max of rolling sum and current
+        var rollingSum = 0;
+        for (int i = nums.Length - 1; i > 0 ; i--)
         {
-            var maxI = nums[i];
-            var sum = maxI;
-            for (int j = i + 1; j < nums.Length; j++)
+            var curr = nums[i];
+            rollingSum += curr;
+            if (rollingSum < 0)
             {
-                sum += nums[j];
-                if (sum > maxI)
-                {
-                    maxI = sum;
-                }
+                rollingSum = 0;
             }
-            
-            if(maxI > max)
-            {
-                max = maxI;
-            }
+
+            tmpArray[i - 1] = rollingSum;
         }
-        
-        return max;
+
+        var max = int.MinValue;
+        for (int i = 0; i < nums.Length - 1; i++)
+        {
+            max = Math.Max(max, Math.Max(nums[i], nums[i] + tmpArray[i]));
+        }
+
+        return Math.Max(max, nums[^1]);
     }
 }
