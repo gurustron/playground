@@ -7,7 +7,21 @@ namespace LeetCode.Study.DataStructure.DataStructureOne;
 /// </summary>
 public class MaximumSubarraySolution
 {
-    public int MaxSubArray(int[] nums)
+    public int MaxSubArray(int[] nums) 
+    {
+        int bestSum = int.MinValue;
+        int sum = 0;
+
+        for (int i = 0, n = nums.Length; i < n; i++)
+        {
+            sum = Math.Max(sum + nums[i], nums[i]);
+            bestSum = Math.Max(bestSum, sum);
+        }
+
+        return bestSum;
+    }
+    
+    public int MySolution(int[] nums)
     {
         var tmpArray = new int[nums.Length - 1]; // max of rolling sum and current
         var rollingSum = 0;
