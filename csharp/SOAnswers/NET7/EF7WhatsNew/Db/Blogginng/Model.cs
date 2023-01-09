@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace EF7WhatsNew.Db;
+namespace EF7WhatsNew.Db.Blogginng;
 
 public class Blog
 {
@@ -29,6 +29,7 @@ public class Post
     public DateTime PublishedOn { get; set; }
     public Blog Blog { get; set; } = null!;
     public List<Tag> Tags { get; } = new();
+    public int? AuthorId { get; set; }
     public Author? Author { get; set; }
     // public PostMetadata? Metadata { get; set; }
 }

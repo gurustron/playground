@@ -2,6 +2,7 @@
 
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Reactive.Linq;
@@ -17,6 +18,25 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
+
+
+var dataTable1 = new DataTable();
+dataTable1.Columns.Add("Id");
+dataTable1.Columns.Add("Name");
+dataTable1.Columns.Add("Surname");
+dataTable1.Rows.Add("1", "Mike", "Tyson");
+dataTable1.Rows.Add("2", "John", "Wick");
+dataTable1.PrimaryKey = new [] { dataTable1.Columns["Id"] };
+var dataTable2 = new DataTable();
+dataTable2.Columns.Add("Id");
+dataTable2.Columns.Add("Country");
+dataTable2.Columns.Add("Age");
+
+dataTable2.PrimaryKey = new [] { dataTable2.Columns["Id"] };
+dataTable2.Rows.Add("1", "America", "35");
+dataTable2.Rows.Add("2", "Brasil", "50");
+
+dataTable1.Merge(dataTable2);
 
 int couter = 0;
 var concurrentBag = new ConcurrentBag<int>();

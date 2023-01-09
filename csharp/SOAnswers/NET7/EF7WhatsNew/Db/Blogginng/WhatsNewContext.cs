@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace EF7WhatsNew.Db;
+namespace EF7WhatsNew.Db.Blogginng;
 
 public class WhatsNewContext:DbContext
 {

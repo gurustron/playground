@@ -10,3 +10,4 @@ services:
       - "6432:5432"
     environment:
       POSTGRES_PASSWORD: P@ssword
+    command: ["postgres", "-c", "log_statement=all"]

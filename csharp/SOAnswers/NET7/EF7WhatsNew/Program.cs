@@ -1,12 +1,10 @@
-﻿using System.Net.Mime;
-using EF7WhatsNew.Db;
+﻿using System.Transactions;
+using EF7WhatsNew.Db.Blogginng;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
+using IsolationLevel = System.Transactions.IsolationLevel;
 
 Console.WriteLine("Hello, World!");
-
 
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddDbContext<WhatsNewContext>(builder =>
@@ -54,11 +52,38 @@ using (var scope = serviceProvider.CreateScope())
     Console.Clear();
     ctx.SaveChanges();
     Console.Clear();
+    
+    await ctx.AddAsync(new Blog("MyNONTransaction_Blog"));
+    await ctx.SaveChangesAsync();
+
+    using (var tx = new TransactionScope(TransactionScopeOption.Required,
+               new TransactionOptions { IsolationLevel = IsolationLevel.ReadCommitted },
+               TransactionScopeAsyncFlowOption.Enabled))
+    {
+        await ctx.AddAsync(new Blog("MyTransaction_Blog"));
+        await ctx.SaveChangesAsync();
+    }
+
+    await using (var tx = await ctx.Database.BeginTransactionAsync())
+    {
+        await ctx.AddAsync(new Blog("MyTransaction_Blog"));
+        await ctx.SaveChangesAsync();
+    }
+
+    Console.Clear();
 }
 
 using (var scope = serviceProvider.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
+
+    var post = ctx.Posts.Find(1);
+
+
+    post.AuthorId = 2;
+    ctx.SaveChanges();
+    ctx.Authors.Find(2);
+    // ctx.Authors.Find();
     // var count = ctx.Posts.Count();
     // ctx.Posts
     //     .Where(p => p.Author.Name.StartsWith("John"))
@@ -68,8 +93,8 @@ using (var scope = serviceProvider.CreateScope())
     // ctx.Posts
     //     .Where(p => p.Author.Name.StartsWith("John") && p.Title == "First")
     //     .ExecuteUpdate(p => p.SetProperty(p => p.Title, "First2"));
-    ctx.Posts
-        .Where(p => p.Author.Name.StartsWith("John") && p.Title == "First")
-        .ExecuteUpdate(p => p.SetProperty(p => p.Title, p => p.Title + " Post"));
+    // ctx.Posts
+    //     .Where(p => p.Author.Name.StartsWith("John") && p.Title == "First")
+    //     .ExecuteUpdate(p => p.SetProperty(p => p.Title, p => p.Title + " Post"));
     var posts = ctx.Posts.ToList();
 }
