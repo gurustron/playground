@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using FluentValidation;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Threading.Tasks.Dataflow;
 using ASPNET7Test;
 using Microsoft.AspNetCore.Localization;
@@ -46,9 +47,49 @@ app.MapPost("api/user", (Example e) =>  e )
     .AddEndpointFilter<ValidationFilter<Example>>()
     .WithMetadata(new RuleSetMetadata<Example>("Test"))
     ;
+app.MapGet("/supplier/listen2", () =>
+{
+    bool endpointCalled = false;
+    HttpListener listener = new HttpListener();
+
+    listener.Prefixes.Add("http://localhost:7195/testi2/");
+    listener.Start();
+
+    listener.BeginGetContext(new AsyncCallback(Endpoint2), listener);
+    var timer = new System.Timers.Timer(20000);
+    timer.Elapsed += CloseEndpoint;
+    timer.Start();
+
+    void Endpoint2(IAsyncResult result)
+    {
+        var listener = (HttpListener)result.AsyncState;
+        var context = listener.EndGetContext(result);
+        var request = context.Request;
+        var response = context.Response;
+
+        string responseString = "<HTML><BODY> Hello from Endpoint2!</BODY></HTML>";
+        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+        response.ContentLength64 = buffer.Length;
+        System.IO.Stream output = response.OutputStream;
+        output.Write(buffer, 0, buffer.Length);
+        output.Close();
+
+        endpointCalled = true;
+        listener.BeginGetContext(Endpoint2, listener);
+    }
+    
+    void CloseEndpoint(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        if (!endpointCalled)
+        {
+            listener.Stop();
+        }
+    }
+
+    return Results.Ok(new { message = "Endpoint2 created" });
+});
 
 app.MapControllers();
-app.UseRequestLocalization();
 app.Run();
 
 public class ArrayParser

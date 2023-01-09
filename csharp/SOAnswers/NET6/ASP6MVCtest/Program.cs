@@ -1,10 +1,15 @@
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
+
 var builder = WebApplication.CreateBuilder(args);
 var s = builder.Configuration["MY:secret"];
 var environmentVariable = Environment.GetEnvironmentVariable("MY__SECRET");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
+List<string> values = new List<string?> { null, "", "value" }
+    .Where(x => !string.IsNullOrEmpty(x))
+    .ToList();
 
 var app = builder.Build();
 

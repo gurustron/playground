@@ -11,7 +11,7 @@ public class ErrorViewModel
     void D()
     {
     var v1 = GetValue(2, false);
-    Console.WriteLine(v1.GetHashCode());
+    Console.WriteLine(v1!.GetHashCode());
     var v2 = GetValue(1, true);
     Console.WriteLine(v2.GetHashCode());
     Console.WriteLine(v1.GetHashCode());
