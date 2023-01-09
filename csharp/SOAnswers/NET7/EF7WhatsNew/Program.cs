@@ -1,9 +1,11 @@
 ﻿using System.Transactions;
+using EF7WhatsNew.Db.Animals;
 using EF7WhatsNew.Db.Blogginng;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using IsolationLevel = System.Transactions.IsolationLevel;
 
+await TPCAnimalsRunner.Do();
 Console.WriteLine("Hello, World!");
 
 var serviceCollection = new ServiceCollection();
