@@ -22,6 +22,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddOutputCache();
 builder.Services.AddRequestLocalization(options => options.DefaultRequestCulture = new RequestCulture("en-GB"));
 builder.Services.AddValidatorsFromAssemblyContaining<ExampleValidator>();
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    // options.Cookie.Name = ".AdventureWorks.Session";
+    options.IdleTimeout = TimeSpan.FromSeconds(60);
+    options.Cookie.IsEssential = true;
+});
+
+
 var app = builder.Build();
 app.UseOutputCache();
 // Configure the HTTP request pipeline.
@@ -37,7 +48,7 @@ app.MapMetrics();
 app.UseRequestLocalization();
 app.UseRequestLocalization(new RequestLocalizationOptions());
 app.UseAuthorization();
-
+app.UseSession();
 app.MapControllers();
 
 app.MapGet("/api/test-cache", () => DateTime.UtcNow.ToString("O")).CacheOutput();
