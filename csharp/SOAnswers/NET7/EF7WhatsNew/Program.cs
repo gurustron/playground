@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using IsolationLevel = System.Transactions.IsolationLevel;
 
-await TPCAnimalsRunner.Do();
+// await TPCAnimalsRunner.Do();
 Console.WriteLine("Hello, World!");
 
 var serviceCollection = new ServiceCollection();
@@ -69,6 +69,7 @@ using (var scope = serviceProvider.CreateScope())
     await using (var tx = await ctx.Database.BeginTransactionAsync())
     {
         await ctx.AddAsync(new Blog("MyTransaction_Blog"));
+
         await ctx.SaveChangesAsync();
     }
 
@@ -99,4 +100,8 @@ using (var scope = serviceProvider.CreateScope())
     //     .Where(p => p.Author.Name.StartsWith("John") && p.Title == "First")
     //     .ExecuteUpdate(p => p.SetProperty(p => p.Title, p => p.Title + " Post"));
     var posts = ctx.Posts.ToList();
+    var first = ctx.Posts.First();
+    first.Content = first.Content + " Updated";
+    first.CreatedOn = DateTime.UtcNow.AddDays(7);
+    ctx.SaveChanges();
 }
