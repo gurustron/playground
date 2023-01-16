@@ -5,7 +5,7 @@ using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 
 Console.WriteLine("Hello World!");
-
+var linkedList = new LinkedList<int>();
 var lowestCommonAncestor = new BSTLowestCommonAncestor()
     .LowestCommonAncestor(
         new TreeNode(6, new TreeNode(2, new TreeNode(0), new TreeNode(4))),
