@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
 using ASPNET7Test;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -16,6 +17,8 @@ using Microsoft.Extensions.Options;
 using Prometheus;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
+var services = builder.Services;
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -51,6 +54,9 @@ app.UseAuthorization();
 app.UseSession();
 app.MapControllers();
 
+
+
+app.MapGet("test_uri", (HttpContext context) => context.Request.GetDisplayUrl());
 app.MapGet("/api/test-cache", () => DateTime.UtcNow.ToString("O")).CacheOutput();
 app.MapGet("/api/query-arr", (ArrayParser sizes) => sizes.Value);
     
@@ -60,6 +66,7 @@ app.MapPost("api/user", (Example e) =>  e )
     ;
 app.MapGet("/supplier/listen2", () =>
 {
+   
     bool endpointCalled = false;
     HttpListener listener = new HttpListener();
 

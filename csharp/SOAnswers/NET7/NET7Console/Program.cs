@@ -1,10 +1,12 @@
-﻿using System.Numerics;
+﻿using System.Collections;
+using System.Numerics;
 using NET7Console.GenericMathPlayground;
 using NET7Console.MemoryCacheStats;
 using NET7Console.SystemTextJsonTests;
 
 Console.WriteLine("Hello, World!");
-
+var bindableList = new BindableList<Tuple<string, string>>();
+var objects = (IBindableList<object>)bindableList;
 MemoryCacheStatsPlay.Do();
 
 StaticAbstractInterfacesStuff.Do();
@@ -32,3 +34,20 @@ void Shifts()
     Console.WriteLine((8 >>> 2).ToString("x8"));
     Console.WriteLine((-8 >>> 2).ToString("x8"));
 }
+
+public interface IBindableList<out T> : IReadOnlyList<T> where T : class
+{
+    public event VariantEventHandler<IListModifiedEventArgs<T>>? ListModified;
+}
+public interface IListModifiedEventArgs<out T>
+{
+}
+public class BindableList<T> : IBindableList<T> where T : class
+{
+    public IEnumerator<T> GetEnumerator() => throw new NotImplementedException();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public int Count { get; }
+    public T this[int index] => throw new NotImplementedException();
+    public event VariantEventHandler<IListModifiedEventArgs<T>>? ListModified;
+}
+public delegate void VariantEventHandler<in TEventArgs>(object? sender, TEventArgs e);

@@ -17,9 +17,21 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using ASPNET6Test;
 using Microsoft.Extensions.DependencyInjection;
 
+var weatherForecast = new WeatherForecast
+{
+    Date = DateTime.Parse("2019-08-01"),
+    Summary = "Hot"
+};
 
+string fileName = "WeatherForecast.json";
+using FileStream createStream = File.Create(fileName);
+await JsonSerializer.SerializeAsync(createStream, weatherForecast);
+// await createStream.DisposeAsync();
+
+Console.WriteLine(File.ReadAllText(fileName));
 var dataTable1 = new DataTable();
 dataTable1.Columns.Add("Id");
 dataTable1.Columns.Add("Name");
