@@ -15,6 +15,18 @@ public class WhatsNewContext:DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // modelBuilder.Entity<Post>()
+        //     .UpdateUsingStoredProcedure(
+        //         "Post_Update",
+        //         builder =>
+        //         {
+        //             builder.HasOriginalValueParameter(person => person.Id);
+        //             builder.HasParameter(post => post.Title);
+        //             builder.HasParameter(post => post.Content);
+        //             builder.HasParameter(post => post.AuthorId);
+        //             builder.HasParameter("BlogId");
+        //             builder.HasParameter(post => post.PublishedOn);
+        //         });
         // modelBuilder.Entity<Author>()
         //     .OwnsOne(
         //             author => author.Contact,

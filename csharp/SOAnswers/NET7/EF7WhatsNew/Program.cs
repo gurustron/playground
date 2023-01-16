@@ -1,12 +1,16 @@
 ﻿using System.Transactions;
 using EF7WhatsNew.Db.Animals;
 using EF7WhatsNew.Db.Blogginng;
+using EF7WhatsNew.Misc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using IsolationLevel = System.Transactions.IsolationLevel;
 
+InterceptorTests.Do();
 // await TPCAnimalsRunner.Do();
 Console.WriteLine("Hello, World!");
+
 
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddDbContext<WhatsNewContext>(builder =>
@@ -99,9 +103,11 @@ using (var scope = serviceProvider.CreateScope())
     // ctx.Posts
     //     .Where(p => p.Author.Name.StartsWith("John") && p.Title == "First")
     //     .ExecuteUpdate(p => p.SetProperty(p => p.Title, p => p.Title + " Post"));
-    var posts = ctx.Posts.ToList();
     var first = ctx.Posts.First();
-    first.Content = first.Content + " Updated";
-    first.CreatedOn = DateTime.UtcNow.AddDays(7);
+    first.Title += "Updated";
+    first.Content += "Updated";
+    first.PublishedOn = DateTime.UtcNow.AddDays(1);
     ctx.SaveChanges();
 }
+
+

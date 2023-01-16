@@ -108,10 +108,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseMiddleware<TestMiddleware>();
 
-app.MapGet("/sensor/sensor:{sensorId}/measurement", (int sensorId) =>
-{
-    return Results.Ok(sensorId);
-});
+app.MapGet("/sensor/sensor:{sensorId}/measurement", (int sensorId) => Results.Ok(sensorId));
 
 app.MapPost("/query", async (HttpContext context, ILogger<Program> _) => await Fails1(context));
 static async Task<string> Fails1(HttpContext context)
