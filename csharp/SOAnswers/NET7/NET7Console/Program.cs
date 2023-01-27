@@ -4,6 +4,7 @@ using NET7Console.GenericMathPlayground;
 using NET7Console.MemoryCacheStats;
 using NET7Console.SystemTextJsonTests;
 
+byte b = Convert.ToByte("0xff", 16);
 Console.WriteLine("Hello, World!");
 var bindableList = new BindableList<Tuple<string, string>>();
 var objects = (IBindableList<object>)bindableList;

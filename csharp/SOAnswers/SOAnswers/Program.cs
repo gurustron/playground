@@ -20,6 +20,39 @@ using System.Text.RegularExpressions;
 using ASPNET6Test;
 using Microsoft.Extensions.DependencyInjection;
 
+var divisibleSubset = nonDivisibleSubset(9, new List<int> { 422346306, 940894801, 696810740, 862741861, 85835055, 313720373 });
+Console.WriteLine();
+
+static int nonDivisibleSubset(int k, List<int> s)
+{
+    var x = GetPerm(s);
+
+
+    var y = x.Where(x => x.Value % k != 0).Select(x=>x.Key).ToList();
+    var a = y.SelectMany(x => x).ToHashSet();
+
+    return a.Count();
+
+}
+
+static Dictionary<List<int>,int> GetPerm (List<int> list)
+{
+    var perm = new Dictionary<List<int>, int>(PairListEqComparer.Instance);
+
+    for (int i = 0; i < list.Count; i++)
+    {
+        for (int j = i+1; j < list.Count; j++)
+        {
+            List<int> sumCouple = new List<int>();
+            sumCouple.Add(list[i]);
+            sumCouple.Add(list[j]);
+            perm.Add(sumCouple, sumCouple.Sum());
+        }
+
+    }
+    return perm;
+}
+
 var weatherForecast = new WeatherForecast
 {
     Date = DateTime.Parse("2019-08-01"),
@@ -323,4 +356,21 @@ class CSender
         var args = command.Arguments;
         return default;
     }
+}
+
+class PairListEqComparer : IEqualityComparer<List<int>>
+{
+    public static PairListEqComparer Instance { get; } = new PairListEqComparer();
+
+    public bool Equals(List<int> x, List<int> y)
+    {
+        if (ReferenceEquals(x, y)) return true;
+        if (ReferenceEquals(x, null)) return false;
+        if (ReferenceEquals(y, null)) return false;
+        if (x.Count != 2 || y.Count != 2) return false; // or throw
+
+        return x.Max() == y.Max() && x.Min() == y.Min();
+    }
+
+    public int GetHashCode(List<int> obj) => HashCode.Combine(obj.Max(), obj.Min(), obj.Count);
 }

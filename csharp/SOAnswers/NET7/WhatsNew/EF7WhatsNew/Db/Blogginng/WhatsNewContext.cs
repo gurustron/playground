@@ -8,13 +8,27 @@ public class WhatsNewContext:DbContext
     {
     }
 
-    public DbSet<Author> Authors => Set<Author>();
+    public DbSet<Author> Authors { get; set; }
     public DbSet<Blog> Blogs => Set<Blog>();
     public DbSet<Post> Posts => Set<Post>();
     public DbSet<Tag> Tags => Set<Tag>();
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.Properties<AuthorId>().HaveConversion<AuthorIdConverter>();
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Author>().Property(a => a.Id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<Post>()
+            .HasIndex(post => post.Title)
+            .IsDescending();
+        modelBuilder
+            .Entity<Post>()
+            .HasMany(post => post.Tags)
+            .WithMany();
         // modelBuilder.Entity<Post>()
         //     .UpdateUsingStoredProcedure(
         //         "Post_Update",

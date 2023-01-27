@@ -1,6 +1,18 @@
+using System.Linq.Expressions;
 using System.Net;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EF7WhatsNew.Db.Blogginng;
+
+public record struct AuthorId(int Id);
+
+class AuthorIdConverter : ValueConverter<AuthorId, int>
+{
+    public AuthorIdConverter() : base(aid => aid.Id, i => new AuthorId(i))
+    {
+
+    }
+}
 
 public class Blog
 {
@@ -55,7 +67,7 @@ public class Tag
 
     public string Id { get; private set; }
     public string Text { get; set; }
-    public List<Post> Posts { get; } = new();
+    // public List<Post> Posts { get; } = new();
 }
 
 public class Author
@@ -65,7 +77,7 @@ public class Author
         Name = name;
     }
 
-    public int Id { get; private set; }
+    public AuthorId Id { get; private set; }
     public string Name { get; set; }
     // public ContactDetails? Contact { get; set; } 
     public List<Post> Posts { get; } = new();

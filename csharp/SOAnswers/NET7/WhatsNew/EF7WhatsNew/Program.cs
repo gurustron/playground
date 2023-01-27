@@ -5,17 +5,18 @@ using EF7WhatsNew.Misc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using IsolationLevel = System.Transactions.IsolationLevel;
 
-InterceptorTests.Do();
+// InterceptorTests.Do();
 // await TPCAnimalsRunner.Do();
-Console.WriteLine("Hello, World!");
 
+Console.WriteLine("Hello, World!");
 
 var serviceCollection = new ServiceCollection();
 serviceCollection.AddDbContext<WhatsNewContext>(builder =>
     builder.UseNpgsql("Host=localhost;Port=6432;Database=whatsnewef_db;Username=postgres;Password=P@ssword")
-        .LogTo(Console.WriteLine));
+        .LogTo(Console.WriteLine, LogLevel.Information));
 var serviceProvider = serviceCollection.BuildServiceProvider();
 
 using (var scope = serviceProvider.CreateScope())
@@ -34,7 +35,7 @@ using (var scope = serviceProvider.CreateScope())
             {
                 new Post("First", "Hahaha", DateTime.UtcNow)
                 {
-                    Blog = johnsBlog
+                    Blog = johnsBlog, Tags = { new Tag("data", "data"),new Tag("newcomer", "new author") }
                 },
                 new Post("Second", "Hahaha2", DateTime.UtcNow)
                 {
@@ -83,11 +84,40 @@ using (var scope = serviceProvider.CreateScope())
 using (var scope = serviceProvider.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
+    var posts = ctx.Posts.Include(p => p.Tags).ToList();
+    var authorsWithPosts = ctx.Posts
+        .GroupBy(post => post.Author)
+        .Select(grouping => new { Author = grouping.Key, Posts = string.Join("|", grouping.Select(post => post.Title)) })
+        .ToList();
 
+    // var timeZoneHandling = ctx.Posts
+    //     .Select(
+    //         post => new
+    //         {
+    //             post.Title,
+    //             PacificTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(post.PublishedOn, "America/Denver"),
+    //             UkTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(post.PublishedOn, "GMT"),
+    //         }).ToList();
+    //
+    // var query = ctx.Posts
+    //     .GroupBy(p => p.AuthorId);
+    // await foreach (var group in query.AsAsyncEnumerable())
+    // {
+    //     Console.WriteLine($"Price: {group.Key}; Count = {group.Count()}");
+    // }
+    //5
+    // var query1 = ctx.Posts.GroupJoin(
+    //     ctx.Authors, c => c.AuthorId, o => o.Id, (c, os) => new { Blog = c, Authors = os });
+    //
+    // await foreach (var t in query1.AsAsyncEnumerable())
+    // {
+    //     Console.WriteLine($"Title: {t.Blog.Title};  = {t.Authors.Count()}");
+    // }
+    
     var post = ctx.Posts.Find(1);
 
 
-    post.AuthorId = 2;
+    post!.AuthorId = 2;
     ctx.SaveChanges();
     ctx.Authors.Find(2);
     // ctx.Authors.Find();
@@ -109,5 +139,24 @@ using (var scope = serviceProvider.CreateScope())
     first.PublishedOn = DateTime.UtcNow.AddDays(1);
     ctx.SaveChanges();
 }
+
+public static class BlogsContextExtensions
+{
+    #region FindSiblings
+    public static IEnumerable<TEntity> FindSiblings<TEntity>(
+        this DbContext context, TEntity entity, string navigationToParent)
+        where TEntity : class
+    {
+        var parentEntry = context.Entry(entity).Reference(navigationToParent);
+
+        return context.Entry(parentEntry.CurrentValue!)
+            .Collection(parentEntry.Metadata.Inverse!)
+            .CurrentValue!
+            .OfType<TEntity>()
+            .Where(e => !ReferenceEquals(e, entity));
+    }
+    #endregion
+}
+
 
 
