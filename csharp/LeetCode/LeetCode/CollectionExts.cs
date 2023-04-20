@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace LeetCode
@@ -8,5 +9,7 @@ namespace LeetCode
         {
             return string.Join(", ", col);
         }
+
+        public static void PrintResult<T>(this IEnumerable<T> array) => Console.WriteLine(array.ToPrintVersion());
     }
 }

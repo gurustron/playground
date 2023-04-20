@@ -3,14 +3,21 @@ using System.Linq;
 using LeetCode;
 using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
+using LeetCode.Study.DataStructure.DataStructureTwo;
 
 Console.WriteLine("Hello World!");
-var linkedList = new LinkedList<int>();
-var lowestCommonAncestor = new BSTLowestCommonAncestor()
-    .LowestCommonAncestor(
-        new TreeNode(6, new TreeNode(2, new TreeNode(0), new TreeNode(4))),
-        new TreeNode(2),
-        new TreeNode(4));
+var arr = new[] { new[] { 1, 2 }, new[] { 4, 3 } };
+new RotateImage().Rotate(arr);
+// new PascalsTriangle2Solution().GetRow(0).PrintResult();
+// new PascalsTriangle2Solution().GetRow(1).PrintResult();
+// new PascalsTriangle2Solution().GetRow(2).PrintResult();
+// new PascalsTriangle2Solution().GetRow(3).PrintResult();
+// var linkedList = new LinkedList<int>();
+// var lowestCommonAncestor = new BSTLowestCommonAncestor()
+//     .LowestCommonAncestor(
+//         new TreeNode(6, new TreeNode(2, new TreeNode(0), new TreeNode(4))),
+//         new TreeNode(2),
+//         new TreeNode(4));
 
 // var isSymmetric = new BinaryTreeIsSymmetric().IsSymmetric(
 //     new BinaryTreeIsSymmetric.TreeNode(1, new BinaryTreeIsSymmetric.TreeNode(2),
@@ -62,4 +69,3 @@ Console.WriteLine();
 //     PrintResult(nums);
 // }
 
-void PrintResult(int[] array) => Console.WriteLine(array.ToPrintVersion());
