@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LeetCode.Study.DataStructure.DataStructureTwo;
 
@@ -6,6 +7,7 @@ public class SpiralMatrix2
 {
     public int[][] GenerateMatrix(int n)
     {
+        var collection = new int[1] as ICollection<int>;
         var result = new int[n][];
         for (int i = 0; i < n; i++)
         {
