@@ -6,8 +6,17 @@ using LeetCode.Study.DataStructure.DataStructureOne;
 using LeetCode.Study.DataStructure.DataStructureTwo;
 
 Console.WriteLine("Hello World!");
-var arr = new[] { new[] { 1, 2 }, new[] { 4, 3 } };
-new RotateImage().Rotate(arr);
+var ints = new[]
+{
+    new[] { 1, 4, 7, 11, 15 },
+    new[] { 2, 5, 8, 12, 19 }, 
+    new[] { 3, 6, 9, 16, 22 },
+    new[] { 10, 13, 14, 17, 24 },
+    new[] { 18, 21, 23, 26, 30 }
+};
+var searchMatrix = new Search2DMatrix2().SearchMatrix(ints, 8);
+Console.WriteLine();
+// new RotateImage().Rotate(arr);
 // new PascalsTriangle2Solution().GetRow(0).PrintResult();
 // new PascalsTriangle2Solution().GetRow(1).PrintResult();
 // new PascalsTriangle2Solution().GetRow(2).PrintResult();
