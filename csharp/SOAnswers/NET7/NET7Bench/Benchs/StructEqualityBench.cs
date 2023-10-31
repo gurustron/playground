@@ -47,10 +47,9 @@ public class StructEqualityBench
     public bool ViaVector()
     {
         var r = true;
-        var len = Unsafe.SizeOf<Data>();
         for (int i = 0; i < iterations; i++)
         {
-            r |= UnmanagedExtensions.ViaVector(ref Unsafe.As<Data, byte>(ref left), ref Unsafe.As<Data, byte>(ref right), (uint)len);
+            r |= UnmanagedExtensions.ViaVector(ref Unsafe.As<Data, byte>(ref left), ref Unsafe.As<Data, byte>(ref right), (uint)Unsafe.SizeOf<Data>());
         }
 
         return r;
@@ -73,6 +72,7 @@ public class StructEqualityBench
 
 public static class UnmanagedExtensions
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool CustomEquals<T>(ref T x, ref T y) where T : unmanaged
     {
         var byteSpanX = MemoryMarshal.Cast<T, byte>(MemoryMarshal.CreateReadOnlySpan(ref x, 1));
@@ -80,6 +80,7 @@ public static class UnmanagedExtensions
         return byteSpanX.SequenceEqual(byteSpanY);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ViaVector(ref byte first, ref byte second, uint length)
     {
         nuint offset = 0;
@@ -116,6 +117,7 @@ public struct Data
     public byte b5;
     public byte b6;
     public byte b7;
+    public byte b8;
 }
 
 public struct DataHelper

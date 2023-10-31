@@ -18,6 +18,8 @@ Console.WriteLine("Hello, World!");
 //     new() { b5 = 255 },
 //     new() { b6 = 1 },
 //     new() { b7 = 255 },
+//     new() { b8 = 255 },
+//     new() { b1 = 7, b8 = 255 },
 //     new(),
 // };
 // var y = new Data();
@@ -29,6 +31,7 @@ Console.WriteLine("Hello, World!");
 //     Console.WriteLine(UnmanagedExtensions.ViaVector(ref Unsafe.As<Data, byte>(ref data), ref Unsafe.As<Data, byte>(ref data2), (uint)Unsafe.SizeOf<Data>()));
 //     Console.WriteLine(UnmanagedExtensions.ViaVector(ref Unsafe.As<Data, byte>(ref data), ref Unsafe.As<Data, byte>(ref y), (uint)Unsafe.SizeOf<Data>()));
 // }
+
 var summary = BenchmarkRunner.Run<StructEqualityBench>();
 
 public class CalcBench
