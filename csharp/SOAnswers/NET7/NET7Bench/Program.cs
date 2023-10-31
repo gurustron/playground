@@ -1,5 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
@@ -7,7 +8,59 @@ using NET7Bench.Benchs;
 
 Console.WriteLine("Hello, World!");
 
-var summary = BenchmarkRunner.Run<EnBench>();
+var summary = BenchmarkRunner.Run<StructEqualityBench>();
+
+public class CalcBench
+{
+    const byte hfm = 0b0001_0000;
+  
+    UInt16 operand1 = 0x2;
+    UInt16 operand2 = 0xFFFE;
+    private UInt32 result;
+
+    public CalcBench()
+    {
+        result = (UInt32)(operand1 + operand2);
+    }
+    
+    
+    [Benchmark]
+    public UInt32 First()
+    {
+        UInt32 hf = 0;
+        for (int i = 0; i < 10_000; i++)
+            hf = (((operand1 ^ result ^ operand2) >> 8) & hfm);
+        return hf;
+    }
+
+    [Benchmark]
+    public UInt32 Second()
+    {
+        UInt32 hf = 0;
+        for(int i=0; i < 10_000; i++)
+         hf = (result >> 8) & hfm;
+        return hf;
+    }
+
+    
+    // [Benchmark]
+    // public UInt32 Second1()
+    // {
+    //     UInt32 hf = 0;
+    //     for(int i=0; i < 10_000; i++)
+    //         hf = (result >> 8) & hfm;
+    //     return hf;
+    // }
+    //
+    // [Benchmark]
+    // public UInt32 First1()
+    // {
+    //     UInt32 hf = 0;
+    //     for (int i = 0; i < 10_000; i++)
+    //         hf = (((operand1 ^ result ^ operand2) >> 8) & hfm);
+    //     return hf;
+    // }
+}
 
 
 public class EnBench
