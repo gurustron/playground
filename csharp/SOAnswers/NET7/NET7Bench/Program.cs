@@ -8,6 +8,27 @@ using NET7Bench.Benchs;
 
 Console.WriteLine("Hello, World!");
 
+// var x = new Data[]
+// {
+//     new() { b0 = 255 },
+//     new() { b1 = 255 },
+//     new() { b2 = 255 },
+//     new() { b3 = 42 },
+//     new() { b4 = 255 },
+//     new() { b5 = 255 },
+//     new() { b6 = 1 },
+//     new() { b7 = 255 },
+//     new(),
+// };
+// var y = new Data();
+// Console.WriteLine(Unsafe.SizeOf<Data>());
+// foreach (var data1 in x)
+// {
+//     var data = data1;
+//     var data2 = data1;
+//     Console.WriteLine(UnmanagedExtensions.ViaVector(ref Unsafe.As<Data, byte>(ref data), ref Unsafe.As<Data, byte>(ref data2), (uint)Unsafe.SizeOf<Data>()));
+//     Console.WriteLine(UnmanagedExtensions.ViaVector(ref Unsafe.As<Data, byte>(ref data), ref Unsafe.As<Data, byte>(ref y), (uint)Unsafe.SizeOf<Data>()));
+// }
 var summary = BenchmarkRunner.Run<StructEqualityBench>();
 
 public class CalcBench

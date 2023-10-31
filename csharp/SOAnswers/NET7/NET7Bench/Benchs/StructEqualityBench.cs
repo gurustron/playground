@@ -83,23 +83,21 @@ public static class UnmanagedExtensions
     public static bool ViaVector(ref byte first, ref byte second, uint length)
     {
         nuint offset = 0;
-        nuint lengthToExamine = length - (nuint)Vector128<byte>.Count;
-        // Unsigned, so it shouldn't have overflowed larger than length (rather than negative)        Debug.Assert(lengthToExamine < length);
+        nuint lengthToExamine = length - (nuint)Vector64<byte>.Count;
         if (lengthToExamine != 0)
         {
             do
             {
-                if (Vector128.LoadUnsafe(ref first, offset) != Vector128.LoadUnsafe(ref second, offset))
+                if (Vector64.LoadUnsafe(ref first, offset) != Vector64.LoadUnsafe(ref second, offset))
                 {
                     return false;
                 }
 
-                offset += (nuint)Vector128<byte>.Count;
+                offset += (nuint)Vector64<byte>.Count;
             } while (lengthToExamine > offset);
         }
 
-        // Do final compare as Vector128<byte>.Count from end rather than start
-        if (Vector128.LoadUnsafe(ref first, lengthToExamine) == Vector128.LoadUnsafe(ref second, lengthToExamine))
+        if (Vector64.LoadUnsafe(ref first, lengthToExamine) == Vector64.LoadUnsafe(ref second, lengthToExamine))
         {
             return true;
         }
