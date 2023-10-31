@@ -117,7 +117,6 @@ public struct Data
     public byte b5;
     public byte b6;
     public byte b7;
-    public byte b8;
 }
 
 public struct DataHelper
