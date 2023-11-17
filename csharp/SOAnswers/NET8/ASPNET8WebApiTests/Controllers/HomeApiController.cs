@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASPNET8WebApiTests.Controllers;
 
-// [Route("v{version:apiVersion}/api/[controller]")]
-// [Route("/api/[controller]")]
 [ApiController]
 [ApiVersion("1.0")]
+// [Route("/api/[controller]")]
 [Route("v{version:apiVersion}/api/[controller]")]
 public class HomeApiController : ControllerBase
 {
