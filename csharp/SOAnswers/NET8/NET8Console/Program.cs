@@ -1,31 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 Console.WriteLine("Hello, World!");
-
-
-async Task TestTask(Func<Task> factory)
-{
-    Console.WriteLine("Before task");
-    var t = factory();
-    Console.WriteLine("Task created");
-    await t;
-    Console.WriteLine("After awaiting task");
-}
-Console.WriteLine("---------------");
-await TestTask(async () =>
-{
-    Console.WriteLine("    before await");
-    await Task.CompletedTask;
-    Console.WriteLine("    after await");
-});
-
-await TestTask(async () =>
-{
-    Console.WriteLine("    before await");
-    await Task.Yield();
-    Console.WriteLine("   after await");
-});
 
 var ctx = new TestContext();
 ctx.Database.EnsureDeleted();
@@ -35,9 +12,35 @@ ctx.Items.Add(new() { Id = 1, Name = "as", Children = new(){
     new(){Identificator = 100, Name="asd"}
 }});
 
+var org = new Organization
+{
+    Name = "Test1"
+};
+
+ctx.Users.Add(new User()
+{
+    Following = new()
+    {
+        org,
+        new Organization
+        {
+            Name = "Foo"
+        }
+    }
+});
+
+ctx.Users.Add(new User()
+{
+    Following = new()
+    {
+        org
+    }
+});
 ctx.SaveChanges();
 ctx.ChangeTracker.Clear();
 Console.WriteLine(ctx.Items.First().Children.First().Identificator);
+var users = ctx.Users.Include(user => user.Following).ToList();
+Console.WriteLine();
 
 public class SomeClass
 {
@@ -63,6 +66,8 @@ public class Person
 class TestContext : DbContext
 {
     public DbSet<TestItem> Items { get; set; }
+    public DbSet<Organization> Organizations => Set<Organization>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -72,10 +77,33 @@ class TestContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.Entity<TestItem>().OwnsMany(ti => ti.Children, builder => builder.ToJson());
     }
 }
 
+public class Organization {
+    public int Id { get; set; }
+
+    public string Name { get; set; }
+    // lots of properties
+// NO List<User> Followers { get; set; }
+}
+
+public class User {
+    public int Id { get; set; }
+// lots of properties
+    public List<Organization> Following { get; set; }
+}
+
+public class UserConfiguration : IEntityTypeConfiguration<User>
+{
+    public void Configure(EntityTypeBuilder<User> builder)
+    {
+        builder.HasMany(u => u.Following)
+            .WithMany();
+    }
+}
 class TestItem
 {
     public int Id { get; set; }
