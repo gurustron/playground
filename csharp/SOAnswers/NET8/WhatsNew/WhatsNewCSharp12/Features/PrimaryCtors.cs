@@ -65,9 +65,7 @@ public class DistanceClass(double dx, double dy, double dz)
 
 public class BankAccount(string accountID, string owner, string check)
 {
-    public string AccountID { get; } = ValidAccountNumber(accountID) 
-        ? accountID 
-        : throw new ArgumentException("Invalid account number", nameof(accountID));
+    public string AccountID { get; } = ValidateAccountNumber(accountID);
 
     public string Owner { get; } = string.IsNullOrWhiteSpace(owner) 
         ? throw new ArgumentException("Owner name cannot be empty", nameof(owner)) 
@@ -75,12 +73,15 @@ public class BankAccount(string accountID, string owner, string check)
 
     public override string ToString() => $"Account ID: {AccountID}, Owner: {Owner}, Check: {check}";
 
-    public static bool ValidAccountNumber(string accountID) => 
-        accountID?.Length == 10 && accountID.All(c => char.IsDigit(c));
+    public static string ValidateAccountNumber(string accountID)
+        => accountID?.Length == 10 && accountID.All(c => char.IsDigit(c))
+            ? accountID
+            : throw new ArgumentException("Invalid account number", nameof(accountID));
 
     // can be called in ordinary ctor:
     public bool ValidAccountNumberInstance(string accountID) => 
         accountID?.Length == 10 && accountID.All(c => char.IsDigit(c));
+
     // public BankAccount(string accountID, string owner)
     // {
     //     AccountID = ValidAccountNumberInstance(accountID) 
@@ -130,6 +131,7 @@ public class FixedAdminAccount : BankAccount
 
 public class FixedAdminAccountEmptyCtor() : BankAccount("1234567890", "111", "111");
 
+// Will shadow the ctor params making them effectively immutable.
 public class SameNameProps(string accountID, string owner)
 {
     private readonly string accountID = accountID;
