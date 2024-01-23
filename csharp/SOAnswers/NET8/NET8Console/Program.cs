@@ -1,6 +1,21 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.DependencyInjection;
+
+var ints = new List<int>();
+CollectionsMarshal.SetCount(ints, 20);
+Console.WriteLine(ints.Count);
+var serviceCollection = new ServiceCollection();
+
+serviceCollection.AddTransient<ITest, Test>();
+serviceCollection.AddTransient<ITest, Test2>();
+serviceCollection.AddTransient(typeof(ObservableCollection<>));
+var services = serviceCollection.BuildServiceProvider();
+
+var collection = ActivatorUtilities.CreateInstance<ObservableCollection<ITest>>(services);
 
 Console.WriteLine("Hello, World!");
 
@@ -116,3 +131,10 @@ class TestChild
     public required int Identificator { get; set; }
     public required string Name { get; set; }
 }
+
+public interface ITest { }
+
+public class Test : ITest { }
+
+public class Test2 : ITest { }
+
