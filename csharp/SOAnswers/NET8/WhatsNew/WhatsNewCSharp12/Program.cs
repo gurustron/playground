@@ -7,4 +7,10 @@ Console.WriteLine("Hello, World!");
 
 // PrimaryCtors.Do();
 
-CollectionExpressions.Do();
+// CollectionExpressions.Do();
+
+// DefaultLambdaParams.Do();
+
+// AliasAnyType.Do();
+
+InlineArrays.Do();
