@@ -4,10 +4,23 @@ option csharp_namespace = "GrpcPlayground";
 
 package greet;
 
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
 // The greeting service definition.
 service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply);
+
+  // Server streaming
+  rpc StreamingFromServer (ExampleRequest) returns (stream ExampleResponse);
+
+  // Client streaming
+  rpc StreamingFromClient (stream ExampleRequest) returns (ExampleResponse);
+
+//  // Bi-directional streaming
+//  rpc StreamingBothWays (stream ExampleRequest) returns (stream ExampleResponse);
 }
 
 // The request message containing the user's name.
@@ -18,4 +31,19 @@ message HelloRequest {
 // The response message containing the greetings.
 message HelloReply {
   string message = 1;
+  google.protobuf.Timestamp start = 2;
+  google.protobuf.Duration duration = 3;
+  google.protobuf.Int32Value age = 4;
+  repeated string roles = 8;
+}
+
+message ExampleRequest {
+  int32 pageIndex = 1;
+  int32 pageSize = 2;
+  bool isDescending = 3;
+}
+message ExampleResponse {
+  int32 pageIndex = 1;
+  int32 pageSize = 2;
+  bool isDescending = 3;
 }
