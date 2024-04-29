@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcPlayground", "GrpcPlayground\GrpcPlayground.csproj", "{B08EE8A2-3E51-4549-9422-7C57E37C48F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcPlayground.TestClient", "GrpcPlayground.TestClient\GrpcPlayground.TestClient.csproj", "{3109A9EB-6A8D-456B-9F1A-B104054C7705}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcPlayground.Tests", "GrpcPlayground.Tests\GrpcPlayground.Tests.csproj", "{0CBE6FFD-D79B-4C4E-ADBA-53F3B15832AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B08EE8A2-3E51-4549-9422-7C57E37C48F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B08EE8A2-3E51-4549-9422-7C57E37C48F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B08EE8A2-3E51-4549-9422-7C57E37C48F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B08EE8A2-3E51-4549-9422-7C57E37C48F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3109A9EB-6A8D-456B-9F1A-B104054C7705}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3109A9EB-6A8D-456B-9F1A-B104054C7705}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3109A9EB-6A8D-456B-9F1A-B104054C7705}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3109A9EB-6A8D-456B-9F1A-B104054C7705}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CBE6FFD-D79B-4C4E-ADBA-53F3B15832AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CBE6FFD-D79B-4C4E-ADBA-53F3B15832AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CBE6FFD-D79B-4C4E-ADBA-53F3B15832AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CBE6FFD-D79B-4C4E-ADBA-53F3B15832AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
