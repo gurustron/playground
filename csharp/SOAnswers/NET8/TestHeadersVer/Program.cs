@@ -9,6 +9,8 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen( options => options.OperationFilter<SwaggerDefaultValues>() );
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -18,20 +20,7 @@ builder.Services.AddApiVersioning(options =>
 		options.ReportApiVersions = true;
 		options.ApiVersionReader = new HeaderApiVersionReader("X-Api-Version");
 	})
-	.AddApiExplorer(options =>
-	{
-		options.ApiVersionParameterSource = new HeaderApiVersionReader("X-Api-Version");
-		// add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-		// note: the specified format code will format the version as "'v'major[.minor][-status]"
-		// options.GroupNameFormat = "'v'VVV";
-
-		// note: this option is only necessary when versioning by url segment. the SubstitutionFormat
-		// can also be used to control the format of the API version in route templates
-		// options.SubstituteApiVersionInUrl = true;
-	} )
-	.EnableApiVersionBinding();
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-builder.Services.AddSwaggerGen( options => options.OperationFilter<SwaggerDefaultValues>() );
+	.AddApiExplorer();
 var app = builder.Build();
 
 var versionSet = app.NewApiVersionSet()
@@ -48,15 +37,6 @@ var summaries = new[]
 app.MapGet("/weatherforecast", () =>
 	{
 		return "1.0";
-		// var forecast = Enumerable.Range(1, 5).Select(index =>
-		// 		new WeatherForecast
-		// 		(
-		// 			DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-		// 			Random.Shared.Next(-20, 55),
-		// 			summaries[Random.Shared.Next(summaries.Length)]
-		// 		))
-		// 	.ToArray();
-		// return forecast;
 	})
 	.WithApiVersionSet(versionSet)
 	.HasApiVersion(1)
