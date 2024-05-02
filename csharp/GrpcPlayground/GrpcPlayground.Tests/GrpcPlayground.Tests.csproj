@@ -28,15 +28,16 @@
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1"/>
         <PackageReference Include="NUnit.Analyzers" Version="3.6.1"/>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
+        <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
+
     <ItemGroup>
-      <Protobuf Include="..\GrpcPlayground\Protos\greet.proto" GrpcServices="Client">
-        <Link>greet.proto</Link>
-      </Protobuf>
+<!--        Protobuf item metadata reference-->
+<!--        https://chromium.googlesource.com/external/github.com/grpc/grpc/+/HEAD/src/csharp/BUILD-INTEGRATION.md#protobuf-item-metadata-reference-->
+      <Protobuf Include="..\GrpcPlayground\Protos\greet.proto" GrpcServices="Client" Link="greet.proto"/>
     </ItemGroup>
+
     <ItemGroup>
-<!--      <ProjectReference Include="..\GrpcPlayground.TestClient\GrpcPlayground.TestClient.csproj" />-->
       <ProjectReference Include="..\GrpcPlayground\GrpcPlayground.csproj" />
     </ItemGroup>
-    
 </Project>

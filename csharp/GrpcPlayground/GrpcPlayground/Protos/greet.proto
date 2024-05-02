@@ -19,8 +19,8 @@ service Greeter {
   // Client streaming
   rpc StreamingFromClient (stream ExampleRequest) returns (ExampleResponse);
 
-//  // Bi-directional streaming
-//  rpc StreamingBothWays (stream ExampleRequest) returns (stream ExampleResponse);
+  // Bi-directional streaming
+  rpc StreamingBothWays (stream ExampleRequest) returns (stream ExampleResponse);
 }
 
 // The request message containing the user's name.

@@ -26,24 +26,41 @@ public class GreeterService : Greeter.GreeterBase
         {
             await responseStream.WriteAsync(new ExampleResponse
             {
-                PageIndex = request.PageIndex
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                IsDescending = request.IsDescending
             });
         }
     }
 
     public override async Task<ExampleResponse> StreamingFromClient(IAsyncStreamReader<ExampleRequest> requestStream, ServerCallContext context)
     {
-        var result = 0;
+        var size = 0;
+        var index = 0;
 
         await foreach (var curr in requestStream.ReadAllAsync())
         {
-            result += curr.PageSize;
+            size += curr.PageSize;
+            index += curr.PageIndex;
         }
 
         return new()
         {
-            PageIndex = result,
-            PageSize = result
+            PageIndex = index,
+            PageSize = size
         };
+    }
+
+    public override async Task StreamingBothWays(IAsyncStreamReader<ExampleRequest> requestStream, IServerStreamWriter<ExampleResponse> responseStream, ServerCallContext context)
+    {
+        await foreach (var curr in requestStream.ReadAllAsync())
+        {
+            await responseStream.WriteAsync(new ExampleResponse
+            {
+                PageIndex = curr.PageIndex,
+                PageSize = curr.PageSize,
+                IsDescending = curr.IsDescending
+            });
+        }
     }
 }
