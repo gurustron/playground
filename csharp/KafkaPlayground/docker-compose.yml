@@ -29,3 +29,4 @@
 #  https://raw.githubusercontent.com/confluentinc/cp-all-in-one/7.6.1-post/cp-all-in-one-kraft/docker-compose.yml
 #  https://github.com/confluentinc/kafka-images/blob/7.4.x/local/include/etc/confluent/docker/configureDefaults
 #  https://github.com/confluentinc/kafka-images/blob/e43ce15cf140aba7d1839e640bff72226de73f60/examples/confluent-local/docker-compose.yml#L4
+#  https://github.com/confluentinc/confluent-sigma/blob/master/docker-compose.yml
