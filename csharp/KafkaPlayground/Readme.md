@@ -23,4 +23,4 @@ docker exec -i kafkakraft kafka-console-consumer --topic kinaction_helloworld --
 remove `--from-beginning` to get only new ones since start
 
 
-Stopped at 2.3.2 Topics overview - p. 51
+Stopped at 2.4 Various source code packages and what they do p.55
