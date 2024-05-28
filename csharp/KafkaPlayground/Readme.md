@@ -35,4 +35,4 @@ remove `--from-beginning` to get only new ones since start
   - Queries are continuously running and updating
 - 
 
-Stopped at 2.6 Stream processing and terminology p.61
+Stopped at Part 2 Applying Kafka p.66
