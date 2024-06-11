@@ -2,41 +2,75 @@
 using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 
-var config = new ProducerConfig
+// using (var producer = new ProducerBuilder<Null, string>(config).Build())
+// {
+//     var result = await producer.ProduceAsync("test-topic", new Message<Null, string> { Value="a log message" });
+// }
+var barrier = new Barrier(2);
+var msgNum = 10;
+var producer = Task.Run(async () =>
 {
-    BootstrapServers = "127.0.0.1:9092",
-
-};
-using (var producer = new ProducerBuilder<Null, string>(config).Build())
-{
-    var result = await producer.ProduceAsync("test-topic", new Message<Null, string> { Value="a log message" });
-}
-
-var producerBuilder = new ProducerBuilder<string, string>(config);
-// producerBuilder.SetKeySerializer(Serializers.Utf8);
-using (var producer = producerBuilder.Build())
-{
-    await producer.ProduceAsync("test-topic", new Message<string, string>
+    var config = new ProducerConfig
     {
-        Key = "someNewKey",
-        Value = """
-                {
-                    "Hahah":"nice"
-                }
-                """
-    });
-}
+        BootstrapServers = "127.0.0.1:9092",
+
+    };
+
+    var producerBuilder = new ProducerBuilder<string, string>(config);
+    using var producer = producerBuilder.Build();
+
+    int i = 0;
+    for (; i < 3; i++)
+    {
+        await producer.ProduceAsync("test-topic", new Message<string, string>
+        {
+            Key = Guid.NewGuid().ToString("N"),
+            Value = $$"""
+                      {
+                          "key": {{i}}
+                          "Hahah":"nice_{{i}}"
+                      }
+                      """
+        });
+    }
+
+    barrier.SignalAndWait();
+
+    for (; i < msgNum; i++)
+    {
+        await Task.Delay(100);
+        await producer.ProduceAsync("test-topic", new Message<string, string>
+        {
+            Key = i.ToString(),
+            Value = $$"""
+                      {
+                          "key": {{i}}
+                          "Hahah":"nice_{{i}}"
+                      }
+                      """
+        });
+    }
+});
+
 var consumerConfig = new ConsumerConfig
 {
     BootstrapServers = "127.0.0.1:9092",
     GroupId = Guid.NewGuid().ToString()
 };
-using (var consumer = new ConsumerBuilder<Null, string>(consumerConfig).Build())
+using (var consumer = new ConsumerBuilder<string, string>(consumerConfig).Build())
 {
+    barrier.SignalAndWait();
     consumer.Subscribe("test-topic");
-    var consumeResult = consumer.Consume();
-    Console.WriteLine("Offset: {0} - Message {1}", consumeResult.Offset, consumeResult.Message.Value);
-    Console.WriteLine();
-    consumer.Commit(consumeResult);
+    for (int i = 0; i < msgNum; i++)
+    {
+        var consumeResult = consumer.Consume(1200);
+        if (consumeResult is null || consumeResult.IsPartitionEOF)
+        {
+            break;
+        }
+        Console.WriteLine("Offset: {0} - Message {1}", consumeResult.Offset, consumeResult.Message?.Value);
+        Console.WriteLine();
+        consumer.Commit(consumeResult);
+    }
 }
 

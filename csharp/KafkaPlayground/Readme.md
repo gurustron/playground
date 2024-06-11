@@ -35,4 +35,4 @@ remove `--from-beginning` to get only new ones since start
   - Queries are continuously running and updating
 - 
 
-Stopped at Part 2 Applying Kafka p.66
+Stopped at CHAPTER 3 Designing a Kafka project p.71
