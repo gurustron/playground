@@ -36,3 +36,12 @@ remove `--from-beginning` to get only new ones since start
 - 
 
 Stopped at CHAPTER 3 Designing a Kafka project p.71
+
+```bash
+docker exec -it kafkakraft bash
+cp /usr/share/filestream-connectors/* /usr/share/java/
+cd ../../etc/kafka
+printf "name=alert-source\nconnector.class=FileStreamSource\ntasks.max=1\nfile=alert.txt\ntopic=kinaction_alert_connect" >> alert-source.properties
+connect-standalone connect-standalone.properties alert-source.properties
+printf "name=alert-source\nconnector.class=FileStreamSource\ntasks.max=1\nfile=alert.txt\ntopic=kinaction_alert_connect" >> alert.txt
+```

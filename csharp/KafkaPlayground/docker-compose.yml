@@ -23,6 +23,7 @@
       KAFKA_REST_HOST_NAME: rest-proxy
       KAFKA_REST_BOOTSTRAP_SERVERS: 'kafkakraft:29092'
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+#      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/usr/share/local-connectors,/usr/share/filestream-connectors/"
       CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw' 
   
 #  https://docs.confluent.io/platform/current/installation/docker/config-reference.html#confluent-enterprise-ak-configuration
