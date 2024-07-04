@@ -35,7 +35,7 @@ remove `--from-beginning` to get only new ones since start
   - Queries are continuously running and updating
 - 
 
-Stopped at CHAPTER 3 Designing a Kafka project p.71
+Stopped at CHAPTER 3 Designing a Kafka project 3.2 Sensor event design p.74
 
 ```bash
 docker exec -it kafkakraft bash
