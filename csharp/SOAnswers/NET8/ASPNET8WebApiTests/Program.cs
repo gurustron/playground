@@ -1,5 +1,19 @@
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder();
 
+var queryConfigList = builder.Configuration.GetSection("QueryConfigList").Get<List<QueryConfig>>();
+foreach (var entry in builder.Configuration.GetSection("QueryConfigList").GetChildren())
+{
+    foreach (var field in entry.GetChildren())
+    {
+        if (field.Key == "ObjectClass")
+        {
+            // process dynamic
+        }
+    }
+}
+var type = queryConfigList[0].ObjectClass.GetType();
+var val = queryConfigList[0].ObjectClass;
+// var tagName = (string)val.TagName;
 // Add services to the container.
 builder.Services
     .AddApiVersioning(
@@ -41,3 +55,16 @@ app.MapControllerRoute(
     pattern: "{controller=HomeApi}/{action=Index}/{id?}");
 
 app.Run();
+
+public class QueryConfig
+{
+    public string? TableName { get; set; }
+    public string? QueryText { get; set; }
+    public string? AdditionalInfo { get; set; }
+    public Dictionary<string, string>? ObjectClass { get; set; }
+}
+
+public class QueryConfigList
+{
+    public ICollection<QueryConfig>? QueryConfig { get; set; }
+}
