@@ -4,11 +4,52 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
 using UnitsNet;
 using UnitsNet.Units;
 
+async Task TestAsyncEnumerable(string name, IAsyncEnumerable<Task<int>> tasks)
+{
+    Console.WriteLine($"Before: {name}");
+    await foreach (var t in tasks)
+    {
+        var i = await t;
+        Console.WriteLine($"\t\t{name}: {i}");
+    }
+    Console.WriteLine($"Between: {name}");
+    await foreach (var t in tasks)
+    {
+        var i = await t;
+        Console.WriteLine($"\t\t{name}: {i}");
+    }
+    Console.WriteLine($"After: {name}");
+}
 
+async IAsyncEnumerable<Task<int>> GenerateAsyncEnumerable()
+{
+    await Task.Yield();
+    for (int j = 0; j < 3; j++)
+    {
+        yield return Task.FromResult(j);
+    }
+}
+
+await TestAsyncEnumerable(nameof(GenerateAsyncEnumerable), GenerateAsyncEnumerable());
+
+Task<int>[] tasks = [Task.FromResult(0), Task.FromResult(1), Task.FromResult(2)];
+
+await TestAsyncEnumerable(nameof(Task.WhenEach), Task.WhenEach(tasks));
+
+Environment.Exit(0);
+
+
+
+
+var myObject = new MyObject(new MyKey(Guid.Empty), "Test", new AmountPayed("MyC", 2));
+var serialize = JsonSerializer.Serialize(myObject);
 
 string password = "password123!";
 string b64 = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(password));
@@ -176,5 +217,60 @@ class MyClass<TModel, TContext> : IValidator<TModel, TContext>
     public MyClass()
     {
         Console.WriteLine($"MyClass: {typeof(TModel)} - {typeof(TContext)}");
+    }
+}
+
+
+// [JsonConverter(typeof(MyKeyConverter))]
+record MyKey(Guid Value);
+
+// [JsonConverter(typeof(AmountPayedConverter))]
+record AmountPayed(string Currency, decimal Value);
+
+[JsonConverter(typeof(MyObjectConverter))]
+record MyObject(MyKey Id, string Name, AmountPayed AmountPayed);
+
+class MyObjectConverter : JsonConverter<MyObject>
+{
+    public override MyObject Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Write(Utf8JsonWriter writer, MyObject value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("Id", value.Id.Value);
+        writer.WriteString("Name", value.Name);
+        writer.WriteString("Currency", value.AmountPayed.Currency);
+        writer.WriteNumber("Amount", value.AmountPayed.Value);
+        writer.WriteEndObject();
+    }
+}
+
+class MyKeyConverter : JsonConverter<MyKey>
+{
+    public override MyKey Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Write(Utf8JsonWriter writer, MyKey value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value.Value);
+    }
+}
+
+class AmountPayedConverter : JsonConverter<AmountPayed>
+{
+    public override AmountPayed Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void Write(Utf8JsonWriter writer, AmountPayed value, JsonSerializerOptions options)
+    {
+        writer.WriteString("Currency", value.Currency);
+        writer.WriteNumber("Amount", value.Value);
     }
 }

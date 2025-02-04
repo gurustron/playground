@@ -29,7 +29,7 @@ public class WaitForTaskWithTimeoutBenchmark
     {
         var delay = Task.Delay(Timeout);
         var task = GetTask(IsThrowing);
-        _ = task.ContinueWith(t => { var x = t.Exception;}, // touch the exception!
+        _ = task.ContinueWith(static t => { var x = t.Exception;}, // touch the exception!
             CancellationToken.None,
             TaskContinuationOptions.OnlyOnFaulted, 
             TaskScheduler.Default);
