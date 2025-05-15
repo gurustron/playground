@@ -1,15 +1,59 @@
-﻿// See https://aka.ms/new-console-template for more information
-
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CommunityToolkit.HighPerformance;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
+using NSubstitute.ReceivedExtensions;
+using Supabase.Interfaces;
+using Supabase.Postgrest;
+using Supabase.Postgrest.Models;
 using UnitsNet;
 using UnitsNet.Units;
+
+var tuple1 = (x:2,y:4);
+var tuple2 = (x:0,y:-1);
+var tuple3 = tuple1.Add(tuple2);
+int[,] array =
+{
+    { 1, 2, 3 },
+    { 4, 5, 6 },
+    { 7, 8, 9 }
+};
+
+Memory2D<int> memory = array;
+var memoryLength = memory.Length.ToInt32();
+var dest = new int[memory.Length];
+memory.CopyTo(dest);
+Task.Run(async () =>
+{
+    await Task.Delay(100);
+    return (1, 100);
+});
+
+int[] delays = [100, 50, 0];
+
+var tasksToRun = delays
+    .Select(async (delay, index) =>
+    {
+        await Task.Delay(delay);
+        return (index, delay);
+    });
+var sw = Stopwatch.StartNew();
+await foreach (var completed in Task.WhenEach(tasksToRun))
+{
+    Console.Write($"{completed.Status} ");
+    var result = completed.Result;
+    Console.WriteLine($"index: {result.index} delay: {result.delay} elapsed: {sw.ElapsedMilliseconds}ms");
+    break;
+}
+
+Environment.Exit(0);
 
 async Task TestAsyncEnumerable(string name, IAsyncEnumerable<Task<int>> tasks)
 {
@@ -44,12 +88,6 @@ Task<int>[] tasks = [Task.FromResult(0), Task.FromResult(1), Task.FromResult(2)]
 await TestAsyncEnumerable(nameof(Task.WhenEach), Task.WhenEach(tasks));
 
 Environment.Exit(0);
-
-
-
-
-var myObject = new MyObject(new MyKey(Guid.Empty), "Test", new AmountPayed("MyC", 2));
-var serialize = JsonSerializer.Serialize(myObject);
 
 string password = "password123!";
 string b64 = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(password));
@@ -131,20 +169,6 @@ public static class Exts
     }
 }
 
-public class C
-{
-    public bool M<TOther>(TOther value)
-    {
-        if (typeof(TOther) == typeof(long))
-        {
-            long actualValue = (long)(object)value;
-            Console.WriteLine(actualValue);
-            return true;
-        }
-
-        return false;
-    }
-}
 
 public unsafe class TestFuncPointers
 {
@@ -221,56 +245,22 @@ class MyClass<TModel, TContext> : IValidator<TModel, TContext>
 }
 
 
-// [JsonConverter(typeof(MyKeyConverter))]
-record MyKey(Guid Value);
-
-// [JsonConverter(typeof(AmountPayedConverter))]
-record AmountPayed(string Currency, decimal Value);
-
-[JsonConverter(typeof(MyObjectConverter))]
-record MyObject(MyKey Id, string Name, AmountPayed AmountPayed);
-
-class MyObjectConverter : JsonConverter<MyObject>
+public static class TupleExts
 {
-    public override MyObject Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void Write(Utf8JsonWriter writer, MyObject value, JsonSerializerOptions options)
-    {
-        writer.WriteStartObject();
-        writer.WriteString("Id", value.Id.Value);
-        writer.WriteString("Name", value.Name);
-        writer.WriteString("Currency", value.AmountPayed.Currency);
-        writer.WriteNumber("Amount", value.AmountPayed.Value);
-        writer.WriteEndObject();
-    }
+    public static (TX X, TY Y) Add<TX, TY>(this (TX X, TY Y) left, (TX X, TY Y) right)
+        where TX : IAdditionOperators<TX, TX, TX>
+        where TY : IAdditionOperators<TY, TY, TY> =>
+        (left.X + right.X, left.Y + right.Y);
 }
 
-class MyKeyConverter : JsonConverter<MyKey>
+public struct Point
 {
-    public override MyKey Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        throw new NotImplementedException();
-    }
+    public int X { get; set; }
+    public int Y { get; set; }
 
-    public override void Write(Utf8JsonWriter writer, MyKey value, JsonSerializerOptions options)
+    public static Point operator +(Point left, Point right) => new Point
     {
-        writer.WriteStringValue(value.Value);
-    }
-}
-
-class AmountPayedConverter : JsonConverter<AmountPayed>
-{
-    public override AmountPayed Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void Write(Utf8JsonWriter writer, AmountPayed value, JsonSerializerOptions options)
-    {
-        writer.WriteString("Currency", value.Currency);
-        writer.WriteNumber("Amount", value.Value);
-    }
+        X = left.X + right.X,
+        Y = left.Y + right.Y
+    };
 }

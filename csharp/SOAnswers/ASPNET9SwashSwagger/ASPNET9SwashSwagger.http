@@ -1,0 +1,6 @@
+@ASPNET9SwashSwagger_HostAddress = http://localhost:5044
+
+GET {{ASPNET9SwashSwagger_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,6 @@
+@OpenApiInheritanceTest_HostAddress = http://localhost:5090
+
+GET {{OpenApiInheritanceTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
