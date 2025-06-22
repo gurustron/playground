@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Frozen;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Reflection;
@@ -16,6 +17,21 @@ using Supabase.Postgrest.Models;
 using UnitsNet;
 using UnitsNet.Units;
 
+foreach (var Size in new []{10, 100, 10_000} )
+{
+   var  _source = Enumerable.Range(0, Size)
+        .Select(i => new KeyValuePair<string, string>($"Key{i}", $"Value{i}"))
+        .ToArray();
+  var  _middleKey = $"Key{Size / 2}";
+    var _middleKeyPlusOne = $"Key{Size / 2 + 1}";
+
+    var _dictionary = new Dictionary<string, string>(_source);
+    var _frozen = _dictionary.ToFrozenDictionary();
+    Console.WriteLine(_frozen.GetType());
+    Console.WriteLine(_dictionary.Comparer as StringComparer);
+}
+
+Environment.Exit(0);
 var tuple1 = (x:2,y:4);
 var tuple2 = (x:0,y:-1);
 var tuple3 = tuple1.Add(tuple2);

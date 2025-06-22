@@ -1,7 +1,15 @@
-﻿namespace ApacheIgniteSimd.Tests;
+﻿using System.Numerics;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+
+namespace ApacheIgniteSimd.Tests;
 
 public class Tests
 {
+    private const int R1 = 31;
+    private const int R2 = 27;
+    private const int R3 = 33;
+
     [SetUp]
     public void Setup()
     {
@@ -17,7 +25,45 @@ public class Tests
         Assert.That(simd, Is.EqualTo(baseline));
     }
 
+    [TestCase(ulong.MinValue, 1)]  // 0
+    [TestCase(ulong.MinValue, 7)]
+    [TestCase(ulong.MaxValue, 1)]  // all 1's
+    [TestCase(ulong.MaxValue, 13)]
+    [TestCase(0UL, 1)]            // zero
+    [TestCase(0UL, 31)]
+    [TestCase(1UL, 1)]            // one
+    [TestCase(1UL, 63)]
+    [TestCase(42UL, 1)]           // 42
+    [TestCase(42UL, 17)]
+    [TestCase(0x123456789ABCDEF0UL, 8)]   // random pattern
+    [TestCase(0xFEDCBA9876543210, 16)]  // decreasing pattern
+    [TestCase(0xAAAAAAAAAAAAAAAA, 1)]    // alternating pattern
+    [TestCase(0x5555555555555555UL, 7)]   // alternating pattern
+    public void SingleValue_RotateLeft_ShouldMatchExpected(ulong value, int offset)
+    {
+        // Arrange
+        var expected = BitOperations.RotateLeft(value, offset);
 
+        var ulongs = new ulong[Vector<ulong>.Count];
+        for (int i = 0; i < ulongs.Length; i++)
+        {
+            ulongs[i] = value;
+        }
+        var vector = new Vector<ulong>(ulongs);
+        
+        // Act
+        var result = PartsForTests.RotateLeft(vector, offset);
+
+        // Assert
+        for (int i = 0; i < Vector<ulong>.Count; i++)
+        {
+            Assert.That(result[i], Is.EqualTo(expected));
+        }
+    }
+
+   
+    // 
+    
     static IEnumerable<byte[]> Bytes()
     {
         yield return [];
