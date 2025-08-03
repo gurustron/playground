@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -61,18 +62,38 @@ public class Tests
         }
     }
 
-   
+
     // 
-    
+
     static IEnumerable<byte[]> Bytes()
     {
         yield return [];
         yield return [1];
         yield return [1, 2, 3, 4];
+        yield return [1, 2, 3, 4, 5];
         yield return [byte.MaxValue, byte.MinValue];
         yield return [byte.MaxValue, 1, 2, byte.MinValue];
         yield return [byte.MinValue, 1, 42, byte.MaxValue];
         yield return [byte.MinValue, 1, 42, byte.MaxValue];
         yield return Enumerable.Range(byte.MinValue, byte.MaxValue).Select(b => (byte)b).ToArray();
+        ulong[] longs = [
+            ulong.MaxValue,
+            ulong.MinValue,
+            0x123456789ABCDEF0UL,
+            0xFEDCBA9876543210,
+            0xAAAAAAAAAAAAAAAA,
+            0x5555555555555555UL,
+        ];
+
+        int[] sizes = [1, 2, 3, 4, 5];
+
+        foreach (var ul in longs)
+        foreach (var size in sizes)
+        {
+            var en = Enumerable.Repeat(ul, size);
+            yield return en.SelectMany(BitConverter.GetBytes).ToArray();
+            yield return en.SelectMany(BitConverter.GetBytes).Append(byte.MinValue).ToArray();
+            yield return en.SelectMany(BitConverter.GetBytes).Append(byte.MaxValue).ToArray();
+        }
     }
 }
