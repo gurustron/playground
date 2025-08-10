@@ -19,12 +19,12 @@ public class HashUtilsSimd
 
     public static int Hash32Internal(ReadOnlySpan<byte> data, ulong seed)
     {
-        var hash64 = Hash64Internal(data, seed);
+        var hash64 = Hash64InternalVector128(data, seed);
 
         return (int)(hash64 ^ (hash64 >> 32));
     }
 
-    public static ulong Hash64Internal(ReadOnlySpan<byte> data, ulong seed)
+    public static ulong Hash64InternalVector128(ReadOnlySpan<byte> data, ulong seed)
     {
         unchecked
         {
@@ -36,14 +36,12 @@ public class HashUtilsSimd
             // body
             if (Vector128.IsHardwareAccelerated)
             {
-                Vector128<ulong> hs = Vector128.Create(h1, h2);
                 Vector128<ulong> firstMul = Vector128.Create(C1, C2);
                 Vector128<ulong> secondMul = Vector128.Create(C2, C1);
 
                 // process vector blocks
                 for (int i = 0; i < nblocks; i++)
                 {
-                    var originalH2 = hs[1];
                     int idx = (i << 4);
                     var ks = Vector128.Create(
                         BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx)),
@@ -57,9 +55,6 @@ public class HashUtilsSimd
                     );
 
                     ks *= secondMul;
-                    hs ^= ks;
-
-                    var tmpH1 = hs[0];
                     tmpH1 = BitOperations.RotateLeft(tmpH1, R2);
                     tmpH1 += originalH2;
                     tmpH1 = tmpH1 * M + N1;

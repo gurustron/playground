@@ -17,14 +17,25 @@ public class Tests
     }
 
     [TestCaseSource(nameof(Bytes))]
-    public void Hash64Internal(byte[] data)
+    public void Hash64InternalVector128(byte[] data)
     {
         ReadOnlySpan<byte> readOnlySpan = data.AsSpan();
         ulong seed = 1;
-        var simd = HashUtilsSimd.Hash64Internal(readOnlySpan, seed);
+        var simd = HashUtilsSimd.Hash64InternalVector128(readOnlySpan, seed);
         var baseline = HashUtilsBaseline.Hash64Internal(readOnlySpan, seed);
         Assert.That(simd, Is.EqualTo(baseline));
     }
+
+    [TestCaseSource(nameof(Bytes))]
+    public void Hash64InternalUnrolled(byte[] data)
+    {
+        ReadOnlySpan<byte> readOnlySpan = data.AsSpan();
+        ulong seed = 1;
+        var simd = HashUtilsSimd.Hash64InternalUnrolled(readOnlySpan, seed);
+        var baseline = HashUtilsBaseline.Hash64Internal(readOnlySpan, seed);
+        Assert.That(simd, Is.EqualTo(baseline));
+    }
+
 
     [TestCase(ulong.MinValue, 1)]  // 0
     [TestCase(ulong.MinValue, 7)]

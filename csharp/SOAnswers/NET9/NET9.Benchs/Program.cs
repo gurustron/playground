@@ -3,7 +3,7 @@ using BenchmarkDotNet.Running;
 using NET9.Benchs;
 
 Console.WriteLine("Hello, World!");
-BenchmarkRunner.Run<DictionaryVsFrozenDictionaryBenchmarks>();
+BenchmarkRunner.Run<DynamicBenchmark>();
 // var serilogBenchmark = new SerilogBenchmark();
 // serilogBenchmark.TestLogExtension();
 // serilogBenchmark.TestLogAction();
