@@ -35,12 +35,16 @@ var config = DefaultConfig.Instance
     .AddJob(Job.Default.WithId("Scalar")
         .WithEnvironmentVariable("DOTNET_EnableHWIntrinsic", "0")
         .AsBaseline())
-    .AddJob(Job.Default.WithId("Vector128")
-        .WithEnvironmentVariable("DOTNET_EnableAVX2", "0")
-        .WithEnvironmentVariable("DOTNET_EnableAVX512F", "0"))
-    // .AddJob(Job.Default.WithId("Vector256").WithEnvironmentVariable("DOTNET_EnableAVX512F", "0"))
+
     .AddJob(Job.Default.WithId("Vector512"))
+
+    // .AddJob(Job.Default.WithId("Vector128")
+    //     .WithEnvironmentVariable("DOTNET_EnableAVX2", "0")
+    //     .WithEnvironmentVariable("DOTNET_EnableAVX512F", "0"))
+    // // .AddJob(Job.Default.WithId("Vector256").WithEnvironmentVariable("DOTNET_EnableAVX512F", "0"))\
     ;
 // BenchmarkRunner.Run<CalculateHashBench>(config);
-BenchmarkRunner.Run<CalculateHashBench>();
+// BenchmarkRunner.Run<LinqMaxBench>(config);
+BenchmarkRunner.Run<RotateVector128Bench>();
+
 

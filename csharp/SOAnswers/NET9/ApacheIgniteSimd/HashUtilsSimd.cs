@@ -10,9 +10,9 @@ public class HashUtilsSimd
 {
     private const ulong C1 = 0x87c37b91114253d5L;
     private const ulong C2 = 0x4cf5ad432745937fL;
-    private const int R1 = 31;
-    private const int R2 = 27;
-    private const int R3 = 33;
+    private const byte R1 = 31;
+    private const byte R2 = 27;
+    private const byte R3 = 33;
     private const int M = 5;
     private const int N1 = 0x52dce729;
     private const int N2 = 0x38495ab5;
@@ -32,71 +32,57 @@ public class HashUtilsSimd
             ulong h2 = seed;
             var length = data.Length;
             int nblocks = length >> 4;
+            int processed = 0;
 
             // body
             if (Vector128.IsHardwareAccelerated)
             {
-                Vector128<ulong> firstMul = Vector128.Create(C1, C2);
-                Vector128<ulong> secondMul = Vector128.Create(C2, C1);
+                int vectBlocks = nblocks >> 1;
 
                 // process vector blocks
-                for (int i = 0; i < nblocks; i++)
+                for (int i = 0; i < vectBlocks; i++)
                 {
-                    int idx = (i << 4);
-                    var ks = Vector128.Create(
+                    int idx = (i << 5);
+                    var k1s = Vector128.Create(
                         BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx)),
-                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8)));
+                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 16)));
 
-                    ks *= firstMul;
+                    k1s *= C1; 
 
-                    ks = Vector128.Create(
-                         BitOperations.RotateLeft(ks[0], R1),
-                         BitOperations.RotateLeft(ks[1], R3)
-                    );
-
-                    ks *= secondMul;
-                    tmpH1 = BitOperations.RotateLeft(tmpH1, R2);
-                    tmpH1 += originalH2;
-                    tmpH1 = tmpH1 * M + N1;
-
-                    var tmpH2 = hs[1];
-                    tmpH2 = BitOperations.RotateLeft(tmpH2, R1);
-                    tmpH2 += tmpH1;
-                    tmpH2 = tmpH2 * M + N2;
-
-                    hs = Vector128.Create(tmpH1, tmpH2);
+                    var k2s = Vector128.Create(
+                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8)),
+                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 24)));
+                    
                 }
 
-                h1 = hs[0];
-                h2 = hs[1];
+                processed = vectBlocks << 1;
             }
-            else
+
+            for (int i = processed; i < nblocks; i++)
             {
-                for (int i = 0; i < nblocks; i++)
-                {
-                    int idx = (i << 4);
-                    ulong kk1 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx));
-                    ulong kk2 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8));
+                int idx = (i << 4);
+                ulong kk1 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx));
+                ulong kk2 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8));
 
-                    // mix functions for k1
-                    kk1 *= C1;
-                    kk1 = BitOperations.RotateLeft(kk1, R1);
-                    kk1 *= C2;
-                    h1 ^= kk1;
-                    h1 = BitOperations.RotateLeft(h1, R2);
-                    h1 += h2;
-                    h1 = h1 * M + N1;
+                // mix functions for k1
+                kk1 *= C1;
+                kk1 = BitOperations.RotateLeft(kk1, R1);
+                kk1 *= C2;
+                h1 ^= kk1;
+                h1 = BitOperations.RotateLeft(h1, R2);
+                h1 += h2;
+                h1 = h1 * M + N1;
 
-                    // mix functions for k2
-                    kk2 *= C2;
-                    kk2 = BitOperations.RotateLeft(kk2, R3);
-                    kk2 *= C1;
-                    h2 ^= kk2;
-                    h2 = BitOperations.RotateLeft(h2, R1);
-                    h2 += h1;
-                    h2 = h2 * M + N2;
-                }
+                // mix functions for k2
+                kk2 *= C2;
+                kk2 = BitOperations.RotateLeft(kk2, R3);
+                kk2 *= C1;
+                h2 ^= kk2;
+                h2 = BitOperations.RotateLeft(h2, R1);
+                h2 += h1;
+                h2 = h2 * M + N2;
             }
+            
 
             // tail
             ulong k1 = 0;
