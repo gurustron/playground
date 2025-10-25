@@ -11,7 +11,6 @@ public class SearchValuesVsHashsetBench
 {
     static readonly string[] values = ["2019/0002391", "2019/0002390", "2019/0001990"];
     HashSet<string> hs = new(values, StringComparer.Ordinal);
-    HashSet<string> hs = new(values, StringComparer.Ordinal);
     SearchValues<string> sv = SearchValues.Create(values.AsSpan(), StringComparison.Ordinal);
 
 
