@@ -14,16 +14,6 @@ public static class PartsForTests
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Vector128<ulong> RotateLeft(Vector128<ulong> v, Vector128<ulong> offset)
-    {
-        return
-            Sse2.Or(
-            Sse2.ShiftLeftLogical(v, offset),
-            Sse2.ShiftLeftLogical(v, (Vector128.Create((ulong)64, 64) - offset)));
-        // return (v << offset) | (v >> (64 - offset)) ;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector128<ulong> RotateLeftSse2(Vector128<ulong> v, byte offset)
     {
         return

@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Reflection;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
@@ -29,30 +30,68 @@ Console.WriteLine("Hello, World!");
 //     .ToList();
 
 var serviceCollection = new ServiceCollection();
-serviceCollection.AddDbContext<WhatsNewContext>(builder =>
+serviceCollection.AddPooledDbContextFactory<WhatsNewContext>(builder =>
     builder.UseSqlite("Data Source=test.db")
         .LogTo(Console.WriteLine, LogLevel.Information));
+var serviceLifetime = serviceCollection.Where(sd => sd.ServiceType == typeof(WhatsNewContext))
+    .FirstOrDefault()
+    ?.Lifetime;
+serviceCollection.AddScoped(sp => sp.GetRequiredService<IDbContextFactory<WhatsNewContext>>().CreateDbContext());
+Console.WriteLine(serviceLifetime);
 var serviceProvider = serviceCollection.BuildServiceProvider();
+
+WhatsNewContext ctx = null!;
 
 using (var scope = serviceProvider.CreateScope())
 {
-    var ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
+    ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
+}
+
+var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<WhatsNewContext>>();
+var whatsNewContext = dbContextFactory.CreateDbContext();
+whatsNewContext.Database.EnsureDeleted();
+whatsNewContext.Dispose();
+using (var scope = serviceProvider.CreateScope())
+{
+    ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
     ctx.Database.EnsureDeleted();
     ctx.Database.EnsureCreated();
+    // ctx.Models.FromSqlInterpolated($"select * from Model where 1 = {1};");
+int i = 1234;
+
+var first = ctx.Database.SqlQuery<string>($"select hex({i}) as Value").First();
+    ctx.Models.Add(new Model
+    {
+        Status = Status.Active,
+    });
+    ctx.SaveChanges();
+
 
     ctx.Models.Add(new Model
     {
         Status = Status.Active,
     });
-    ctx.SaveChanges();
-    
-    ctx.Models.Add(new Model
+    var exp = new Expense
     {
-        Status = Status.Active,
-    });
+        Id = Guid.NewGuid()
+    };
+    var expState = new ExpenseState
+    {
+        State = "Pending",
+        ExpenseId = exp.Id,
+    };
+
+    exp.States.Add(expState);
+    ctx.Expense.Add(exp);
+    ctx.SaveChanges();
+
+    exp.LatestState = expState;
     ctx.SaveChanges();
     ctx.ChangeTracker.Clear();
-    var models = ctx.Models.ToList();
+    var models = ctx.Expense
+        .Include(e =>e.States)
+        .Include(e => e.LatestState)
+        .ToList();
 }
 
 public class WhatsNewContext : DbContext
@@ -63,52 +102,54 @@ public class WhatsNewContext : DbContext
 
     // public DbSet<Author> Authors { get; set; }
     public DbSet<Model> Models => Set<Model>();
+    public DbSet<Expense> Expense => Set<Expense>();
+    public DbSet<ExpenseState> ExpenseState => Set<ExpenseState>();
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         base.ConfigureConventions(configurationBuilder);
     }
 
-protected override void OnModelCreating(ModelBuilder builder)
-{
-    builder.Entity<StatusLookup>()
-        .ToTable($"Lookup_Status")
-        .HasKey(t => t.Id);
-    builder.Entity<StatusLookup>()
-        .Property(t => t.Code)
-        .HasMaxLength(64)
-        .IsRequired();
-    builder.Entity<StatusLookup>()
-        .HasIndex(s => s.Code)
-        .IsUnique();
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        // builder.Entity<StatusLookup>()
+        //     .ToTable($"Lookup_Status")
+        //     .HasKey(t => t.Id);
+        // builder.Entity<StatusLookup>()
+        //     .Property(t => t.Code)
+        //     .HasMaxLength(64)
+        //     .IsRequired();
+        // builder.Entity<StatusLookup>()
+        //     .HasIndex(s => s.Code)
+        //     .IsUnique();
+        //
+        // // Seed the lookup table
+        // var data = Enum.GetValues<Status>()
+        //     .Select( v => new StatusLookup
+        //         {
+        //             Id = v,
+        //             Code = typeof(Status)
+        //                 .GetMember(v.ToString("G"))
+        //                 .FirstOrDefault()
+        //                 ?.GetCustomAttribute<CodeAttribute>()?.Code 
+        //                    ?? v.ToString("G")
+        //         }
+        //     )
+        //     .ToList();
+        // builder.Entity<StatusLookup>()
+        //     .HasData(data);
+        //
+        // // I know this doesn't work, but should signify what I am trying to do
+        // builder.Entity<Model>()
+        //     .HasOne<StatusLookup>()
+        //     .WithMany()
+        //     // Ideally EF Core would know this is mapping to a string column in the database due
+        //     // to the previous definition saying that it has a string conversion, but this does not work.
+        //     .HasForeignKey(t => t.Status)
+        //     .OnDelete(DeleteBehavior.Restrict);
 
-    // Seed the lookup table
-    var data = Enum.GetValues<Status>()
-        .Select( v => new StatusLookup
-            {
-                Id = v,
-                Code = typeof(Status)
-                    .GetMember(v.ToString("G"))
-                    .FirstOrDefault()
-                    ?.GetCustomAttribute<CodeAttribute>()?.Code 
-                       ?? v.ToString("G")
-            }
-        )
-        .ToList();
-    builder.Entity<StatusLookup>()
-        .HasData(data);
-    
-    // I know this doesn't work, but should signify what I am trying to do
-    builder.Entity<Model>()
-        .HasOne<StatusLookup>()
-        .WithMany()
-        // Ideally EF Core would know this is mapping to a string column in the database due
-        // to the previous definition saying that it has a string conversion, but this does not work.
-        .HasForeignKey(t => t.Status)
-        .OnDelete(DeleteBehavior.Restrict);
-
-    
-}
+        
+    }
 }
 
 public class Author
@@ -170,3 +211,19 @@ public class StatusLookup
     public required string Code { get; init; }
 }
 
+public class Expense
+{
+    public Guid Id { get; set; }
+    public ICollection<ExpenseState> States { get; } = [];
+    
+    [ForeignKey(nameof(LatestState))]
+    public Guid? LatestStateId { get; set; }
+    public ExpenseState? LatestState { get; set; }
+}
+
+public class ExpenseState
+{
+    public Guid Id { get; set; }
+    public Guid ExpenseId { get; set; }
+    public string State { get; set; }
+}

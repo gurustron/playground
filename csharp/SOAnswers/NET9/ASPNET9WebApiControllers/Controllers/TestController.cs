@@ -11,6 +11,7 @@ public class TestController: ControllerBase
     {
         _forecastController = forecastController;
     }
+    
     [HttpGet(Name = "Test")]
     public int Get()
     {

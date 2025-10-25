@@ -7,8 +7,12 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <UserSecretsId>ec09c841-8dd5-422f-b19d-3c7ae0f9b21c</UserSecretsId>
   </PropertyGroup>
-
+<PropertyGroup>
+  <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+</PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
     </ItemGroup>
 

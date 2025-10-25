@@ -43,8 +43,8 @@ var config = DefaultConfig.Instance
     //     .WithEnvironmentVariable("DOTNET_EnableAVX512F", "0"))
     // // .AddJob(Job.Default.WithId("Vector256").WithEnvironmentVariable("DOTNET_EnableAVX512F", "0"))\
     ;
-// BenchmarkRunner.Run<CalculateHashBench>(config);
+BenchmarkRunner.Run<CalculateHashBench>(config);
 // BenchmarkRunner.Run<LinqMaxBench>(config);
-BenchmarkRunner.Run<RotateVector128Bench>();
+// BenchmarkRunner.Run<RotateVector128Bench>();
 
 

@@ -1,6 +1,6 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using Serilog;
 using SerilogWorker;
-
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddHostedService<Worker>();
 builder.Services.AddSerilog((services, loggerConfiguration) => loggerConfiguration

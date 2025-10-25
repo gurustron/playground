@@ -47,7 +47,7 @@ public class RotateVector128Bench
         var vector2 = Vector128.Create(Array[2], Array[3]);
         PartsForTests.RotateLeftSse2(vector1, Offset);
         PartsForTests.RotateLeftSse2(vector2, Offset);
-        return vector2[2];
+        return vector2[1];
     }
 
     [Benchmark]
@@ -57,7 +57,7 @@ public class RotateVector128Bench
         var vector2 = Vector128.Create(Array[2], Array[3]);
         RotateLeftSse2Const31(vector1);
         RotateLeftSse2Const31(vector2);
-        return vector2[2];
+        return vector2[1];
     }
 
     [Benchmark]
@@ -67,7 +67,7 @@ public class RotateVector128Bench
         var vector2 = Vector128.Create(Array[2], Array[3]);
         PartsForTests.RotateLeftOperators(vector1, Offset);
         PartsForTests.RotateLeftOperators(vector2, Offset);
-        return vector2[2];
+        return vector2[1];
     }
 
     [Benchmark(Baseline = true)]
@@ -83,7 +83,6 @@ public class RotateVector128Bench
         return data;
     }
     
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector128<ulong> RotateLeftSse2Const31(Vector128<ulong> v)
     {

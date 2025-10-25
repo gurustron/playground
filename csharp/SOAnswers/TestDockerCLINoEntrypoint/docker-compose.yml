@@ -1,0 +1,6 @@
+services:
+    personnel_migrator:
+        container_name: personnel_migrator
+        build:
+            context: .
+        command: dotnet MyApp.dll --${CONNECTION_STRING}

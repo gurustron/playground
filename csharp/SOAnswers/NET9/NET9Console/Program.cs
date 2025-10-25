@@ -1,4 +1,6 @@
-﻿using System.Collections.Frozen;
+﻿using System.Buffers;
+using System.Collections.Frozen;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
@@ -17,12 +19,37 @@ using Supabase.Postgrest.Models;
 using UnitsNet;
 using UnitsNet.Units;
 
-foreach (var Size in new []{10, 100, 10_000} )
+// SearchValues.Create("2019/0002391");
+// Assembly.Load("Xin.Service")
+//     .GetExportedTypes()
+//     .Where(a => a.Name.EndsWith("Service") && !a.IsInterface && !a.IsAbstract);
+int numRows = 3;
+int numColumns = 2;
+var firstFor = Random.Shared.Next(100) > 1000
+    ? Generator(0, 1, i => i < numRows)
+    : Generator(numRows - 1, -1, i => i >= 0);
+
+var secondFor = Generator(0, 1, i => i < numColumns);
+
+foreach (var row in firstFor)
+foreach (var column in secondFor)
 {
-   var  _source = Enumerable.Range(0, Size)
-        .Select(i => new KeyValuePair<string, string>($"Key{i}", $"Value{i}"))
-        .ToArray();
-  var  _middleKey = $"Key{Size / 2}";
+    Console.WriteLine($"{row} - {column}");
+}
+
+IEnumerable<int> Generator(int start, int incr, Func<int, bool> breakCondition)
+{
+    for (int j = start; breakCondition(j); j += incr)
+    {
+        yield return j;
+    }
+}
+foreach (var Size in new[] { 10, 100, 10_000 })
+{
+    var _source = Enumerable.Range(0, Size)
+         .Select(i => new KeyValuePair<string, string>($"Key{i}", $"Value{i}"))
+         .ToArray();
+    var _middleKey = $"Key{Size / 2}";
     var _middleKeyPlusOne = $"Key{Size / 2 + 1}";
 
     var _dictionary = new Dictionary<string, string>(_source);

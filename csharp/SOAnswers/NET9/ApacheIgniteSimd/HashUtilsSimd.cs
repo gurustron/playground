@@ -24,64 +24,95 @@ public class HashUtilsSimd
         return (int)(hash64 ^ (hash64 >> 32));
     }
 
-    public static ulong Hash64InternalVector128(ReadOnlySpan<byte> data, ulong seed)
+public static ulong Hash64InternalVector128(ReadOnlySpan<byte> data, ulong seed)
+{
+    unchecked
     {
-        unchecked
+        ulong h1 = seed;
+        ulong h2 = seed;
+        var length = data.Length;
+        int nblocks = length >> 4;
+        int processed = 0;
+
+        // body
+        if (Vector128.IsHardwareAccelerated)
         {
-            ulong h1 = seed;
-            ulong h2 = seed;
-            var length = data.Length;
-            int nblocks = length >> 4;
-            int processed = 0;
+            int vectBlocks = nblocks >> 1;
+            const byte R1RotateComplement = 64 - R1;
+            const byte R3RotateComplement = 64 - R3;
 
-            // body
-            if (Vector128.IsHardwareAccelerated)
+            // process vector blocks
+            for (int i = 0; i < vectBlocks; i++)
             {
-                int vectBlocks = nblocks >> 1;
+                int idx = (i << 5);
+                var k1s = Vector128.Create(
+                    BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx)),
+                    BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 16)));
 
-                // process vector blocks
-                for (int i = 0; i < vectBlocks; i++)
-                {
-                    int idx = (i << 5);
-                    var k1s = Vector128.Create(
-                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx)),
-                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 16)));
+                k1s *= C1;
+                k1s = Sse2.Or(
+                            Sse2.ShiftLeftLogical(k1s, R1),
+                            Sse2.ShiftRightLogical(k1s, R1RotateComplement));
+                k1s *= C2;
 
-                    k1s *= C1; 
+                var k2s = Vector128.Create(
+                    BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8)),
+                    BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 24)));
 
-                    var k2s = Vector128.Create(
-                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8)),
-                        BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 24)));
-                    
-                }
+                k2s *= C2;
+                k2s = Sse2.Or(
+                            Sse2.ShiftLeftLogical(k2s, R3),
+                            Sse2.ShiftRightLogical(k2s, R3RotateComplement));
+                k2s *= C1;
 
-                processed = vectBlocks << 1;
-            }
-
-            for (int i = processed; i < nblocks; i++)
-            {
-                int idx = (i << 4);
-                ulong kk1 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx));
-                ulong kk2 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8));
-
-                // mix functions for k1
-                kk1 *= C1;
-                kk1 = BitOperations.RotateLeft(kk1, R1);
-                kk1 *= C2;
-                h1 ^= kk1;
+                h1 ^= k1s[0];
                 h1 = BitOperations.RotateLeft(h1, R2);
                 h1 += h2;
                 h1 = h1 * M + N1;
 
-                // mix functions for k2
-                kk2 *= C2;
-                kk2 = BitOperations.RotateLeft(kk2, R3);
-                kk2 *= C1;
-                h2 ^= kk2;
+                h2 ^= k2s[0];
+                h2 = BitOperations.RotateLeft(h2, R1);
+                h2 += h1;
+                h2 = h2 * M + N2;
+
+                h1 ^= k1s[1];
+                h1 = BitOperations.RotateLeft(h1, R2);
+                h1 += h2;
+                h1 = h1 * M + N1;
+
+                h2 ^= k2s[1];
                 h2 = BitOperations.RotateLeft(h2, R1);
                 h2 += h1;
                 h2 = h2 * M + N2;
             }
+
+            processed = vectBlocks << 1;
+        }
+
+        for (int i = processed; i < nblocks; i++)
+        {
+            int idx = (i << 4);
+            ulong kk1 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx));
+            ulong kk2 = BinaryPrimitives.ReadUInt64LittleEndian(data.Slice(idx + 8));
+
+            // mix functions for k1
+            kk1 *= C1;
+            kk1 = BitOperations.RotateLeft(kk1, R1);
+            kk1 *= C2;
+            h1 ^= kk1;
+            h1 = BitOperations.RotateLeft(h1, R2);
+            h1 += h2;
+            h1 = h1 * M + N1;
+
+            // mix functions for k2
+            kk2 *= C2;
+            kk2 = BitOperations.RotateLeft(kk2, R3);
+            kk2 *= C1;
+            h2 ^= kk2;
+            h2 = BitOperations.RotateLeft(h2, R1);
+            h2 += h1;
+            h2 = h2 * M + N2;
+        }
             
 
             // tail
