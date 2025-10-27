@@ -1,0 +1,16 @@
+﻿@page "Localizer"
+
+
+@using System.Globalization
+@model IndexModel
+@{
+    // var forcedCulture = new CultureInfo("en");
+    // CultureInfo.CurrentCulture = forcedCulture;
+    // CultureInfo.CurrentUICulture = forcedCulture;
+    ViewData["Title"] = Localizer["Title"];
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>@Localizer["Title"]. qweqweqwe</p>
+</div>
