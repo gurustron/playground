@@ -9,7 +9,24 @@ namespace LocalizationTest.Controllers;
 [Route("[controller]")]
 public class TestController(IStringLocalizer<SharedResource> localizer) : ControllerBase
 {
-    [HttpGet("/testloc")]
+    /// <summary>
+    /// /test/testloc
+    /// </summary>
+    /// <code><![CDATA[
+    /// {
+    ///     "forcedCulture": "en",
+    ///     "value": {
+    ///         "name": "Title",
+    ///         "value": "Confirm account deletion EN",
+    ///         "resourceNotFound": false,
+    ///         "searchedLocation": "LocalizationTest.Application.Resources.SharedResource"
+    ///     },
+    ///     "resourceNamesInAssembly": [
+    ///     "LocalizationTest.Application.Resources.SharedResource.resources"
+    ///         ]
+    ///     }]]></code>
+    /// <returns></returns>
+    [HttpGet("testloc")]
     public IActionResult TestLoc()
     {
         var originalCulture = CultureInfo.CurrentCulture;
