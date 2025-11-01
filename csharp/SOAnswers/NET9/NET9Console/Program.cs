@@ -1,24 +1,68 @@
 ﻿using System.Buffers;
 using System.Collections.Frozen;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Text;
 using CommunityToolkit.HighPerformance;
-using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
-using NSubstitute.ReceivedExtensions;
-using Supabase.Interfaces;
-using Supabase.Postgrest;
-using Supabase.Postgrest.Models;
-using UnitsNet;
-using UnitsNet.Units;
 
+Console.WriteLine(SearchValues.Create(1, 5, 8).Contains(1));
+
+var indexOfAny = new byte[] { 9, 2, 5, 8 }.AsSpan().IndexOfAny(SearchValues.Create(1, 5, 8));
+
+var ssv = SearchValues.Create(["one", "two"], StringComparison.OrdinalIgnoreCase);
+
+var r = new[] { "test", "this contains one", "one" }.AsSpan().IndexOfAny(ssv);
+var ofAny = "this contains one".AsSpan().IndexOfAny(ssv);
+var ofAny1 = "this contains one".AsSpan().IndexOfAny(ssv);
+var handler = new SocketsHttpHandler
+{
+    EnableMultipleHttp2Connections = false,EnableMultipleHttp3Connections = false
+    // SslOptions =
+    // {
+    //     EnabledSslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13 // Specify desired protocols
+    // },
+    // AllowAutoRedirect = true
+};
+var client = new HttpClient(handler);
+client.Timeout = TimeSpan.FromSeconds(4);
+
+var request = new HttpRequestMessage(HttpMethod.Post, "https://gql.tokopedia.com/graphql/ShopProducts");
+request.Headers.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36");
+// request.Headers.Add("Cookie", "_abck=94220D6B3E9983A0477EE01E57182E03~-1~YAAQHOzEF4s+STCaAQAAQQMkOQ4qaE9ZvjnBaM6yhdqgztng5pr8uUsX+6yKPdys2znVK7e9qAs3A0TiYsogzSLG8h5S4B+1oFgOV3BdnuGnLPwD5uwlH4Mj+WwpnDRrZJOPFS24H3nvw3zYisyazFkkJinBU1ideZRIiYU5Gnwjkz0DesAF3k9kVGWrm82soYKy66tzCgRI6hBGfvx3OpeZ86VzEtVDmsJhfmfnKTbb0UqS23g1DXyidfOP1EJAXW2vbg7FGgbE5v0IiDm/FpdIAB/kfhvjDTANM6oCrzJmybdfKHlYqgHgFYTAtU/TNI4OA+V7rmvrWkFRAv+3T0EuSDca0QRNMYA8qg4yDahospjqPOUlhHwH3yMHEFUI2a5DPJ1egkH/Mo+Ht9ellG3ybUHDyDz2TTgKJNNFH6Jhz9gl2tK0QZYXHxRZrZqsQYkXGdiERa8nPw==~-1~-1~-1~-1~-1; ak_bmsc=B3264E8F4416F8CE52089DA8835D9F28~000000000000000000000000000000~YAAQHOzEF4w+STCaAQAAQQMkOR1f3SAbxcE0wTgFzKVNNtvA4SDjAKt5Vdzki8LE3l6N1CUI3Kkpn0yA9WmxOR54kftRDQAuNmJ2lDk+5q68ySYr8RTBlX0GGRVRUaauJyilv9Yk0km97DV3Ml7wSgSQYpkG3Y7Id0VeaM9p34/LSkhI1DxObU+7uZmurkk/RIxJOjVzgQpWsmfwjlsMtTDm4YqKOGsiuaDZF81uesOWZGIe7CbTFeW144oHkfQ6kYmBFryF6kuHGw0EcfSFevrqdZz10GGiCLoqtrUaMMJGV64advjJif8EeRBqfvbM2Gxq0+nip6qkC47fNQeg2QAMzeHIKyHe8O6V1RhZJlTc; bm_sz=0110A424F9A74025B033FA350A1DF9CD~YAAQHOzEF40+STCaAQAAQQMkOR1Pja5DwuKw5oJWwxqu6iF0SnlDSfB4rzGrT5wUEbULbFnskKuuGJpldEFGoQYbN80NRPZhidwsPdP3VhvsXErzBjjdNZZJPmMQSM/1ir0j4ypLaCA1Snp7zAJwAwpyjR1VY98ituyneey7D0MDgTBeLK/bntg5Gyz6TaCBrUqFvpZMmdEUEC33GeJZjsI4w+lWiL99iOMhgIv02ox7aOhYnIto3/GU6vOTqb+ehGiVBV0pHPemZjJ5I6O4l2zmLj6YP8K/pNvM3FG4LRBzx4msS6FsaIUTrG9L8hPyk631FvVd6800tASWN6Sj+svAupML4GzXeoVQB7D4yaQU4w==~3163441~4534854");
+request.Headers.Add("Accept", "*/*");
+request.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+request.Headers.Add("Host", "gql.tokopedia.com");
+var content = new StringContent("\n\n[ {\n  \"operationName\" : \"ShopProducts\",\n  \"variables\" : {\n    \"source\" : \"shop\",\n    \"sid\" : \"1577650\",\n    \"page\" : 1,\n    \"perPage\" : 1,\n    \"etalaseId\" : \"etalase\",\n    \"sort\" : 1,\n    \"user_districtId\" : \"2274\",\n    \"user_cityId\" : \"176\",\n    \"user_lat\" : \"0\",\n    \"user_long\" : \"0\",\n    \"usecase\" : \"ace_get_shop_product_v2\"\n  },\n  \"query\" : \"query ShopProducts($sid:String!,$source:String,$page:Int,$perPage:Int,$keyword:String,$etalaseId:String,$sort:Int,$user_districtId:String,$user_cityId:String,$user_lat:String,$user_long:String,$usecase:String){\\nGetShopProduct(shopID:$sid,source:$source,filter:{page:$page,perPage:$perPage,fkeyword:$keyword,fmenu:$etalaseId,sort:$sort,user_districtId:$user_districtId,user_cityId:$user_cityId,user_lat:$user_lat,user_long:$user_long,usecase:$usecase}){\\nstatus\\nerrors\\nlinks{\\nprev\\nnext\\n__typename\\n}\\ndata{\\nname\\nproduct_url\\nproduct_id\\nprice{\\ntext_idr\\n__typename\\n}\\nprimary_image{\\noriginal\\nthumbnail\\nresize300\\n__typename\\n}\\nflags{\\nisSold\\nisPreorder\\nisWholesale\\nisWishlist\\n__typename\\n}\\ncampaign{\\ndiscounted_percentage\\noriginal_price_fmt\\nstart_date\\nend_date\\n__typename\\n}\\nlabel{\\ncolor_hex\\ncontent\\n__typename\\n}\\nlabel_groups{\\nposition\\ntitle\\ntype\\nurl\\nstyles{\\nkey\\nvalue\\n__typename\\n}\\n__typename\\n}\\nbadge{\\ntitle\\nimage_url\\n__typename\\n}\\nstats{\\nreviewCount\\nrating\\naverageRating\\n__typename\\n}\\ncategory{\\nid\\n__typename\\n}\\n__typename\\n}\\n__typename\\n}\\n}\\n\"\n} ]", null, "application/json");
+request.Content = content;
+var response = await client.SendAsync(request);
+response.EnsureSuccessStatusCode();
+Console.WriteLine(await response.Content.ReadAsStringAsync());
+
+
+// using (HttpClient client = new HttpClient())
+// {
+//     client.Timeout = TimeSpan.FromSeconds(10);
+//     client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36");
+//     client.DefaultRequestHeaders.Accept.ParseAdd("*/*");
+//     client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
+//
+//     using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, new Uri("https://gql.tokopedia.com/graphql/ShopProducts")))
+//     {
+//         string json = @"[{""operationName"":""ShopProducts"",""variables"":{""source"":""shop"",""sid"":""1577650"",""page"":1,""perPage"":80,""etalaseId"":""etalase"",""sort"":1,""user_districtId"":""2274"",""user_cityId"":""176"",""user_lat"":""0"",""user_long"":""0"",""usecase"":""ace_get_shop_product_v2""},""query"":""query ShopProducts($sid:String!,$source:String,$page:Int,$perPage:Int,$keyword:String,$etalaseId:String,$sort:Int,$user_districtId:String,$user_cityId:String,$user_lat:String,$user_long:String,$usecase:String){\nGetShopProduct(shopID:$sid,source:$source,filter:{page:$page,perPage:$perPage,fkeyword:$keyword,fmenu:$etalaseId,sort:$sort,user_districtId:$user_districtId,user_cityId:$user_cityId,user_lat:$user_lat,user_long:$user_long,usecase:$usecase}){\nstatus\nerrors\nlinks{\nprev\nnext\n__typename\n}\ndata{\nname\nproduct_url\nproduct_id\nprice{\ntext_idr\n__typename\n}\nprimary_image{\noriginal\nthumbnail\nresize300\n__typename\n}\nflags{\nisSold\nisPreorder\nisWholesale\nisWishlist\n__typename\n}\ncampaign{\ndiscounted_percentage\noriginal_price_fmt\nstart_date\nend_date\n__typename\n}\nlabel{\ncolor_hex\ncontent\n__typename\n}\nlabel_groups{\nposition\ntitle\ntype\nurl\nstyles{\nkey\nvalue\n__typename\n}\n__typename\n}\nbadge{\ntitle\nimage_url\n__typename\n}\nstats{\nreviewCount\nrating\naverageRating\n__typename\n}\ncategory{\nid\n__typename\n}\n__typename\n}\n__typename\n}\n}\n""}]";
+//         request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+//         using (HttpResponseMessage response = await client.SendAsync(request))
+//         {
+//             using (StreamWriter sw1 = new StreamWriter("response.txt"))
+//             {
+//                 var buffer = response.ToString();
+//                 sw1.Write(buffer);
+//             }
+//         }
+//     }
+// }
 // SearchValues.Create("2019/0002391");
 // Assembly.Load("Xin.Service")
 //     .GetExportedTypes()
@@ -133,9 +177,9 @@ await TestAsyncEnumerable(nameof(Task.WhenEach), Task.WhenEach(tasks));
 Environment.Exit(0);
 
 string password = "password123!";
-string b64 = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(password));
-string b641 = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(password));
-string b6412 = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes(password));
+string b64 = Convert.ToBase64String(Encoding.ASCII.GetBytes(password));
+string b641 = Convert.ToBase64String(Encoding.UTF8.GetBytes(password));
+string b6412 = Convert.ToBase64String(Encoding.Unicode.GetBytes(password));
 ServiceCollection services = new ServiceCollection();
 
 services.AddScoped<IValidator<object, Cat>, MyClass<object, Cat>>();
