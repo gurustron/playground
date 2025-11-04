@@ -2,6 +2,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace NET10.Benchs;
 
+[DisassemblyDiagnoser(printSource: true)]
 public class IterateArraySpanBench
 {
     public static readonly int[] Array = Enumerable.Range(0, 10_000_001).ToArray();
@@ -31,5 +32,4 @@ public class IterateArraySpanBench
         }
         return num;
     }
-
 }
