@@ -10,3 +10,4 @@ public static class MyRecExts
 {
     public static int Test(this long l) => (int)l;
 }
+

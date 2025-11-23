@@ -2,13 +2,24 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using BenchmarkDotNet.Attributes;
 
-namespace NET10.Benchs;
+namespace NET10.Benchs.StackAllocs;
 
 [MemoryDiagnoser(displayGenColumns: false)]
 // [DisassemblyDiagnoser]
 [HideColumns("Job", "Error", "StdDev", "Median", "RatioSD")]
 public class SwStackAllocBench
 {
+    [Benchmark]
+    public TimeSpan WithNew()
+    {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        Nop();
+        sw.Stop();
+
+        return sw.Elapsed;
+    }
+
     [Benchmark]
     public TimeSpan WithStartNew()
     {
