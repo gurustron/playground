@@ -10,6 +10,7 @@ public class IterateArraySpanBench
     [Benchmark]
     public int Span()
     {
+
         int num = -1;
         ReadOnlySpan<int> span = Array;
         for (int i = 0; i < span.Length; i++)
