@@ -2,6 +2,7 @@
 
 using System.Buffers;
 using System.ComponentModel;
+using System.Data;
 using System.Text.Json;
 
 using System.Diagnostics;
@@ -11,6 +12,19 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+
+
+NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Port=6432;Database=test_db;Username=postgres;Password=P@ssword");
+connection.Open();
+NpgsqlCommand cmd = new NpgsqlCommand("SELECT * from public.t4(@iid)", connection);
+cmd.Parameters.Add(new NpgsqlParameter("iid", DbType.Int32) { Direction = ParameterDirection.Input });
+cmd.Parameters[0].Value = 1;
+cmd.Parameters.Add(new NpgsqlParameter("n1", DbType.String) { Direction = ParameterDirection.Output });
+cmd.Parameters.Add(new NpgsqlParameter("n2", DbType.String) { Direction = ParameterDirection.Output });
+cmd.ExecuteNonQuery();
+var t1 = cmd.Parameters[1].Value.ToString();
+var t2 = cmd.Parameters[2].Value.ToString();
 
 var services = new ServiceCollection();
 

@@ -1,13 +1,5 @@
 ﻿using WhatsNewCSharp14.Features;
 
-long.DoSomethingLong();
-42L.DoSomethingInstance();
-Console.WriteLine("Hello, World!");
+int doSomething = ExtensionMembers.DoSomething();
 
-
-
-public static class MyRecExts
-{
-    public static int Test(this long l) => (int)l;
-}
-
+FieldKeyword.Do();

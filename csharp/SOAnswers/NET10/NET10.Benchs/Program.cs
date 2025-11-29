@@ -9,13 +9,18 @@ using NET10.Benchs.Devirtualization;
 using NET10.Benchs.StackAllocs;
 
 // dotnet run -c Release -f net9.0 --runtimes net9.0 net10.0
-// BenchmarkRunner.Run<GDVBenchs>();
+BenchmarkRunner.Run<ArrayFckery>();
 
 var config = DefaultConfig.Instance
-    .AddJob(Job.Default.WithId("ChecksOne"))
-    .AddJob(Job.Default.WithId("ChecksThree")
-        .WithEnvironmentVariable("DOTNET_JitGuardedDevirtualizationMaxTypeChecks", "3"));
-BenchmarkRunner.Run<Tests>(config);
+    .AddJob(Job.Default.WithId("PGO")
+        // .WithEnvironmentVariable("DOTNET_JitGuardedDevirtualizationMaxTypeChecks", "3")
+    )
+    .AddJob(Job.Default.WithId("No PGO")
+        // .WithEnvironmentVariable("DOTNET_JitGuardedDevirtualizationMaxTypeChecks", "3")
+        .WithEnvironmentVariable("DOTNET_TieredPGO", "0"));
+
+// BenchmarkRunner.Run<GDVBenchsV2>(config);
+// BenchmarkRunner.Run<Tests>(config);
 
 [HideColumns("Error", "StdDev", "Median", "RatioSD", "EnvironmentVariables")]
 [DisassemblyDiagnoser]

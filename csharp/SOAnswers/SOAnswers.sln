@@ -111,6 +111,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NET10.Benchs", "NET10\NET10.Benchs\NET10.Benchs.csproj", "{7A1028E8-FC80-4583-BBAD-0C469B410F4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WhatsNew", "WhatsNew", "{F6CE49A1-4055-4FF9-941F-144C76773A51}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhatsNewNET10", "NET10\WhatsNew\WhatsNewNET10\WhatsNewNET10.csproj", "{F77DE2BF-B843-4232-BA7F-697769FDEB9B}"
 EndProject
