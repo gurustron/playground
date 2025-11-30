@@ -5,14 +5,14 @@ namespace WhatsNewCSharp14.Features;
 
 public class FieldKeyword
 {
-    private string _msg;
-    public string Message
+    private string? _msg;
+    public string? Message
     {
         get => _msg;
         set => _msg = value ?? throw new ArgumentNullException(nameof(value));
     }
     
-    public string MessageWithFieldKeyword
+    public string? MessageWithFieldKeyword
     {
         get;
         set => field = value ?? throw new ArgumentNullException(nameof(value));

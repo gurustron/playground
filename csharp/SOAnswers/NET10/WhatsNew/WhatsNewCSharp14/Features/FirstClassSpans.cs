@@ -11,7 +11,7 @@ public class FirstClassSpans
         // due to a breaking change in overload resolution with spans.
         // This can cause runtime exceptions when compiled with interpretation.
         Expression<Func<int[], bool>> predicate = x => x.Contains(0);
-        var methodInfo = (predicate.Body as MethodCallExpression).Method;
+        var methodInfo = (predicate.Body as MethodCallExpression)!.Method;
 
         Console.WriteLine(methodInfo.DeclaringType); // System.MemoryExtensions
         Console.WriteLine(methodInfo); // Boolean Contains[Int32](System.ReadOnlySpan`1[System.Int32], Int32)
