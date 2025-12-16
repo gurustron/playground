@@ -331,7 +331,6 @@ class MyClass<TModel, TContext> : IValidator<TModel, TContext>
     }
 }
 
-
 public static class TupleExts
 {
     public static (TX X, TY Y) Add<TX, TY>(this (TX X, TY Y) left, (TX X, TY Y) right)
