@@ -56,4 +56,4 @@ public static class ExtensionMembers
 }
 ```
 
-So you can just call methods on `ExtensionMembers` class - `ExtensionMembers.DoSomething()`
+So you can just call methods on `ExtensionMembers` class - `int i = ExtensionMembers.DoSomething()`
