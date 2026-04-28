@@ -5,17 +5,37 @@ using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 using LeetCode.Study.DataStructure.DataStructureTwo;
 
-Console.WriteLine("Hello World!");
-var ints = new[]
+
+
+ThreeLongestSubstringWithoutRepeatingCharacters.Solution sol = new();
+
+foreach (var item in new []{"abcabcbb", "bbbbb", "pwwkew"})
 {
-    new[] { 1, 4, 7, 11, 15 },
-    new[] { 2, 5, 8, 12, 19 }, 
-    new[] { 3, 6, 9, 16, 22 },
-    new[] { 10, 13, 14, 17, 24 },
-    new[] { 18, 21, 23, 26, 30 }
-};
-var searchMatrix = new Search2DMatrix2().SearchMatrix(ints, 8);
-Console.WriteLine();
+    System.Console.WriteLine($"{item} : {sol.LengthOfLongestSubstring(item)}");
+}
+
+
+// EightStringIntAtoi.Solution sol = new();
+
+// foreach (var item in new []{"-91283472332", "   -042", "", "42", "-42", "0002", "+2", "-0002", "1337c0d3"})
+// {
+
+//     System.Console.WriteLine($"{item} : {sol.MyAtoi(item)}");
+// }
+
+
+
+// Console.WriteLine("Hello World!");
+// var ints = new[]
+// {
+//     new[] { 1, 4, 7, 11, 15 },
+//     new[] { 2, 5, 8, 12, 19 }, 
+//     new[] { 3, 6, 9, 16, 22 },
+//     new[] { 10, 13, 14, 17, 24 },
+//     new[] { 18, 21, 23, 26, 30 }
+// };
+// var searchMatrix = new Search2DMatrix2().SearchMatrix(ints, 8);
+// Console.WriteLine();
 // new RotateImage().Rotate(arr);
 // new PascalsTriangle2Solution().GetRow(0).PrintResult();
 // new PascalsTriangle2Solution().GetRow(1).PrintResult();
