@@ -5,21 +5,53 @@ using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 using LeetCode.Study.DataStructure.DataStructureTwo;
 
-
-
-ThreeLongestSubstringWithoutRepeatingCharacters.Solution sol = new();
-
-foreach (var item in new []{"abcabcbb", "bbbbb", "pwwkew"})
+ThirtyThreeSearchInRotatedSortedArray.Solution sol = new();
+foreach (var item in new (int[] nums, int target)[]{
+    ([1,2,3], -1),
+    ([1,2,3], 1),
+    ([1,2,3], 2),
+    ([1,2,3], 3), 
+    ([0,1], -1), 
+    ([0,1], 0), 
+    ([0,1], 1), 
+    ([42], 42), 
+    ([4,5,6,7,0,1,2], 0),
+    ([4,5,6,7,0,1,2], 1),
+    ([4,5,6,7,0,1,2], 2),
+    ([4,5,6,7,0,1,2], 4),
+    ([4,5,6,7,0,1,2], 5),
+    ([4,5,6,7,0,1,2], 7), 
+    ([4,5,6,7,0,1,2,3], 0), 
+    ([4,5,6,7,0], 0)
+    })
 {
-    System.Console.WriteLine($"{item} : {sol.LengthOfLongestSubstring(item)}");
+    System.Console.WriteLine($"{item.nums.ToPrintVersion()} - {item.target} : {sol.Search(item.nums, item.target)}");
 }
 
 
-// EightStringIntAtoi.Solution sol = new();
 
+// FortySixPermutations.Solution sol = new();
+// foreach (var item in new int[][]{[1,2,3], [0,1], [42]})
+// {
+//     System.Console.WriteLine($"{item.ToPrintVersion()} : {sol.Permute(item).Select(c => $"[{c.ToPrintVersion()}]").ToPrintVersion()}");
+// }
+
+// SeventeenLetterCombinationsOfPhoneNumber.Solution sol = new();
+
+// foreach (var item in new []{"23", "2"})
+// {
+//     System.Console.WriteLine($"{item} : {string.Join(", ", sol.LetterCombinations(item))}");
+// }
+
+// ThreeLongestSubstringWithoutRepeatingCharacters.Solution sol = new();
+// foreach (var item in new []{"abcabcbb", "bbbbb", "pwwkew"})
+// {
+//     System.Console.WriteLine($"{item} : {sol.LengthOfLongestSubstring(item)}");
+// }
+
+// EightStringIntAtoi.Solution sol = new();
 // foreach (var item in new []{"-91283472332", "   -042", "", "42", "-42", "0002", "+2", "-0002", "1337c0d3"})
 // {
-
 //     System.Console.WriteLine($"{item} : {sol.MyAtoi(item)}");
 // }
 
