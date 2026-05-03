@@ -1,34 +1,59 @@
-﻿using System;using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LeetCode;
 using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 using LeetCode.Study.DataStructure.DataStructureTwo;
 
-ThirtyThreeSearchInRotatedSortedArray.Solution sol = new();
-foreach (var item in new (int[] nums, int target)[]{
-    ([1,2,3], -1),
-    ([1,2,3], 1),
-    ([1,2,3], 2),
-    ([1,2,3], 3), 
-    ([0,1], -1), 
-    ([0,1], 0), 
-    ([0,1], 1), 
-    ([42], 42), 
-    ([4,5,6,7,0,1,2], 0),
-    ([4,5,6,7,0,1,2], 1),
-    ([4,5,6,7,0,1,2], 2),
-    ([4,5,6,7,0,1,2], 4),
-    ([4,5,6,7,0,1,2], 5),
-    ([4,5,6,7,0,1,2], 7), 
-    ([4,5,6,7,0,1,2,3], 0), 
-    ([4,5,6,7,0], 0)
-    })
+SixtyOneRotateList.Solution sol = new();
+
+void PrintLinkedList(SixtyOneRotateList.Solution.ListNode head)
 {
-    System.Console.WriteLine($"{item.nums.ToPrintVersion()} - {item.target} : {sol.Search(item.nums, item.target)}");
+    bool isFirst = true;
+
+    while (head is not null)
+    {
+        if (!isFirst)
+        {
+            System.Console.Write(", ");
+        }
+
+        isFirst = false;
+        System.Console.Write(head.val);
+        head = head.next;
+    }
+    System.Console.WriteLine();
+}
+
+foreach (var t in new[] { sol.CreateTask(5, 2) })
+{
+    PrintLinkedList(sol.RotateRight(t.start, t.numOfRotations));
 }
 
 
+// ThirtyThreeSearchInRotatedSortedArray.Solution sol = new();
+// foreach (var item in new (int[] nums, int target)[]{
+//     ([1,2,3], -1),
+//     ([1,2,3], 1),
+//     ([1,2,3], 2),
+//     ([1,2,3], 3), 
+//     ([0,1], -1), 
+//     ([0,1], 0), 
+//     ([0,1], 1), 
+//     ([42], 42), 
+//     ([4,5,6,7,0,1,2], 0),
+//     ([4,5,6,7,0,1,2], 1),
+//     ([4,5,6,7,0,1,2], 2),
+//     ([4,5,6,7,0,1,2], 4),
+//     ([4,5,6,7,0,1,2], 5),
+//     ([4,5,6,7,0,1,2], 7), 
+//     ([4,5,6,7,0,1,2,3], 0), 
+//     ([4,5,6,7,0], 0)
+//     })
+// {
+//     System.Console.WriteLine($"{item.nums.ToPrintVersion()} - {item.target} : {sol.Search(item.nums, item.target)}");
+// }
 
 // FortySixPermutations.Solution sol = new();
 // foreach (var item in new int[][]{[1,2,3], [0,1], [42]})

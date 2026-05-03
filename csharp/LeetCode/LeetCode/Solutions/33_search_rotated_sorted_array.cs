@@ -54,8 +54,6 @@ public class Solution
             return TargetDivideAndConquer(0, nums.Length - 1);
         }
         
-        return actualStart;
-
         int TargetDivideAndConquer(int left, int right)
         {
             if(nums[left] == target) return left;
