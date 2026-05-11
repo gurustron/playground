@@ -6,30 +6,56 @@ using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 using LeetCode.Study.DataStructure.DataStructureTwo;
 
-SixtyOneRotateList.Solution sol = new();
-
-void PrintLinkedList(SixtyOneRotateList.Solution.ListNode head)
+ThirtyFourFindFirstAndLastPositionAfElementInASortedArray.Solution sol = new();
+foreach (var item in new (int[] nums, int target)[]{
+        ([5,7,7,8,8,10], 5),
+        ([5,7,7,8,8,10], 10),
+        ([5,7,7,8,8,10], 0),
+        ([1], 1),
+        ([1], 0),
+        ([1, 2], 1),
+        ([1, 2], 2),
+        ([1, 2, 3], 1),
+        ([1, 2, 3], 2),
+        ([1, 2, 3], 3),    
+    })
 {
-    bool isFirst = true;
-
-    while (head is not null)
-    {
-        if (!isFirst)
-        {
-            System.Console.Write(", ");
-        }
-
-        isFirst = false;
-        System.Console.Write(head.val);
-        head = head.next;
-    }
-    System.Console.WriteLine();
+    Console.WriteLine($"{item.nums.ToPrintVersion()} - {item.target} : " + 
+        $"{sol.SearchRange(item.nums, item.target).ToPrintVersion()}");
 }
 
-foreach (var t in new[] { sol.CreateTask(5, 2) })
-{
-    PrintLinkedList(sol.RotateRight(t.start, t.numOfRotations));
-}
+
+// ThirtyEightCountAndSay.Solution sol = new();
+
+// foreach (var item in new[]{1, 4, 30, 31})
+// {
+//     System.Console.WriteLine($"{item}: {sol.CountAndSay(item)}");
+// }
+
+// SixtyOneRotateList.Solution sol = new();
+
+// void PrintLinkedList(SixtyOneRotateList.Solution.ListNode head)
+// {
+//     bool isFirst = true;
+
+//     while (head is not null)
+//     {
+//         if (!isFirst)
+//         {
+//             System.Console.Write(", ");
+//         }
+
+//         isFirst = false;
+//         System.Console.Write(head.val);
+//         head = head.next;
+//     }
+//     System.Console.WriteLine();
+// }
+
+// foreach (var t in new[] { sol.CreateTask(5, 2) })
+// {
+//     PrintLinkedList(sol.RotateRight(t.start, t.numOfRotations));
+// }
 
 
 // ThirtyThreeSearchInRotatedSortedArray.Solution sol = new();
