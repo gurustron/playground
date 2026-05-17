@@ -1,3 +1,15 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System.Globalization;
+using WhatsNewNET10.Features;
 
-Console.WriteLine("Hello, World!");
+// NumericOrdering.Do();
+
+
+string[] things = ["paul", "bob", "lauren", "007", "90"];
+
+StringComparer numericStringComparer = 
+    StringComparer.Create(CultureInfo.CurrentCulture, CompareOptions.NumericOrdering);
+
+foreach (var item in things.Order(numericStringComparer))
+{
+    Console.WriteLine(item);
+}

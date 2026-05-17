@@ -57,6 +57,7 @@ static IHostBuilder CreateHostBuilder(string[] args, ILogger log)
                     {
                         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                     });
+                    endpoints.MapHealthChecksUI(options => options.UIPath = "/hc");
                     endpoints.MapControllers();
                 });
             });

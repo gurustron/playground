@@ -9,7 +9,7 @@ using NET10.Benchs.Devirtualization;
 using NET10.Benchs.StackAllocs;
 
 // dotnet run -c Release -f net9.0 --runtimes net9.0 net10.0
-BenchmarkRunner.Run<ArrayFckery>();
+BenchmarkRunner.Run<MoveToClassBench>();
 
 var config = DefaultConfig.Instance
     .AddJob(Job.Default.WithId("PGO")
