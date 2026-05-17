@@ -6,23 +6,30 @@ using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 using LeetCode.Study.DataStructure.DataStructureTwo;
 
-ThirtyFourFindFirstAndLastPositionAfElementInASortedArray.Solution sol = new();
-foreach (var item in new (int[] nums, int target)[]{
-        ([5,7,7,8,8,10], 5),
-        ([5,7,7,8,8,10], 10),
-        ([5,7,7,8,8,10], 0),
-        ([1], 1),
-        ([1], 0),
-        ([1, 2], 1),
-        ([1, 2], 2),
-        ([1, 2, 3], 1),
-        ([1, 2, 3], 2),
-        ([1, 2, 3], 3),    
-    })
+ElevenContainerWithMostWater.Solution sol = new();
+
+foreach (var item in new int[][] { [1, 8, 6, 2, 5, 4, 8, 3, 7], [1, 1] })
 {
-    Console.WriteLine($"{item.nums.ToPrintVersion()} - {item.target} : " + 
-        $"{sol.SearchRange(item.nums, item.target).ToPrintVersion()}");
+    System.Console.WriteLine($"{item.ToPrintVersion()}: {sol.MaxArea(item)}");
 }
+
+// ThirtyFourFindFirstAndLastPositionAfElementInASortedArray.Solution sol = new();
+// foreach (var item in new (int[] nums, int target)[]{
+//         ([5,7,7,8,8,10], 5),
+//         ([5,7,7,8,8,10], 10),
+//         ([5,7,7,8,8,10], 0),
+//         ([1], 1),
+//         ([1], 0),
+//         ([1, 2], 1),
+//         ([1, 2], 2),
+//         ([1, 2, 3], 1),
+//         ([1, 2, 3], 2),
+//         ([1, 2, 3], 3),    
+//     })
+// {
+//     Console.WriteLine($"{item.nums.ToPrintVersion()} - {item.target} : " + 
+//         $"{sol.SearchRange(item.nums, item.target).ToPrintVersion()}");
+// }
 
 
 // ThirtyEightCountAndSay.Solution sol = new();
