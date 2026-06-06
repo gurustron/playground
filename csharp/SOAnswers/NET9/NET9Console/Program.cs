@@ -8,6 +8,11 @@ using System.Text;
 using CommunityToolkit.HighPerformance;
 using Microsoft.Extensions.DependencyInjection;
 
+string s = "A lot, of text, with commas, here and,there";
+foreach (var range in s.AsSpan().Split(','))
+{
+    
+}
 Console.WriteLine(SearchValues.Create(1, 5, 8).Contains(1));
 
 var indexOfAny = new byte[] { 9, 2, 5, 8 }.AsSpan().IndexOfAny(SearchValues.Create(1, 5, 8));

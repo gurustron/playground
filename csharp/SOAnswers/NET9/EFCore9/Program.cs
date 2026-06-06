@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -44,20 +45,24 @@ var serviceProvider = serviceCollection.BuildServiceProvider();
 
 WhatsNewContext ctx = null!;
 
-using (var scope = serviceProvider.CreateScope())
-{
-    ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
-}
+// using (var scope = serviceProvider.CreateScope())
+// {
+//     ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
+//
+// }
 
-var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<WhatsNewContext>>();
-var whatsNewContext = dbContextFactory.CreateDbContext();
-whatsNewContext.Database.EnsureDeleted();
-whatsNewContext.Dispose();
+// var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<WhatsNewContext>>();
+// var whatsNewContext = dbContextFactory.CreateDbContext();
+// whatsNewContext.Database.EnsureDeleted();
+// whatsNewContext.Dispose();
+
 using (var scope = serviceProvider.CreateScope())
 {
     ctx = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
     ctx.Database.EnsureDeleted();
     ctx.Database.EnsureCreated();
+
+    ctx.SaveChanges();
     // ctx.Models.FromSqlInterpolated($"select * from Model where 1 = {1};");
 int i = 1234;
 
@@ -66,6 +71,7 @@ var first = ctx.Database.SqlQuery<string>($"select hex({i}) as Value").First();
     {
         Status = Status.Active,
     });
+    var entityEntries = ctx.ChangeTracker.Entries<BaseModel>();
     ctx.SaveChanges();
 
 
@@ -95,6 +101,23 @@ var first = ctx.Database.SqlQuery<string>($"select hex({i}) as Value").First();
         .Include(e => e.LatestState)
         .ToList();
 }
+using (var scope = serviceProvider.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<WhatsNewContext>();
+}
+
+
+// SELECT "p"."Id", "p"."CatalogPrice", "p"."Code", "p"."CustomerProductInfoId", "p"."Name", "c"."Id", "c"."CustomerCode", "c"."CustomerPrice", "c"."ProductCode"
+// FROM "Products" AS "p"
+// LEFT JOIN "CustomerProducts" AS "c" ON "p"."CustomerProductInfoId" = "c"."Id"
+// WHERE "c"."CustomerCode" IS NULL
+
+// SELECT "p"."Id", "p"."CatalogPrice", "p"."Code", "p"."CustomerProductInfoId", "p"."Name", "c"."Id", "c"."CustomerCode", "c"."CustomerPrice", "c"."ProductCode"
+// FROM "Products" AS "p"
+// LEFT JOIN "CustomerProducts" AS "c" ON "p"."CustomerProductInfoId" = "c"."Id"
+// WHERE "c"."CustomerCode" IS NULL AND "c"."Id" IS NULL
+
+
 
 public class WhatsNewContext : DbContext
 {
@@ -107,6 +130,7 @@ public class WhatsNewContext : DbContext
     public DbSet<Expense> Expense => Set<Expense>();
     public DbSet<ExpenseState> ExpenseState => Set<ExpenseState>();
 
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         base.ConfigureConventions(configurationBuilder);
@@ -114,6 +138,11 @@ public class WhatsNewContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.Entity<Model>()
+            .ComplexProperty(m => m.ComplexType
+                , b => b.Property(c => c.Name)
+                    .HasColumnName("Name"));
+
         // builder.Entity<StatusLookup>()
         //     .ToTable($"Lookup_Status")
         //     .HasKey(t => t.Id);
@@ -150,7 +179,7 @@ public class WhatsNewContext : DbContext
         //     .HasForeignKey(t => t.Status)
         //     .OnDelete(DeleteBehavior.Restrict);
 
-        
+
     }
 }
 
@@ -176,12 +205,21 @@ public class PgDateTimeOffset
     public short Offset { get; set; }
 }
 
-public class Model
+public class Model : BaseModel
 {
     public int Id { get; set; }
     public Status Status { get; set; }
+    public ComplexType ComplexType { get; set; }
+    
 }
 
+public class BaseModel{}
+
+public class ComplexType
+{
+    public string Name { get; set; }
+    public string Data { get; set; }
+}
 public enum Status
 {
     [Code("Active")]
@@ -228,4 +266,44 @@ public class ExpenseState
     public Guid Id { get; set; }
     public Guid ExpenseId { get; set; }
     public string State { get; set; }
+}
+
+class Left
+{
+    public List<Right> Right { get; set; }
+}
+
+class Right
+{
+    
+    public List<Left> Lefts { get; set; }
+}
+
+class MyClass : IEntityTypeConfiguration<Right>
+{
+    public void Configure(EntityTypeBuilder<Right> builder)
+    {
+        builder.HasMany(s => s.Lefts)
+            .WithMany(sp => sp.Right)
+            .UsingEntity(
+                "SwitchSoundProfiles",
+                j => j
+                    .HasOne(typeof(Left))
+                    .WithMany()
+                    .HasForeignKey("SoundProfileId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j
+                    .HasOne(typeof(Right))
+                    .WithMany()
+                    .HasForeignKey("SwitchId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.ToTable("SwitchSoundProfiles");
+                    j.HasKey("SwitchId", "SoundProfileId");
+                    j.Navigation("SoundProfileId").IsRequired(false);
+                    j.Navigation("SwitchId").IsRequired(false);
+                }
+            );
+    }
 }
