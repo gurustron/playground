@@ -6,10 +6,19 @@ namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
 [DisassemblyDiagnoser]
-public class GrpcRepeatedField
+public class GrpcRepeatedFieldIEnumerableBenchs
 {
-    private static IEnumerable<string> Strings = Enumerable.Repeat("42", 500)
-        .Select(s => s.ToString())        ;
+    [Params(1, 4, 5, 25, 299)]
+    public int CollectionSize;
+
+    [GlobalSetup]
+    public void GlobalSetup()
+    {
+        Strings = Enumerable.Range(1, CollectionSize)
+            .Select(s => s.ToString());
+    }
+
+    private IEnumerable<string> Strings = null!;
 
     [Benchmark]
     public SampleMessage ViaDirectCopy() => new SampleMessage
@@ -22,7 +31,7 @@ public class GrpcRepeatedField
     {
         SampleMessage result = new()
         {
-            Names = { Capacity = 500 }
+            Names = { Capacity = CollectionSize }
         };
         foreach (var s in Strings)
         {
