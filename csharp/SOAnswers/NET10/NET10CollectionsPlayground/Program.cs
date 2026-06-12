@@ -1,9 +1,18 @@
 ﻿using System.Buffers;
 using System.Runtime.InteropServices;
 using BenchmarkDotNet.Running;
+using LeetCode;
 using NET10CollectionsPlayground.Benchmarks;
 
-BenchmarkRunner.Run<GrpcRepeatedFieldCollectionsBenchs>();
+ThreadPool.SetMinThreads(32, 32);
+await Task.WhenAll(Enumerable.Range(0, 64).Select(_ => Task.Delay(100)));
+// ConcurrentListAlternatives concurrentListAlternatives = new ConcurrentListAlternatives();
+// concurrentListAlternatives.ThreadCount =4;
+// concurrentListAlternatives.SizePerThread = 4;
+// System.Console.WriteLine(concurrentListAlternatives.ProcessViaConcurrentBag().Order().ToPrintVersion());
+// System.Console.WriteLine(concurrentListAlternatives.ProcessViaConcurrentQueue().Order().ToPrintVersion());
+// System.Console.WriteLine(concurrentListAlternatives.ProcessViaPreAllocated().Order().ToPrintVersion());
+BenchmarkRunner.Run<ConcurrentListAlternatives>();
 
 
 
