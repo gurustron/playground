@@ -3,18 +3,18 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using ProtoTest;
 
-namespace NET10CollectionsPlayground.Benchmarks;
+// namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
 public class ConcurrentListAlternatives
 {
-    [Params(1, 2, 4, 8)]
+    [Params(8, 4, 2, 1)]
     public int ThreadCount;
 
-    [Params(100_000, 1, 4, 25, 100)]
+    [Params(100_000, 15_000, 100, 15, 1)]
     public int SizePerThread;
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public int[] ProcessViaConcurrentBag()
     {
         var result = new ConcurrentBag<int>();
@@ -87,7 +87,7 @@ public class ConcurrentListAlternatives
             {
                 MaxDegreeOfParallelism = ThreadCount,
             },
-            i =>
+            (i) =>
             {
                 for (int j = 0; j < SizePerThread; j++)
                 {

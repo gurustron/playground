@@ -1,18 +1,20 @@
 ﻿using System.Buffers;
 using System.Runtime.InteropServices;
 using BenchmarkDotNet.Running;
-using LeetCode;
-using NET10CollectionsPlayground.Benchmarks;
+using Helpers;
 
 ThreadPool.SetMinThreads(32, 32);
 await Task.WhenAll(Enumerable.Range(0, 64).Select(_ => Task.Delay(100)));
-// ConcurrentListAlternatives concurrentListAlternatives = new ConcurrentListAlternatives();
-// concurrentListAlternatives.ThreadCount =4;
-// concurrentListAlternatives.SizePerThread = 4;
+// ConcurrentListAlternativesForEach concurrentListAlternatives = new ConcurrentListAlternativesForEach();
+// concurrentListAlternatives.ThreadCount = 3;
+// concurrentListAlternatives.TotalSize = 17;
+// concurrentListAlternatives.GlobalSetup();
 // System.Console.WriteLine(concurrentListAlternatives.ProcessViaConcurrentBag().Order().ToPrintVersion());
-// System.Console.WriteLine(concurrentListAlternatives.ProcessViaConcurrentQueue().Order().ToPrintVersion());
+// System.Console.WriteLine((await concurrentListAlternatives.ProcessViaChannelConCurrentRead()).Order().ToPrintVersion());
 // System.Console.WriteLine(concurrentListAlternatives.ProcessViaPreAllocated().Order().ToPrintVersion());
 BenchmarkRunner.Run<ConcurrentListAlternatives>();
+BenchmarkRunner.Run<ConcurrentListAlternativesForEach>();
+BenchmarkRunner.Run<ConcurrentListAlternativesThreads>();
 
 
 

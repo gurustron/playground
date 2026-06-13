@@ -3,14 +3,14 @@ using System.Collections.Frozen;
 using System.Text.RegularExpressions;
 using BenchmarkDotNet.Attributes;
 
-namespace NET10CollectionsPlayground.Benchmarks;
+// namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
 [DisassemblyDiagnoser]
 public partial class SearchValuesBenchs
 {
     [ParamsSource(nameof(StringValues))]
-    public string String { get; set; }
+    public string String { get; set; } = null!;
     private static HashSet<char> CharsHashset = ['a', 'z'];
     private static FrozenSet<char> CharsFrozenset = CharsHashset.ToFrozenSet();
     private static SearchValues<char> CharsSearchValues = SearchValues.Create(CharsHashset.ToArray());
@@ -18,7 +18,7 @@ public partial class SearchValuesBenchs
     [GeneratedRegex("a|z")]
     private static partial Regex AOrZGeneratedRegex();
     
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public bool ViaHashSet()
     {
         for (var index = 0; index < String.Length; index++)

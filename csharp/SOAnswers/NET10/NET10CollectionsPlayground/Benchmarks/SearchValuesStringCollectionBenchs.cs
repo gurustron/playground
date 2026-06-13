@@ -2,10 +2,10 @@ using System.Buffers;
 using System.Collections.Frozen;
 using BenchmarkDotNet.Attributes;
 
-namespace NET10CollectionsPlayground.Benchmarks;
+// namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
-[DisassemblyDiagnoser]
+// [DisassemblyDiagnoser]
 public class SearchValuesStringCollectionBenchs
 {
     [ParamsSource(nameof(TestedStringsData))]
@@ -22,7 +22,7 @@ public class SearchValuesStringCollectionBenchs
     private static FrozenSet<string> StringsFrozenset = StringsHashset.ToFrozenSet(StringsHashset.Comparer);
     private static SearchValues<string> StringsSearchValues = SearchValues.Create(StringsHashset.ToArray(), StringComparison.InvariantCulture);
     
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public bool ViaHashSet()
     {
         for (var index = 0; index < TestedStrings.Length; index++)

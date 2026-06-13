@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
+namespace Helpers;
 
-namespace LeetCode
+public static class CollectionExts
 {
-    public static class CollectionExts
+    public static string ToPrintVersion<T>(this IEnumerable<T> col)
     {
-        public static string ToPrintVersion<T>(this IEnumerable<T> col)
-        {
-            return $"[ {string.Join(", ", col)} ]";
-        }
-
-        public static void PrintResult<T>(this IEnumerable<T> array) => Console.WriteLine(array.ToPrintVersion());
+        return $"[ {string.Join(", ", col)} ]";
     }
+
+    public static void PrintResult<T>(this IEnumerable<T> array) => Console.WriteLine(array.ToPrintVersion());
 }

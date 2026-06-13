@@ -2,10 +2,10 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using ProtoTest;
 
-namespace NET10CollectionsPlayground.Benchmarks;
+// namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
-[DisassemblyDiagnoser]
+// [DisassemblyDiagnoser]
 public class GrpcRepeatedFieldCollectionsBenchs
 {
     [Params(1, 8, 9, 25, 299)]
@@ -25,7 +25,7 @@ public class GrpcRepeatedFieldCollectionsBenchs
     private List<string> Strings = null!;
     private HashSet<string> StringsHashSet = null!;
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public SampleMessage ViaDirectCopy() => new SampleMessage
     {
         Names = { Strings }

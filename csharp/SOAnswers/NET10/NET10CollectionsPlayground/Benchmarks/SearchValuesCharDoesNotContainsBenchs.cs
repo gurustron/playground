@@ -2,14 +2,14 @@ using System.Buffers;
 using System.Collections.Frozen;
 using BenchmarkDotNet.Attributes;
 
-namespace NET10CollectionsPlayground.Benchmarks;
+// namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
 [DisassemblyDiagnoser]
 public class SearchValuesBenchs2
 {
     [ParamsSource(nameof(StringValues))]
-    public string String { get; set; }
+    public string String { get; set; } = null!;
     private static HashSet<char> CharsHashset = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9' , '.'];
     private static FrozenSet<char> CharsFrozenset = CharsHashset.ToFrozenSet();
     private static SearchValues<char> CharsSearchValues = SearchValues.Create(CharsHashset.ToArray());

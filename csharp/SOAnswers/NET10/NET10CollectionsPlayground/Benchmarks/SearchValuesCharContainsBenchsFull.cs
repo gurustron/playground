@@ -2,7 +2,7 @@ using System.Buffers;
 using System.Collections.Frozen;
 using BenchmarkDotNet.Attributes;
 
-namespace NET10CollectionsPlayground.Benchmarks;
+// namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
 [DisassemblyDiagnoser]
@@ -28,7 +28,7 @@ public class SearchValuesCharContainsBenchsFull
         CharsSearchValues = SearchValues.Create(Values);
     }
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public bool ViaHashSet()
     {
         for (var index = 0; index < TestedString.Length; index++)
