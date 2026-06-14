@@ -12,8 +12,18 @@ await Task.WhenAll(Enumerable.Range(0, 64).Select(_ => Task.Delay(100)));
 // System.Console.WriteLine(concurrentListAlternatives.ProcessViaConcurrentBag().Order().ToPrintVersion());
 // System.Console.WriteLine((await concurrentListAlternatives.ProcessViaChannelConCurrentRead()).Order().ToPrintVersion());
 // System.Console.WriteLine(concurrentListAlternatives.ProcessViaPreAllocated().Order().ToPrintVersion());
-BenchmarkRunner.Run<ConcurrentListAlternatives>();
-BenchmarkRunner.Run<ConcurrentListAlternativesForEach>();
+// BenchmarkRunner.Run<ConcurrentListAlternatives>();
+// BenchmarkRunner.Run<ConcurrentListAlternativesForEach>();
+
+// var alt = new ConcurrentListAlternativesThreads();
+// alt.ThreadCount = 1;
+// alt.SizePerThread = 1;
+
+// System.Console.WriteLine(alt.ProcessViaConcurrentBag().Order().ToPrintVersion());
+// System.Console.WriteLine((await alt.ProcessViaChannelConcurrentRead()).Order().ToPrintVersion());
+// System.Console.WriteLine(alt.ProcessViaPreAllocated().Order().ToPrintVersion());
+// System.Console.WriteLine(alt.ProcessViaConcurrentQueue().Order().ToPrintVersion());
+
 BenchmarkRunner.Run<ConcurrentListAlternativesThreads>();
 
 

@@ -10,13 +10,13 @@ using ProtoTest;
 [MemoryDiagnoser(true)]
 public class ConcurrentListAlternativesThreads
 {
-    [Params(8, 4, 2, 1)]
+    [Params(8, 2)]
     public int ThreadCount;
 
-    [Params(100_000, 15_000, 100, 15, 1)]
+    [Params(10_000, 2500, 25)]
     public int SizePerThread;
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public int[] ProcessViaConcurrentBag()
     {
         var result = new ConcurrentBag<int>();
@@ -35,80 +35,115 @@ public class ConcurrentListAlternativesThreads
             });
         }
 
-        return result.ToArray();
-    }
-
-    [Benchmark]
-    public int[] ProcessViaConcurrentQueue()
-    {
-        var result = new ConcurrentQueue<int>();
-
-        var threads = new Thread[ThreadCount];
-
-        for (int i = 0; i < ThreadCount; i++)
+        for (int i = 0; i < threads.Length; i++)
         {
-            var local = i;
-            threads[i] = new Thread(() =>
-            {
-                for (int j = 0; j < SizePerThread; j++)
-                {
-                    result.Enqueue(local * SizePerThread + j);
-                }
-            });
+            threads[i].Start();
+        }
+
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Join();
         }
 
         return result.ToArray();
     }
 
+    // [Benchmark]
+    // public int[] ProcessViaConcurrentQueue()
+    // {
+    //     var result = new ConcurrentQueue<int>();
+
+    //     var threads = new Thread[ThreadCount];
+
+    //     for (int i = 0; i < ThreadCount; i++)
+    //     {
+    //         var local = i;
+    //         threads[i] = new Thread(() =>
+    //         {
+    //             for (int j = 0; j < SizePerThread; j++)
+    //             {
+    //                 result.Enqueue(local * SizePerThread + j);
+    //             }
+    //         });
+    //     }
+    //     for (int i = 0; i < threads.Length; i++)
+    //     {
+    //         threads[i].Start();
+    //     }
+
+    //     for (int i = 0; i < threads.Length; i++)
+    //     {
+    //         threads[i].Join();
+    //     }
+    //     return result.ToArray();
+    // }
+
+    // [Benchmark]
+    // public int[] ProcessViaConcurrentStack()
+    // {
+    //     var result = new ConcurrentStack<int>();
+
+    //     var threads = new Thread[ThreadCount];
+
+    //     for (int i = 0; i < ThreadCount; i++)
+    //     {
+    //         var local = i;
+    //         threads[i] = new Thread(() =>
+    //         {
+    //             for (int j = 0; j < SizePerThread; j++)
+    //             {
+    //                 result.Append(local * SizePerThread + j);
+    //             }
+    //         });
+    //     }
+    //     for (int i = 0; i < threads.Length; i++)
+    //     {
+    //         threads[i].Start();
+    //     }
+
+    //     for (int i = 0; i < threads.Length; i++)
+    //     {
+    //         threads[i].Join();
+    //     }
+    //     return result.ToArray();
+    // }
+
+    // [Benchmark]
+    // public int[] ProcessViaPreAllocated()
+    // {
+    //     var result = new int[ThreadCount * SizePerThread];
+
+    //     var threads = new Thread[ThreadCount];
+
+    //     for (int i = 0; i < ThreadCount; i++)
+    //     {
+    //         var local = i;
+    //         threads[i] = new Thread(() =>
+    //         {
+    //             for (int j = 0; j < SizePerThread; j++)
+    //             {
+    //                 result[local * SizePerThread + j] = local * SizePerThread + j;
+    //             }
+    //         });
+    //     }
+    //     for (int i = 0; i < threads.Length; i++)
+    //     {
+    //         threads[i].Start();
+    //     }
+
+    //     for (int i = 0; i < threads.Length; i++)
+    //     {
+    //         threads[i].Join();
+    //     }
+    //     return result;
+    // }
+
     [Benchmark]
-    public int[] ProcessViaConcurrentStack()
-    {
-        var result = new ConcurrentStack<int>();
-
-        var threads = new Thread[ThreadCount];
-
-        for (int i = 0; i < ThreadCount; i++)
-        {
-            var local = i;
-            threads[i] = new Thread(() =>
-            {
-                for (int j = 0; j < SizePerThread; j++)
-                {
-                    result.Append(local * SizePerThread + j);
-                }
-            });
-        }
-
-        return result.ToArray();
-    }
-
-    [Benchmark]
-    public int[] ProcessViaPreAllocated()
-    {
-        var result = new int[ThreadCount * SizePerThread];
-
-        var threads = new Thread[ThreadCount];
-
-        for (int i = 0; i < ThreadCount; i++)
-        {
-            var local = i;
-            threads[i] = new Thread(() =>
-            {
-                for (int j = 0; j < SizePerThread; j++)
-                {
-                    result[local * SizePerThread + j] = local * SizePerThread + j;
-                }
-            });
-        }
-
-        return result;
-    }
-
-    public async Task<int[]> ProcessViaChannelConCurrentRead()
+    public async Task<int[]> ProcessViaChannelConcurrentRead()
     {
         var channel = Channel.CreateBounded<int>(new BoundedChannelOptions(ThreadCount * SizePerThread)
         {
-            SingleReader = true,
+            // SingleReader = true,
         });
         var result = new int[ThreadCount * SizePerThread];
         
@@ -130,9 +165,18 @@ public class ConcurrentListAlternativesThreads
             {
                 for (int j = 0; j < SizePerThread; j++)
                 {
-                    channel.Writer.TryWrite(i);
+                    channel.Writer.TryWrite(local * SizePerThread + j);
                 }
             });
+        }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Start();
+        }
+
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Join();
         }
 
         channel.Writer.Complete();
