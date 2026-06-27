@@ -8,29 +8,30 @@ using ProtoTest;
 // namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
+[ThreadingDiagnoser]
 public class ConcurrentListAlternativesThreads
 {
     [Params(8, 2)]
-    public int ThreadCount;
+    public int Threads;
 
     [Params(10_000, 2500, 25)]
-    public int SizePerThread;
+    public int PerThread;
 
     [Benchmark(Baseline = true)]
     public int[] ProcessViaConcurrentBag()
     {
         var result = new ConcurrentBag<int>();
 
-        var threads = new Thread[ThreadCount];
+        var threads = new Thread[Threads];
 
-        for (int i = 0; i < ThreadCount; i++)
+        for (int i = 0; i < Threads; i++)
         {
             var local = i;
             threads[i] = new Thread(() =>
             {
-                for (int j = 0; j < SizePerThread; j++)
+                for (int j = 0; j < PerThread; j++)
                 {
-                    result.Add(local * SizePerThread + j);
+                    result.Add(local * PerThread + j);
                 }
             });
         }
@@ -48,104 +49,104 @@ public class ConcurrentListAlternativesThreads
         return result.ToArray();
     }
 
-    // [Benchmark]
-    // public int[] ProcessViaConcurrentQueue()
-    // {
-    //     var result = new ConcurrentQueue<int>();
+    [Benchmark]
+    public int[] ProcessViaConcurrentQueue()
+    {
+        var result = new ConcurrentQueue<int>();
 
-    //     var threads = new Thread[ThreadCount];
+        var threads = new Thread[Threads];
 
-    //     for (int i = 0; i < ThreadCount; i++)
-    //     {
-    //         var local = i;
-    //         threads[i] = new Thread(() =>
-    //         {
-    //             for (int j = 0; j < SizePerThread; j++)
-    //             {
-    //                 result.Enqueue(local * SizePerThread + j);
-    //             }
-    //         });
-    //     }
-    //     for (int i = 0; i < threads.Length; i++)
-    //     {
-    //         threads[i].Start();
-    //     }
+        for (int i = 0; i < Threads; i++)
+        {
+            var local = i;
+            threads[i] = new Thread(() =>
+            {
+                for (int j = 0; j < PerThread; j++)
+                {
+                    result.Enqueue(local * PerThread + j);
+                }
+            });
+        }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Start();
+        }
 
-    //     for (int i = 0; i < threads.Length; i++)
-    //     {
-    //         threads[i].Join();
-    //     }
-    //     return result.ToArray();
-    // }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Join();
+        }
+        return result.ToArray();
+    }
 
-    // [Benchmark]
-    // public int[] ProcessViaConcurrentStack()
-    // {
-    //     var result = new ConcurrentStack<int>();
+    [Benchmark]
+    public int[] ProcessViaConcurrentStack()
+    {
+        var result = new ConcurrentStack<int>();
 
-    //     var threads = new Thread[ThreadCount];
+        var threads = new Thread[Threads];
 
-    //     for (int i = 0; i < ThreadCount; i++)
-    //     {
-    //         var local = i;
-    //         threads[i] = new Thread(() =>
-    //         {
-    //             for (int j = 0; j < SizePerThread; j++)
-    //             {
-    //                 result.Append(local * SizePerThread + j);
-    //             }
-    //         });
-    //     }
-    //     for (int i = 0; i < threads.Length; i++)
-    //     {
-    //         threads[i].Start();
-    //     }
+        for (int i = 0; i < Threads; i++)
+        {
+            var local = i;
+            threads[i] = new Thread(() =>
+            {
+                for (int j = 0; j < PerThread; j++)
+                {
+                    result.Append(local * PerThread + j);
+                }
+            });
+        }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Start();
+        }
 
-    //     for (int i = 0; i < threads.Length; i++)
-    //     {
-    //         threads[i].Join();
-    //     }
-    //     return result.ToArray();
-    // }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Join();
+        }
+        return result.ToArray();
+    }
 
-    // [Benchmark]
-    // public int[] ProcessViaPreAllocated()
-    // {
-    //     var result = new int[ThreadCount * SizePerThread];
+    [Benchmark]
+    public int[] ProcessViaPreAllocated()
+    {
+        var result = new int[Threads * PerThread];
 
-    //     var threads = new Thread[ThreadCount];
+        var threads = new Thread[Threads];
 
-    //     for (int i = 0; i < ThreadCount; i++)
-    //     {
-    //         var local = i;
-    //         threads[i] = new Thread(() =>
-    //         {
-    //             for (int j = 0; j < SizePerThread; j++)
-    //             {
-    //                 result[local * SizePerThread + j] = local * SizePerThread + j;
-    //             }
-    //         });
-    //     }
-    //     for (int i = 0; i < threads.Length; i++)
-    //     {
-    //         threads[i].Start();
-    //     }
+        for (int i = 0; i < Threads; i++)
+        {
+            var local = i;
+            threads[i] = new Thread(() =>
+            {
+                for (int j = 0; j < PerThread; j++)
+                {
+                    result[local * PerThread + j] = local * PerThread + j;
+                }
+            });
+        }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Start();
+        }
 
-    //     for (int i = 0; i < threads.Length; i++)
-    //     {
-    //         threads[i].Join();
-    //     }
-    //     return result;
-    // }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Join();
+        }
+        return result;
+    }
 
     [Benchmark]
     public async Task<int[]> ProcessViaChannelConcurrentRead()
     {
-        var channel = Channel.CreateBounded<int>(new BoundedChannelOptions(ThreadCount * SizePerThread)
+        var channel = Channel.CreateBounded<int>(new BoundedChannelOptions(Threads * PerThread)
         {
-            // SingleReader = true,
+            SingleReader = false,
         });
-        var result = new int[ThreadCount * SizePerThread];
+        var result = new int[Threads * PerThread];
         
         var writerTask = Task.Run(async () =>
         {
@@ -157,15 +158,63 @@ public class ConcurrentListAlternativesThreads
             }
         });
 
-        var threads = new Thread[ThreadCount];
-        for (int i = 0; i < ThreadCount; i++)
+        var threads = new Thread[Threads];
+        for (int i = 0; i < Threads; i++)
         {
             var local = i;
             threads[i] = new Thread(() =>
             {
-                for (int j = 0; j < SizePerThread; j++)
+                for (int j = 0; j < PerThread; j++)
                 {
-                    channel.Writer.TryWrite(local * SizePerThread + j);
+                    channel.Writer.TryWrite(local * PerThread + j);
+                }
+            });
+        }
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Start();
+        }
+
+        for (int i = 0; i < threads.Length; i++)
+        {
+            threads[i].Join();
+        }
+
+        channel.Writer.Complete();
+
+        await writerTask;
+
+        return result;
+    }
+
+    [Benchmark]
+    public async Task<int[]> ProcessViaChannelSingleReaderConcurrentRead()
+    {
+        var channel = Channel.CreateBounded<int>(new BoundedChannelOptions(Threads * PerThread)
+        {
+            SingleReader = true,
+        });
+        var result = new int[Threads * PerThread];
+        
+        var writerTask = Task.Run(async () =>
+        {
+            var indexer = 0;
+
+            await foreach (var item in channel.Reader.ReadAllAsync())
+            {
+                result[indexer++] = item;
+            }
+        });
+
+        var threads = new Thread[Threads];
+        for (int i = 0; i < Threads; i++)
+        {
+            var local = i;
+            threads[i] = new Thread(() =>
+            {
+                for (int j = 0; j < PerThread; j++)
+                {
+                    channel.Writer.TryWrite(local * PerThread + j);
                 }
             });
         }

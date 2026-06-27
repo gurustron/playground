@@ -1,17 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using LeetCode;
 using LeetCode.Study.DataStructure;
 using LeetCode.Study.DataStructure.DataStructureOne;
 using LeetCode.Study.DataStructure.DataStructureTwo;
 
-ElevenContainerWithMostWater.Solution sol = new();
+int[] arr = [3, 1, 2, 5, 9];
+// Array.Sort(arr, (x, y) => y.CompareTo(x));
+arr.SortDescending();
 
-foreach (var item in new int[][] { [1, 8, 6, 2, 5, 4, 8, 3, 7], [1, 1] })
+System.Console.WriteLine(arr.ToPrintVersion());
+public class RevereseComparer<T> : Comparer<T> where T : IComparisonOperators<T, T, bool>
 {
-    System.Console.WriteLine($"{item.ToPrintVersion()}: {sol.MaxArea(item)}");
+    public static readonly RevereseComparer<T> Instance = new();
+    public override int Compare(T? x, T? y)
+    {
+       if(x == y) return 0;
+
+       if(x > y) return -1;
+
+       return 1;
+    }
 }
+
+public static class RevereseComparerExt
+{
+    extension<T>(T str)where T : IComparisonOperators<T, T, bool>
+    {
+        public static RevereseComparer<T> RevereseComparer => RevereseComparer<T>.Instance;
+    }
+
+    extension<T>(Span<T> span)
+    {
+        public void SortDescending()
+        {
+            span.Sort();
+            span.Reverse();
+        }
+
+    }
+}
+
+
+// ElevenContainerWithMostWater.Solution sol = new();
+
+
+// foreach (var item in new int[][] { [1, 8, 6, 2, 5, 4, 8, 3, 7], [1, 1] })
+// {
+//     System.Console.WriteLine($"{item.ToPrintVersion()}: {sol.MaxArea(item)}");
+// }
 
 // ThirtyFourFindFirstAndLastPositionAfElementInASortedArray.Solution sol = new();
 // foreach (var item in new (int[] nums, int target)[]{
@@ -143,7 +182,7 @@ foreach (var item in new int[][] { [1, 8, 6, 2, 5, 4, 8, 3, 7], [1, 1] })
 //         new BinaryTreeIsSymmetric.TreeNode(2)));
 
 
-var isValid = new ValidParentheses().IsValid("()");
+// var isValid = new ValidParentheses().IsValid("()");
 
 // new MergeTwoSortedLinkedLists().MergeTwoLists(null, null);
 // new MergeTwoSortedLinkedLists().MergeTwoLists(
@@ -168,7 +207,7 @@ var isValid = new ValidParentheses().IsValid("()");
 //     new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' },
 //     new[] { '.', '.', '.', '.', '.', '.', '.', '.', '.' }
 // });
-Console.WriteLine();
+
 // var solution = new MaximumSubarraySolution().MaxSubArray(new []{-2,1,-3,4,-1,2,1,-5,4});
 // Console.WriteLine(solution);
 

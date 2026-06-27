@@ -24,6 +24,8 @@ await Task.WhenAll(Enumerable.Range(0, 64).Select(_ => Task.Delay(100)));
 // System.Console.WriteLine(alt.ProcessViaPreAllocated().Order().ToPrintVersion());
 // System.Console.WriteLine(alt.ProcessViaConcurrentQueue().Order().ToPrintVersion());
 
+BenchmarkRunner.Run<ConcurrentListAlternatives>();
+BenchmarkRunner.Run<ConcurrentListAlternativesForEach>();
 BenchmarkRunner.Run<ConcurrentListAlternativesThreads>();
 
 

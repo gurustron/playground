@@ -6,29 +6,30 @@ using ProtoTest;
 // namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
+[ThreadingDiagnoser]
 public class ConcurrentListAlternatives
 {
-    [Params(8, 4, 2, 1)]
-    public int ThreadCount;
+    [Params(8, 2)]
+    public int Threads;
 
-    [Params(100_000, 15_000, 100, 15, 1)]
-    public int SizePerThread;
+    [Params(10_000, 2500, 25)]
+    public int PerThread;
 
     [Benchmark(Baseline = true)]
     public int[] ProcessViaConcurrentBag()
     {
         var result = new ConcurrentBag<int>();
 
-        Parallel.For(0, ThreadCount,
+        Parallel.For(0, Threads,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             i =>
             {
-                for (int j = 0; j < SizePerThread; j++)
+                for (int j = 0; j < PerThread; j++)
                 {
-                    result.Add(i * SizePerThread + j);
+                    result.Add(i * PerThread + j);
                 }
             });
 
@@ -40,16 +41,16 @@ public class ConcurrentListAlternatives
     {
         var result = new ConcurrentQueue<int>();
 
-        Parallel.For(0, ThreadCount,
+        Parallel.For(0, Threads,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             i =>
             {
-                for (int j = 0; j < SizePerThread; j++)
+                for (int j = 0; j < PerThread; j++)
                 {
-                    result.Enqueue(i * SizePerThread + j);
+                    result.Enqueue(i * PerThread + j);
                 }
             });
 
@@ -61,16 +62,16 @@ public class ConcurrentListAlternatives
     {
         var result = new ConcurrentStack<int>();
 
-        Parallel.For(0, ThreadCount,
+        Parallel.For(0, Threads,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             i =>
             {
-                for (int j = 0; j < SizePerThread; j++)
+                for (int j = 0; j < PerThread; j++)
                 {
-                    result.Append(i * SizePerThread + j);
+                    result.Append(i * PerThread + j);
                 }
             });
 
@@ -80,18 +81,18 @@ public class ConcurrentListAlternatives
     [Benchmark]
     public int[] ProcessViaPreAllocated()
     {
-        var result = new int[ThreadCount * SizePerThread];
+        var result = new int[Threads * PerThread];
 
-        Parallel.For(0, ThreadCount,
+        Parallel.For(0, Threads,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             (i) =>
             {
-                for (int j = 0; j < SizePerThread; j++)
+                for (int j = 0; j < PerThread; j++)
                 {
-                    result[i * SizePerThread + j] = i * SizePerThread + j;
+                    result[i * PerThread + j] = i * PerThread + j;
                 }
             });
 

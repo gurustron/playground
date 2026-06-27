@@ -15,7 +15,16 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using HighPerfPlayground;
 
+using (var mo = Tada.Do())
+{
+    System.Console.WriteLine(mo.Length);
+    System.Console.WriteLine(mo.Span[0]);
+    System.Console.WriteLine(mo.Span[mo.Length-1]);
+}
+Environment.Exit(0);
 var foo = JsonSerializer.Deserialize<Foo>(
         """
         {
@@ -24,7 +33,6 @@ var foo = JsonSerializer.Deserialize<Foo>(
         }
         """);
 
-    new[] { (ValueMatch: 1, KeyedService: 1) }.AsQueryable().Where(x => new int[] { 1 }.Contains(1));
 Environment.Exit(0);
 
 NpgsqlConnection connection = new NpgsqlConnection("Host=localhost;Port=6432;Database=test_db;Username=postgres;Password=P@ssword");
@@ -164,3 +172,80 @@ public class Poco
     public override string ToString() => $"Poco [Key={Key}, Val={Val}]";
 }
 
+
+public interface IOperation
+{
+    string Execute();
+}
+
+public class OperationA : IOperation
+{
+    public string Execute() => "OperationA executed";
+}
+
+public class OperationB : IOperation
+{
+    public string Execute() => "OperationB executed";
+}
+
+public class Processor
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    // Is injecting IServiceProvider here a bad practice (Service Locator)?
+    public Processor(IServiceProvider serviceProvider) 
+    { 
+        _serviceProvider = serviceProvider; 
+    }  
+
+    public void Process(string input)
+    {
+        // Resolving dynamically based on a key
+        var op = _serviceProvider.GetKeyedService<IOperation>(input.ToLower());
+
+        if (op == null)
+        {
+            Console.WriteLine("Invalid input: Operation not found.");
+            return;
+        }
+
+        Console.WriteLine(op.Execute());
+    }
+}
+
+public static class KeyedHelpers
+{
+    extension (IServiceCollection services)
+    {
+        public IServiceCollection RegisterKeyedResolver()
+        {
+            services.AddSingleton(new ServiceCollectionWrapper(services));
+            services.AddSingleton(typeof(KeyedServicesKeysCacher<,>));
+
+            return services;
+        }
+    }
+
+    private record ServiceCollectionWrapper(IServiceCollection Services);
+
+    private class KeyedServicesKeysCacher<TKey, TService>
+    {
+        public KeyedServicesKeysCacher(ServiceCollectionWrapper servicesProvider)
+        {
+            Keys = servicesProvider
+                .Services
+                .Where(sd => sd.ServiceType == typeof(TService))
+                .Where(sd => sd.ServiceKey is not null)
+                .Select(sd => sd.ServiceKey)
+                .OfType<TKey>()
+                .ToArray();
+        }
+
+        public TKey[] Keys {get;}
+    }
+}
+
+public interface IKeyedResolver<TKey, TService>
+{
+    
+}

@@ -8,12 +8,13 @@ using ProtoTest;
 // namespace NET10CollectionsPlayground.Benchmarks;
 
 [MemoryDiagnoser(true)]
+[ThreadingDiagnoser]
 public class ConcurrentListAlternativesForEach
 {
-    [Params(8, 4, 2, 1)]
-    public int ThreadCount;
+    [Params(8, 2)]
+    public int Threads;
 
-    [Params(100_000, 15_000, 100, 1)]
+    [Params(10_000, 2500, 25)]
     public int TotalSize;
 
     [GlobalSetup]
@@ -32,7 +33,7 @@ public class ConcurrentListAlternativesForEach
         Parallel.ForEach(Collection,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             i =>
             {
@@ -51,7 +52,7 @@ public class ConcurrentListAlternativesForEach
         Parallel.ForEach(Collection,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             i =>
             {
@@ -70,7 +71,7 @@ public class ConcurrentListAlternativesForEach
         Parallel.ForEach(Collection,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             i =>
             {
@@ -89,7 +90,7 @@ public class ConcurrentListAlternativesForEach
         Parallel.ForEach(Collection,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             (i, _, index) =>
             {
@@ -111,7 +112,7 @@ public class ConcurrentListAlternativesForEach
         Parallel.ForEach(Collection,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             (i) =>
             {
@@ -153,7 +154,7 @@ public class ConcurrentListAlternativesForEach
         Parallel.ForEach(Collection,
             new ParallelOptions
             {
-                MaxDegreeOfParallelism = ThreadCount,
+                MaxDegreeOfParallelism = Threads,
             },
             (i) =>
             {
